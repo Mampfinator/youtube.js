@@ -1,0 +1,29 @@
+{
+  "name": "better-youtube-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "npx mocha",
+    "build": "npx tsc"
+  },
+  "keywords": [
+    "youtube", "api"
+  ],
+  "author": "Sir Eatsalot",
+  "license": "ISC",
+  "dependencies": {
+    "neverthrow": "^6.0.0",
+    "undici": "^5.17.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.18",
+    "@types/sinon": "^10.0.13",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "sinon": "^15.0.1",
+    "typescript": "^4.9.5"
+  }
+}
