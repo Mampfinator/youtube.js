@@ -37,3 +37,6 @@ export function deepClearRecord<TSource extends Record<string, Record<string, an
         ).map(([key, value]) => [key, typeof value === "object" ? clearRecord(value) : value])
     )
 }
+
+export const toDate = (raw: string) => new Date(raw);
+export const toDateOpt = (raw: string | undefined) => typeof raw === "undefined" ? undefined : new Date(raw);

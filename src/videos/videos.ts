@@ -5,7 +5,7 @@ import { YouTubeEndpoints } from "../endpoints";
 import { YouTubeAPIError, YouTubeClientError } from "../errors";
 import { Video, VideoPart } from "./types/parsed-types";
 import { VideoResource } from "./types/api-types";
-import { mapProperties } from "../util/util";
+import { mapProperties, toDate, toDateOpt } from "../util/util";
 
 
 type ListOptions<TPart extends VideoPart> = RequireOnlyOne<{
@@ -27,9 +27,6 @@ type ListOptions<TPart extends VideoPart> = RequireOnlyOne<{
 
 
 type VideoListResponse = ListResponse<"youtube#videoListResponse", VideoResource>
-
-const toDate = (raw: string) => new Date(raw);
-const toDateOpt = (raw: string | undefined) => typeof raw === "undefined" ? undefined : new Date(raw);
 
 export class VideosEndpoints extends YouTubeEndpoints {
     constructor(client: YouTubeClient) {
