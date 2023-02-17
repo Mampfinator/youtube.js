@@ -5,16 +5,17 @@ import { join } from "path";
 import { err, ok, Result } from "neverthrow";
 import { APIErrorResponse, isError, YouTubeAPIError } from "./errors";
 import { deepClearRecord } from "./util/util";
+import { ChannelsEndpoints } from "./channels/channels";
 
 interface GetOptions {
-    query?: Record<string, string | string[] | undefined>;
+    query?: Record<string, string | string[] | number | boolean | undefined>;
     headers?: Record<string, string | undefined>;
 }
 
 interface FetchOptions {
     path: string;
     method: Dispatcher.HttpMethod;
-    query?: Record<string, string | string[]>;
+    query?: Record<string, string | string[] | number | boolean>;
     headers?: Record<string, string | string[]>;
     body?: Record<string, any>;
 }
@@ -36,7 +37,7 @@ export interface ClientOptions {
  */
 export class YouTubeClient extends Client {
     public readonly videos = new VideosEndpoints(this);
-
+    public readonly channels = new ChannelsEndpoints(this);
 
     constructor(
         private readonly key: string
