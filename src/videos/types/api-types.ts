@@ -1,4 +1,4 @@
-import { ItemIdentifier } from "../../base-types";
+import { ItemIdentifier, Thumbnail } from "../../base-types";
 
 /**
  * https://developers.google.com/youtube/v3/docs/videos#resource
@@ -124,18 +124,6 @@ export enum LiveBroadcastContent {
     Live = "live",
     None = "none",
     Upcoming = "upcoming"
-}
-
-interface Thumbnail<W extends number = number, H extends number = number> {
-    url: string; 
-    /**
-     * Width (in pixels)
-     */
-    width: W; 
-    /**
-     * Height (in pixels)
-     */
-    height: H;
 }
 
 export interface Statistics {

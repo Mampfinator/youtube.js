@@ -1,25 +1,21 @@
-import { ItemIdentifier } from "../../base-types";
+import { ItemIdentifier, Override, Replace } from "../../base-types";
 import { ContentDetails, LiveStreamingDetails, Snippet, Status, VideoResource } from "./api-types";
 
-export type VideoPart = Exclude<keyof (VideoResource | ParsedVideoResourceOverrides), "kind" | "etag" | "id">;
-export type Video<TPart extends VideoPart> = ItemIdentifier<"youtube#video"> & {
-    [P in TPart]: ParsedVideoResourceOverrides[P] extends undefined | never ? VideoResource[P] : ParsedVideoResourceOverrides[P];
-};
+
+type VideoIdentifier = ItemIdentifier<"youtube#video">;
 
 
-interface ParsedVideoResourceOverrides {
-    snippet: ParsedSnippet;
-    status: ParsedStatus;
-    liveStreamingDetails: ParsedLiveStreamingDetails;
-    contentDetails: ParsedContentDetails; 
-}
+export type VideoPart = Exclude<keyof FullVideoType, keyof VideoIdentifier>;
+
+export type Video<TPart extends VideoPart> = Pick<FullVideoType, TPart> & VideoIdentifier;
 
 
-type Replace<TSource extends object, TReplace extends keyof TSource, TNew> = {
-    [P in keyof TSource]: P extends TReplace ? TNew : TSource[P]; 
-}
-type ParsedSnippet = Replace<Snippet, "publishedAt", Date>;
-type ParsedStatus = Replace<Status, "publishAt", Date>;
-//type ParsedRecordingDetails = Omit<RecordingDetails, "recordingDate"> & { recordingDate: Date };
-type ParsedLiveStreamingDetails = Replace<LiveStreamingDetails, "scheduledStartTime" | "actualStartTime" | "actualEndTime" | "scheduledEndTime", Date | undefined>;
-type ParsedContentDetails = Replace<ContentDetails, "caption", boolean>;
+type FullVideoType = Override<
+    VideoResource, 
+    {
+        snippet: Replace<Snippet, "publishedAt", Date>;
+        status: Replace<Status, "publishAt", Date>;
+        liveStreamingDetails: Replace<LiveStreamingDetails, "scheduledStartTime" | "actualStartTime" | "actualEndTime" | "scheduledEndTime", Date | undefined>;
+        contentDetails: Replace<ContentDetails, "caption", boolean>;
+    }
+>;

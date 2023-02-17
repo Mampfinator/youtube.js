@@ -12,11 +12,11 @@ interface ID {
 /**
  * Identifies responses.
  */
-export type ResourceIdentifier<T extends string = string> = Etag & Kind<T>;
+export interface ResourceIdentifier<T extends string = string> extends Etag, Kind<T> {};
 /**
  * Identifies individual items, like a video or a playlist.
  */
-export type ItemIdentifier<T extends string = string> = Etag & Kind<T> & ID;
+export interface ItemIdentifier<T extends string = string> extends Etag, Kind<T>, ID {};
 
 interface PageInfo {
     totalResults: number;
@@ -24,19 +24,34 @@ interface PageInfo {
     nextPageToken?: string;
     prevPageToken?: string;
 }
-export type ListResponse<TKind extends string, TItem extends ItemIdentifier> = ResourceIdentifier<TKind> & { items: TItem[] } & PageInfo;
 
-/**
- * 
- */
-export type Override<TSource extends object, TOverride extends Partial<Record<keyof TSource, any>>> = {
-    [P in keyof TSource]: TOverride[P] extends unknown | never ? TSource[P] : TOverride[P]; 
-}
+export interface ListResponse<TKind extends string, TItem extends ItemIdentifier> extends ResourceIdentifier<TKind>, PageInfo {
+    items: TItem[];
+} 
+
+export type Override<TSource extends object, TOverride extends Partial<Record<keyof TSource, any>>> = TOverride & Pick<TSource, Exclude<keyof TSource, keyof TOverride>>;
+
 
 export declare type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> & {
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, undefined>>;
 }[Keys];
 
+
+export interface Thumbnail<W extends number = number, H extends number = number> {
+    url: string; 
+    /**
+     * Width (in pixels)
+     */
+    width: W; 
+    /**
+     * Height (in pixels)
+     */
+    height: H;
+}
+
+export type Replace<TSource extends object, TReplace extends keyof TSource, TNew> = {
+    [P in keyof TSource]: P extends TReplace ? TNew : TSource[P]; 
+}
 
 export interface ITransform<TRaw, TTransformed> {
     transform(source: TRaw): TTransformed;
