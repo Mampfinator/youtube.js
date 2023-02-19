@@ -1,0 +1,23 @@
+{
+    "ytInitialData": {
+        "sources": [
+            "https://www.youtube.com/", 
+            "https://www.youtube.com/@Rizuna_Ch/home",
+            "https://www.youtube.com/@Rizuna_Ch/videos",
+            "https://www.youtube.com/@Rizuna_Ch/shorts",
+            "https://www.youtube.com/@Rizuna_Ch/streams",
+            "https://www.youtube.com/@Rizuna_Ch/playlists",
+            "https://www.youtube.com/@Rizuna_Ch/community",
+            "https://www.youtube.com/@Rizuna_Ch/channels",
+            "https://www.youtube.com/@Rizuna_Ch/about",
+            "https://www.youtube.com/results?search_query=test"
+        ]
+    },
+    "ytCfg": {
+        "sources": []
+    },
+    "ytInitialPlayerResponse": {
+        "sources": []
+    },
+    "test": "hi"
+}

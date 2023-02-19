@@ -5,7 +5,7 @@ import { YouTubeEndpoints } from "../endpoints";
 import { YouTubeAPIError, YouTubeClientError } from "../errors";
 import { Video, VideoPart } from "./types/parsed-types";
 import { VideoResource } from "./types/api-types";
-import { mapProperties, toDate, toDateOpt } from "../util/util";
+import { mapProperties, toDate, toDateOpt } from "../util";
 
 
 type ListOptions<TPart extends VideoPart> = RequireOnlyOne<{

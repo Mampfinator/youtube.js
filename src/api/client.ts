@@ -4,7 +4,7 @@ import { Client, Dispatcher } from "undici";
 import { join } from "path";
 import { err, ok, Result } from "neverthrow";
 import { APIErrorResponse, isError, YouTubeAPIError } from "./errors";
-import { deepClearRecord } from "./util/util";
+import { deepClearRecord } from "./util";
 import { ChannelsEndpoints } from "./channels/channels";
 
 interface GetOptions {
@@ -24,7 +24,14 @@ interface FetchOptions {
 
 
 export interface ClientOptions {
-
+    /**
+     * API key to use for requests.
+     */
+    key?: string;
+    /**
+     * If using pubsub, URL to use for message callback.
+     */
+    callbackUrl?: string;
 }
 
 /**
@@ -39,10 +46,15 @@ export class YouTubeClient extends Client {
     public readonly videos = new VideosEndpoints(this);
     public readonly channels = new ChannelsEndpoints(this);
 
+    private readonly key?: string;
+    private readonly callbackUrl?: string;
+
     constructor(
-        private readonly key: string
+        options: ClientOptions
     ) {
         super(API_BASE_URL);
+        this.key = options.key;
+        this.callbackUrl = options.callbackUrl;
     }
 
     protected async fetch<T extends object>(options: FetchOptions): Promise<Result<T, YouTubeAPIError>> {

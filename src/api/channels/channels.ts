@@ -3,7 +3,7 @@ import { ListResponse, RequireOnlyOne } from "../base-types";
 import { YouTubeClient } from "../client";
 import { YouTubeEndpoints } from "../endpoints";
 import { YouTubeAPIError, YouTubeClientError } from "../errors";
-import { mapProperties, toDate } from "../util/util";
+import { mapProperties, toDate } from "../util";
 import { ChannelResource } from "./types/api-types";
 import { Channel, ChannelPart } from "./types/parsed-types";
 
