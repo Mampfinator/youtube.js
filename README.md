@@ -26,9 +26,8 @@ import { ScrapingClient, CommunityContext } from "youtube.js";
 
 const client = new ScrapingClient();
 
-const communityTab = await client.getContext(
+const communityTab = await client.contextFromUrl<CommunityContext>(
     "https://youtube.com/@Rizuna_Ch/community", 
-    CommunityContext
 );
 
 // doesn't return anything useful, but populates get() to retrieve posts.
@@ -51,7 +50,7 @@ const client = new ScrapingClient();
 
 const allVideos: ScrapedVideo[] = [];
 
-const videos = await client.getContext<VideosContext>(
+const videos = await client.contextFromUrl<VideosContext>(
     "https://youtube.com/@Rizuna_Ch/videos",
 );
 await videos.fetchAll();
