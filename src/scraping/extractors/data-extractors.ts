@@ -1,4 +1,4 @@
-import { YtInitialData, YtCfg, YtInitialPlayerResponse } from "./types/internal"
+import { YtInitialData, YtCfg, YtInitialPlayerResponse } from "../types/internal"
 import { Result, ok, err } from "neverthrow";
 
 
@@ -6,7 +6,7 @@ export const initialDataRe = /(?<=var ytInitialData *\= *)\{.*?}(?=\;)(?<![A-z<>
 export const playerResponseRe = /(?<=var ytInitialPlayerResponse *\= *)\{.*?}(?=\;)(?<![A-z<>])/;
 
 
-export namespace Extractors {
+export namespace DataExtractors {
     function parse<T extends object>(source: string, regex: RegExp): Result<T, Error> {
         try {
             const match = initialDataRe.exec(source);

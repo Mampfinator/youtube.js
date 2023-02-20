@@ -6,3 +6,4 @@ export * from "./PlaylistsContext";
 export * from "./ShortsContext";
 export * from "./StreamsContext";
 export * from "./VideosContext";
+export * from "./ChannelSearchContext";

@@ -1,5 +1,5 @@
 export * from "./ChannelTabContexts";
-export * from "./decorators/Match";
+export * from "./decorators/Context";
 export * from "./CommentContext";
 export * from "./CommunityPostContext";
 export * from "./ElementContext";

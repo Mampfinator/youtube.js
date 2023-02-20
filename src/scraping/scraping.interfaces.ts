@@ -20,7 +20,7 @@ export type FetchReturn<TTransform extends FetchTransform | undefined> =
 
 export interface FetchOptions<
     TTransform extends FetchTransform | undefined = undefined,
-> extends Pick<Dispatcher.DispatchOptions, "method" | "body" | "query">  {
+> extends Pick<Dispatcher.DispatchOptions, "method" | "query">  {
     url: string;
     /**
      * How many retries should be permitted.
@@ -32,6 +32,7 @@ export interface FetchOptions<
      */
     transform?: TTransform;
     headers?: Record<string, string>;
+    body?: string | Buffer | object;
 }
 
 

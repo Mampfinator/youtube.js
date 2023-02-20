@@ -2,16 +2,16 @@ import { err, ok, Result } from "neverthrow";
 import { type Dispatcher } from "undici";
 import { isValueOk } from "../../shared/util";
 import { FetchError, IRequestOrchestrator } from "../scraping.interfaces";
-import { getMatchers, MatcherData } from "./decorators/Match";
+import { getContexts, ContextData } from "./decorators/Context";
 import { ScrapingContext } from "./ScrapingContext";
 
 export class ContextFactory {
-    private readonly matchers: MatcherData[];
+    private readonly matchers: ContextData[];
     
     constructor(
         private readonly orchestrator: IRequestOrchestrator
     ) {
-        this.matchers = getMatchers().sort(({weight: weightA}, {weight: weightB}) => weightB - weightA);
+        this.matchers = getContexts().sort(({weight: weightA}, {weight: weightB}) => weightB - weightA);
     }
 
 

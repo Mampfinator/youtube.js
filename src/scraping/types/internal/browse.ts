@@ -1,3 +1,5 @@
+import { FluffyContinuationItemRenderer } from "./generated";
+
 /**
  * Describes a response from /api/youtubei/browse
  */
@@ -12,9 +14,10 @@ export interface ResponseContext {
 
 }
 
-type ContinuationItemRenderer = {}
+type ContinuationItemRenderer = FluffyContinuationItemRenderer;
+
 
 export interface OnResponseReceivedAction {
     targetId: string;
-    continuationItems?: object[] | [...object[], ContinuationItemRenderer];
+    continuationItems?: Record<string, any>[] | [...Record<string,any>[], ContinuationItemRenderer];
 }

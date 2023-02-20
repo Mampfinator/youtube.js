@@ -17,6 +17,21 @@ Features you see here may not exist yet, or may not be fully stable.
 
 ---
 
+### High-level methods
+
+The top level methods are the most basic way of making requests. They're fairly straightforward, usually safe and abstract everything away neatly.
+
+```ts
+import { ScrapingClient } from "youtube.js";
+
+const client = new ScrapingClient();
+
+const result = await client.channel({tag: "@Rizuna_Ch"}).fetchPosts();
+if (result.isErr()) console.error(result.error);
+else console.log(result.value);
+
+```
+
 ### Contexts
 
 Contexts are a fairly low-level concept within youtube.js, but they give you a lot of control over how and when your data is fetched.
@@ -56,8 +71,6 @@ const videos = await client.contextFromUrl<VideosContext>(
 await videos.fetchAll();
 allVideos.push(...videosTab.get().values());
 
-
-
 const streams = await videosTab.streams.goTo();
 await streams.fetchAll();
 allVideos.push(...streamsTab.get().values());
@@ -66,3 +79,5 @@ const shorts = await streamsTab.shorts?.goTo();
 await shorts.fetchAll();
 allVideos.push(...shortsTab.get().values());
 ```
+
+Under the hood, they use `/browse`, `/next` and similar requests - what YouTube clients themselve use when you click around on a page.

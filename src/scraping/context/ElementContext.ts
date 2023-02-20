@@ -1,4 +1,4 @@
-import { ok, Result } from "neverthrow";
+import { err, ok, Result } from "neverthrow";
 import { FetchError } from "../scraping.interfaces";
 import { ScrapingContext } from "./ScrapingContext";
 
@@ -16,11 +16,11 @@ export abstract class ElementContext<TElement extends object> extends ScrapingCo
         return new Map([...this.elements]);
     }
 
-    protected abstract getElements(): AsyncGenerator<Result<{elements: Map<string, TElement>}, FetchError[]>>;
+    protected abstract getElements(): AsyncGenerator<Result<{elements: Map<string, TElement>}, Error[]>>;
 
-    public async fetchAll(): Promise<Result<void, FetchError[]>> {
+    public async fetchAll(): Promise<Result<void, Error[]>> {
         for await (const result of this.getElements()) {
-            if (result.isErr()) return result.map(() => undefined as void);
+            if (result.isErr()) return err(result.error);
 
             for (const [key, value] of result.value.elements) {
                 this.elements.set(key, value);   

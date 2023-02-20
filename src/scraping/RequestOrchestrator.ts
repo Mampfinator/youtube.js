@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosHeaders, AxiosInstance, AxiosRequestConfig } from "axios";
+import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { err, Ok, ok, Result } from "neverthrow";
 import { launch } from "puppeteer";
@@ -138,7 +138,7 @@ export class RequestOrchestrator implements IRequestOrchestrator {
             .then(async value => {
                 if (item.transform) {
                     const result = await item.transform(value);
-                    if (result.isErr()) throw result.error;
+                    if (result.isErr()) return console.error(result.error);
                     return result.value;
                 }
 

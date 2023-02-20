@@ -1,5 +1,4 @@
 import { ElementContext } from "./ElementContext";
-import { ScrapingContext } from "./ScrapingContext";
 
 type Comment = {}
 

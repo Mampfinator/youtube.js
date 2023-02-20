@@ -5,4 +5,4 @@ export * from "./scraping.interfaces";
 export * from "./types";
 
 
-export { Extractors } from "./extractors";
+export { DataExtractors } from "./extractors/data-extractors";

@@ -8,4 +8,4 @@ While this usually shouldn't cause any issues, mind that YouTube's bot detection
 
 This will generate various JSON files in `out/`. Feel free to ignore those as they should **not** be comitted.
 
-`data.json` contains URLs to fetch and run extractors on. If you add any, they should be comitted.
+`data.json` contains URLs to fetch and run DataExtractors on. If you add any, they should be comitted.

@@ -1,8 +1,8 @@
-import { Match } from "../decorators/Match";
+import { Context } from "../decorators/Context";
 import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 
 /**
- * Channel context for /about.
+ * Channel context for `/about`.
  */
-@Match(getChannelTabRegex("about"), 10)
+@Context(getChannelTabRegex("about"), 10)
 export class AboutContext extends ChannelTabContext {}

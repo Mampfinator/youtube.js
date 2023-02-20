@@ -1,24 +1,12 @@
 import { Command } from "commander";
 import { RequestOrchestrator } from "../../src/scraping/RequestOrchestrator";
 import { join } from "path";
-import { Extractors } from "../../src/scraping/extractors";
+import { DataExtractors } from "../../src/scraping/extractors/data-extractors";
 import { Result } from "neverthrow";
 import { exec as execCb } from "child_process";
 import { writeFile } from "fs/promises";
 import { BASE_OUT_DIR, bootstrap } from "./bootstrap";
 import data from "../data.json";
-
-
-const MODE = ["ytInitialData", "ytCfg", "ytInitialPlayerResponse", "all"] as const;
-
-const TYPE_OUT_DIRS = Object.fromEntries(
-    ["ytInitialData", "ytCfg", "ytInitialPlayerResponse"].map(value => 
-        [
-            value, 
-            
-        ]
-    )
-);
 
 async function exec(command: string | string[]): Promise<string> {
     const actualCommand = Array.isArray(command) ? command.join(" ") : command;
@@ -46,8 +34,6 @@ const orchestrator = new RequestOrchestrator();
 
     
     const options = command.opts();
-
-    console.log(options);
 
     const {all, initialData, playerResponse, cfg} = options as Record<string, boolean>;
 
@@ -93,7 +79,7 @@ const orchestrator = new RequestOrchestrator();
 })();
 
 async function fetch(type: "ytInitialData" | "ytCfg" | "ytInitialPlayerResponse"): Promise<void> {
-    const samples = await fetchData(data[type].sources, Extractors[type]);
+    const samples = await fetchData(data[type].sources, DataExtractors[type]);
 
     await Promise.all(
         samples.map((file, index) => writeFile(join(BASE_OUT_DIR, type, `${type}-${index}.json`), JSON.stringify(file, null, 4)))

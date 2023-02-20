@@ -8,6 +8,7 @@ export interface YtInitialData {
     metadata?:         Metadata;
     microformat?:      Microformat;
     estimatedResults?: string;
+    refinements?:      string[];
     targetId?:         string;
 }
 
@@ -133,7 +134,7 @@ export interface ItemReelItemRenderer {
     thumbnail:          ReelWatchEndpointThumbnail;
     viewCountText:      SubscriberCountText;
     navigationEndpoint: ReelItemRendererNavigationEndpoint;
-    menu:               ButtonClass;
+    menu:               MenuClass;
     trackingParams:     string;
     accessibility:      ToggledAccessibilityDataClass;
     style:              string;
@@ -163,7 +164,7 @@ export interface Visibility {
     types: string;
 }
 
-export interface ButtonClass {
+export interface MenuClass {
     menuRenderer: ButtonMenuRenderer;
 }
 
@@ -304,19 +305,19 @@ export interface ChannelThumbnailSupportedRenderers {
 
 export interface ChannelThumbnailWithLinkRenderer {
     thumbnail:          Avatar;
-    navigationEndpoint: Endpoint;
+    navigationEndpoint: AuthorEndpointClass;
     accessibility:      ToggledAccessibilityDataClass;
 }
 
-export interface Endpoint {
+export interface AuthorEndpointClass {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
     browseEndpoint:      AuthorEndpointBrowseEndpoint;
 }
 
 export interface AuthorEndpointBrowseEndpoint {
-    browseId:         string;
-    canonicalBaseUrl: string;
+    browseId:          string;
+    canonicalBaseUrl?: string;
 }
 
 export interface Avatar {
@@ -354,7 +355,7 @@ export interface LongBylineTextClass {
 
 export interface LongBylineTextRun {
     text:               string;
-    navigationEndpoint: Endpoint;
+    navigationEndpoint: AuthorEndpointClass;
 }
 
 export interface VideoRendererMenu {
@@ -476,13 +477,19 @@ export interface OwnerBadgeMetadataBadgeRenderer {
 }
 
 export interface VideoRendererThumbnailOverlay {
-    thumbnailOverlayTimeStatusRenderer?:     ThumbnailOverlayTimeStatusRenderer;
-    thumbnailOverlayToggleButtonRenderer?:   ThumbnailOverlayToggleButtonRenderer;
-    thumbnailOverlayNowPlayingRenderer?:     ThumbnailOverlayRenderer;
-    thumbnailOverlayLoadingPreviewRenderer?: ThumbnailOverlayRenderer;
+    thumbnailOverlayTimeStatusRenderer?:       ThumbnailOverlayTimeStatusRenderer;
+    thumbnailOverlayToggleButtonRenderer?:     ThumbnailOverlayToggleButtonRenderer;
+    thumbnailOverlayNowPlayingRenderer?:       ThumbnailOverlayLoadingPreviewRendererClass;
+    thumbnailOverlayLoadingPreviewRenderer?:   ThumbnailOverlayLoadingPreviewRendererClass;
+    thumbnailOverlayInlineUnplayableRenderer?: ThumbnailOverlayInlineUnplayableRendererClass;
 }
 
-export interface ThumbnailOverlayRenderer {
+export interface ThumbnailOverlayInlineUnplayableRendererClass {
+    text: ChannelHandleText;
+    icon: IconImage;
+}
+
+export interface ThumbnailOverlayLoadingPreviewRendererClass {
     text: ChannelHandleText;
 }
 
@@ -564,7 +571,7 @@ export interface PurpleReelItemRenderer {
     thumbnail:          ReelWatchEndpointThumbnail;
     viewCountText:      SubscriberCountText;
     navigationEndpoint: ReelItemRendererNavigationEndpoint;
-    menu:               PurpleMenu;
+    menu:               ReelItemRendererMenu;
     trackingParams:     string;
     accessibility:      ToggledAccessibilityDataClass;
     style:              string;
@@ -572,7 +579,7 @@ export interface PurpleReelItemRenderer {
     loggingDirectives:  LoggingDirectives;
 }
 
-export interface PurpleMenu {
+export interface ReelItemRendererMenu {
     menuRenderer: FluffyMenuRenderer;
 }
 
@@ -717,15 +724,17 @@ export interface PurpleItemSectionRenderer {
     trackingParams:     string;
     header?:            ItemSectionRendererHeader;
     sectionIdentifier?: string;
+    targetId?:          string;
 }
 
 export interface StickyContent {
     channelVideoPlayerRenderer?:       ChannelVideoPlayerRenderer;
     shelfRenderer?:                    PurpleShelfRenderer;
-    reelShelfRenderer?:                ReelShelfRenderer;
+    reelShelfRenderer?:                PurpleReelShelfRenderer;
     recognitionShelfRenderer?:         RecognitionShelfRenderer;
-    gridRenderer?:                     GridRenderer;
+    continuationItemRenderer?:         FluffyContinuationItemRenderer;
     backstagePostThreadRenderer?:      BackstagePostThreadRenderer;
+    gridRenderer?:                     GridRenderer;
     channelAboutFullMetadataRenderer?: ChannelAboutFullMetadataRenderer;
 }
 
@@ -736,16 +745,17 @@ export interface BackstagePostThreadRenderer {
 }
 
 export interface Post {
-    backstagePostRenderer: BackstagePostRenderer;
+    sharedPostRenderer?:    SharedPostRenderer;
+    backstagePostRenderer?: PostBackstagePostRenderer;
 }
 
-export interface BackstagePostRenderer {
+export interface PostBackstagePostRenderer {
     postId:               string;
     authorText:           AuthorText;
-    authorThumbnail:      AuthorThumbnail;
-    authorEndpoint:       Endpoint;
-    contentText:          ContentText;
-    backstageAttachment?: BackstageAttachment;
+    authorThumbnail:      AuthorThumbnailClass;
+    authorEndpoint:       AuthorEndpointClass;
+    contentText:          PurpleContentText;
+    backstageAttachment?: PurpleBackstageAttachment;
     expandButton:         BackstagePostRendererCollapseButton;
     collapseButton:       BackstagePostRendererCollapseButton;
     publishedTimeText:    BackstagePostRendererTitle;
@@ -763,7 +773,7 @@ export interface ActionButtons {
 
 export interface CommentActionButtonsRenderer {
     likeButton:     DislikeButtonClass;
-    replyButton:    ReplyButton;
+    replyButton?:   ReplyButton;
     dislikeButton:  DislikeButtonClass;
     trackingParams: string;
     style:          string;
@@ -825,16 +835,16 @@ export interface AuthorText {
     accessibility: ToggledAccessibilityDataClass;
 }
 
-export interface AuthorThumbnail {
+export interface AuthorThumbnailClass {
     thumbnails:    ThumbnailThumbnail[];
     accessibility: ToggledAccessibilityDataClass;
 }
 
-export interface BackstageAttachment {
-    backstageImageRenderer: BackstageImageRenderer;
+export interface PurpleBackstageAttachment {
+    backstageImageRenderer: BackstageAttachmentBackstageImageRenderer;
 }
 
-export interface BackstageImageRenderer {
+export interface BackstageAttachmentBackstageImageRenderer {
     image:          Avatar;
     trackingParams: string;
     command:        CommandClass;
@@ -853,11 +863,11 @@ export interface PurpleButtonRenderer {
     trackingParams: string;
 }
 
-export interface ContentText {
-    runs: ContentTextRun[];
+export interface PurpleContentText {
+    runs: PurpleRun[];
 }
 
-export interface ContentTextRun {
+export interface PurpleRun {
     text:                string;
     navigationEndpoint?: PurpleNavigationEndpoint;
     loggingDirectives?:  LoggingDirectives;
@@ -866,28 +876,112 @@ export interface ContentTextRun {
 export interface PurpleNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
-    urlEndpoint?:        PurpleURLEndpoint;
+    urlEndpoint?:        URLEndpoint;
     browseEndpoint?:     AuthorEndpointBrowseEndpoint;
 }
 
-export interface PurpleURLEndpoint {
+export interface URLEndpoint {
     url:      string;
     target?:  string;
     nofollow: boolean;
 }
 
 export interface BackstagePostRendererTitle {
-    runs: PurpleRun[];
+    runs: FluffyRun[];
 }
 
-export interface PurpleRun {
+export interface FluffyRun {
     text:               string;
     navigationEndpoint: CommandClass;
 }
 
+export interface SharedPostRenderer {
+    displayName:         AuthorText;
+    thumbnail:           AuthorThumbnailClass;
+    endpoint:            AuthorEndpointClass;
+    content:             ChannelHandleText;
+    publishedTimeText:   BackstagePostRendererTitle;
+    actionMenu:          ActionMenu;
+    originalPost:        OriginalPost;
+    trackingParams:      string;
+    postId:              string;
+    navigationEndpoint:  CommandClass;
+    showFullContentText: boolean;
+}
+
+export interface ActionMenu {
+    menuRenderer: ActionMenuMenuRenderer;
+}
+
+export interface ActionMenuMenuRenderer {
+    trackingParams: string;
+}
+
+export interface OriginalPost {
+    backstagePostRenderer: OriginalPostBackstagePostRenderer;
+}
+
+export interface OriginalPostBackstagePostRenderer {
+    postId:              string;
+    authorText:          AuthorText;
+    authorThumbnail:     AuthorThumbnailClass;
+    authorEndpoint:      AuthorEndpointClass;
+    contentText:         FluffyContentText;
+    backstageAttachment: FluffyBackstageAttachment;
+    expandButton:        BackstagePostRendererCollapseButton;
+    collapseButton:      BackstagePostRendererCollapseButton;
+    publishedTimeText:   BackstagePostRendererTitle;
+    voteCount:           SubscriberCountText;
+    voteStatus:          string;
+    actionButtons:       ActionButtons;
+    trackingParams:      string;
+    surface:             string;
+    loggingDirectives:   LoggingDirectives;
+}
+
+export interface FluffyBackstageAttachment {
+    postMultiImageRenderer: PostMultiImageRenderer;
+}
+
+export interface PostMultiImageRenderer {
+    images: Image[];
+}
+
+export interface Image {
+    backstageImageRenderer: ImageBackstageImageRenderer;
+}
+
+export interface ImageBackstageImageRenderer {
+    image:          Avatar;
+    trackingParams: string;
+    icon:           IconImage;
+}
+
+export interface FluffyContentText {
+    runs: TentacledRun[];
+}
+
+export interface TentacledRun {
+    text:                string;
+    navigationEndpoint?: FluffyNavigationEndpoint;
+    loggingDirectives?:  LoggingDirectives;
+}
+
+export interface FluffyNavigationEndpoint {
+    clickTrackingParams: string;
+    commandMetadata:     EndpointCommandMetadata;
+    browseEndpoint?:     FluffyBrowseEndpoint;
+    urlEndpoint?:        URLEndpoint;
+}
+
+export interface FluffyBrowseEndpoint {
+    browseId: string;
+    params:   string;
+}
+
 export interface ChannelAboutFullMetadataRenderer {
     description:                       ContentClass;
-    primaryLinks:                      ChannelAboutFullMetadataRendererPrimaryLink[];
+    primaryLinks:                      AryLink[];
     viewCountText:                     ContentClass;
     joinedDateText:                    ChannelHandleText;
     canonicalChannelUrl:               string;
@@ -925,21 +1019,21 @@ export interface OnBusinessEmailRevealClickCommand {
 export interface RevealBusinessEmailCommand {
 }
 
-export interface ChannelAboutFullMetadataRendererPrimaryLink {
-    navigationEndpoint: PrimaryLinkNavigationEndpoint;
+export interface AryLink {
+    navigationEndpoint: SecondaryLinkNavigationEndpoint;
     icon:               Icon;
     title:              ContentClass;
-    trackingParams:     string;
+    trackingParams?:    string;
 }
 
 export interface Icon {
     thumbnails: CommonConfigElement[];
 }
 
-export interface PrimaryLinkNavigationEndpoint {
+export interface SecondaryLinkNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
-    urlEndpoint:         PurpleURLEndpoint;
+    urlEndpoint:         URLEndpoint;
 }
 
 export interface SignInForBusinessEmail {
@@ -948,10 +1042,10 @@ export interface SignInForBusinessEmail {
 
 export interface SignInForBusinessEmailRun {
     text:                string;
-    navigationEndpoint?: FluffyNavigationEndpoint;
+    navigationEndpoint?: TentacledNavigationEndpoint;
 }
 
-export interface FluffyNavigationEndpoint {
+export interface TentacledNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
     signInEndpoint:      PurpleSignInEndpoint;
@@ -976,14 +1070,14 @@ export interface Description {
 
 export interface DescriptionRun {
     text:                string;
-    navigationEndpoint?: TentacledNavigationEndpoint;
+    navigationEndpoint?: StickyNavigationEndpoint;
 }
 
-export interface TentacledNavigationEndpoint {
+export interface StickyNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
     browseEndpoint?:     CommandBrowseEndpoint;
-    urlEndpoint?:        PurpleURLEndpoint;
+    urlEndpoint?:        URLEndpoint;
 }
 
 export interface ReadMoreText {
@@ -998,6 +1092,11 @@ export interface ReadMoreTextRun {
 export interface PurpleTitle {
     runs:          ReadMoreTextRun[];
     accessibility: ToggledAccessibilityDataClass;
+}
+
+export interface FluffyContinuationItemRenderer {
+    trigger:              string;
+    continuationEndpoint: ContinuationEndpoint;
 }
 
 export interface GridRenderer {
@@ -1016,7 +1115,7 @@ export interface GridChannelRenderer {
     thumbnail:           Avatar;
     videoCountText:      ChannelHandleText;
     subscriberCountText: SubscriberCountText;
-    navigationEndpoint:  Endpoint;
+    navigationEndpoint:  AuthorEndpointClass;
     title:               ContentClass;
     subscribeButton:     A11YSkipNavigationButtonClass;
     trackingParams:      string;
@@ -1031,7 +1130,7 @@ export interface A11YSkipNavigationButtonButtonRenderer {
     size:                string;
     isDisabled:          boolean;
     text:                ChannelHandleText;
-    navigationEndpoint?: StickyNavigationEndpoint;
+    navigationEndpoint?: IndigoNavigationEndpoint;
     trackingParams:      string;
     command?:            ButtonRendererCommand;
 }
@@ -1064,7 +1163,7 @@ export interface SignalAction {
     signal: string;
 }
 
-export interface StickyNavigationEndpoint {
+export interface IndigoNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     PurpleCommandMetadata;
     modalEndpoint:       PurpleModalEndpoint;
@@ -1093,18 +1192,18 @@ export interface FluffyButtonRenderer {
     size:               string;
     isDisabled:         boolean;
     text:               ContentClass;
-    navigationEndpoint: IndigoNavigationEndpoint;
+    navigationEndpoint: IndecentNavigationEndpoint;
     trackingParams:     string;
 }
 
-export interface IndigoNavigationEndpoint {
+export interface IndecentNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
     signInEndpoint:      FluffySignInEndpoint;
 }
 
 export interface FluffySignInEndpoint {
-    nextEndpoint:   Endpoint;
+    nextEndpoint:   AuthorEndpointClass;
     continueAction: string;
     idamTag:        string;
 }
@@ -1146,13 +1245,8 @@ export interface WatchEndpointLoggingContext {
 
 export interface GridPlaylistRendererThumbnailOverlay {
     thumbnailOverlaySidePanelRenderer?:  ThumbnailOverlaySidePanelRenderer;
-    thumbnailOverlayHoverTextRenderer?:  ThumbnailOverlayHoverTextRenderer;
-    thumbnailOverlayNowPlayingRenderer?: ThumbnailOverlayRenderer;
-}
-
-export interface ThumbnailOverlayHoverTextRenderer {
-    text: ChannelHandleText;
-    icon: IconImage;
+    thumbnailOverlayHoverTextRenderer?:  ThumbnailOverlayInlineUnplayableRendererClass;
+    thumbnailOverlayNowPlayingRenderer?: ThumbnailOverlayLoadingPreviewRendererClass;
 }
 
 export interface ThumbnailOverlaySidePanelRenderer {
@@ -1179,10 +1273,10 @@ export interface SnippetTextRun {
 }
 
 export interface FluffyTitle {
-    runs: FluffyRun[];
+    runs: StickyRun[];
 }
 
-export interface FluffyRun {
+export interface StickyRun {
     text:               string;
     navigationEndpoint: GridPlaylistRendererNavigationEndpoint;
 }
@@ -1213,7 +1307,7 @@ export interface SponsorButtonButtonRenderer {
     size:               string;
     isDisabled:         boolean;
     text:               ChannelHandleText;
-    navigationEndpoint: IndecentNavigationEndpoint;
+    navigationEndpoint: HilariousNavigationEndpoint;
     trackingParams:     string;
     hint:               Hint;
     accessibilityData:  ToggledAccessibilityDataClass;
@@ -1235,7 +1329,7 @@ export interface HintCap {
     impressionCap: string;
 }
 
-export interface IndecentNavigationEndpoint {
+export interface HilariousNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     PurpleCommandMetadata;
     modalEndpoint:       FluffyModalEndpoint;
@@ -1264,11 +1358,11 @@ export interface TentacledButtonRenderer {
     size:               string;
     isDisabled:         boolean;
     text:               ContentClass;
-    navigationEndpoint: HilariousNavigationEndpoint;
+    navigationEndpoint: AmbitiousNavigationEndpoint;
     trackingParams:     string;
 }
 
-export interface HilariousNavigationEndpoint {
+export interface AmbitiousNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
     signInEndpoint:      TentacledSignInEndpoint;
@@ -1278,9 +1372,9 @@ export interface TentacledSignInEndpoint {
     hack: boolean;
 }
 
-export interface ReelShelfRenderer {
+export interface PurpleReelShelfRenderer {
     title:          ChannelHandleText;
-    button:         ButtonClass;
+    button:         MenuClass;
     items:          ReelShelfRendererItem[];
     trackingParams: string;
     icon:           IconImage;
@@ -1316,7 +1410,7 @@ export interface ExpandedShelfContentsRendererItem {
 export interface ChannelRenderer {
     channelId:           string;
     title:               ContentClass;
-    navigationEndpoint:  Endpoint;
+    navigationEndpoint:  AuthorEndpointClass;
     thumbnail:           Avatar;
     descriptionSnippet:  ChannelHandleText;
     shortBylineText:     LongBylineTextClass;
@@ -1337,11 +1431,11 @@ export interface DismissButtonButtonRenderer {
     size:                string;
     isDisabled:          boolean;
     text:                ChannelHandleText;
-    navigationEndpoint?: AmbitiousNavigationEndpoint;
+    navigationEndpoint?: CunningNavigationEndpoint;
     trackingParams:      string;
 }
 
-export interface AmbitiousNavigationEndpoint {
+export interface CunningNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     PurpleCommandMetadata;
     modalEndpoint:       TentacledModalEndpoint;
@@ -1370,11 +1464,11 @@ export interface StickyButtonRenderer {
     size:               string;
     isDisabled:         boolean;
     text:               ContentClass;
-    navigationEndpoint: CunningNavigationEndpoint;
+    navigationEndpoint: MagentaNavigationEndpoint;
     trackingParams:     string;
 }
 
-export interface CunningNavigationEndpoint {
+export interface MagentaNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
     signInEndpoint:      StickySignInEndpoint;
@@ -1495,19 +1589,23 @@ export interface IndecentContent {
     continuationItemRenderer?: FluffyContinuationItemRenderer;
 }
 
-export interface FluffyContinuationItemRenderer {
-    trigger:              string;
-    continuationEndpoint: ContinuationEndpoint;
-}
-
 export interface FluffyItemSectionRenderer {
     contents:       HilariousContent[];
     trackingParams: string;
 }
 
 export interface HilariousContent {
-    videoRenderer?: ItemVideoRenderer;
-    shelfRenderer?: FluffyShelfRenderer;
+    videoRenderer?:     ItemVideoRenderer;
+    shelfRenderer?:     FluffyShelfRenderer;
+    reelShelfRenderer?: FluffyReelShelfRenderer;
+}
+
+export interface FluffyReelShelfRenderer {
+    title:          ContentClass;
+    button:         MenuClass;
+    items:          ReelShelfRendererItem[];
+    trackingParams: string;
+    icon:           IconImage;
 }
 
 export interface FluffyShelfRenderer {
@@ -1539,7 +1637,7 @@ export interface ItemVideoRenderer {
     publishedTimeText:                  ContentClass;
     lengthText:                         SubscriberCountText;
     viewCountText:                      ContentClass;
-    navigationEndpoint:                 MagentaNavigationEndpoint;
+    navigationEndpoint:                 FriskyNavigationEndpoint;
     badges?:                            PurpleBadge[];
     ownerBadges?:                       OwnerBadgeElement[];
     ownerText:                          LongBylineTextClass;
@@ -1551,9 +1649,9 @@ export interface ItemVideoRenderer {
     channelThumbnailSupportedRenderers: ChannelThumbnailSupportedRenderers;
     thumbnailOverlays:                  VideoRendererThumbnailOverlay[];
     detailedMetadataSnippets:           DetailedMetadataSnippet[];
-    inlinePlaybackEndpoint:             InlinePlaybackEndpoint;
-    expandableMetadata?:                ExpandableMetadata;
+    inlinePlaybackEndpoint?:            InlinePlaybackEndpoint;
     searchVideoResultEntityKey:         string;
+    expandableMetadata?:                ExpandableMetadata;
 }
 
 export interface PurpleBadge {
@@ -1671,7 +1769,7 @@ export interface ExpandableMetadataRendererHeader {
     expandedTitle:      ChannelHandleText;
 }
 
-export interface MagentaNavigationEndpoint {
+export interface FriskyNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
     watchEndpoint:       TentacledWatchEndpoint;
@@ -1760,7 +1858,7 @@ export interface YtInitialDataHeader {
 export interface C4TabbedHeaderRenderer {
     channelId:           string;
     title:               string;
-    navigationEndpoint:  Endpoint;
+    navigationEndpoint:  AuthorEndpointClass;
     avatar:              Avatar;
     banner:              Avatar;
     badges:              OwnerBadgeElement[];
@@ -1780,31 +1878,14 @@ export interface HeaderLinks {
 }
 
 export interface ChannelHeaderLinksRenderer {
-    primaryLinks:   ChannelHeaderLinksRendererPrimaryLink[];
-    secondaryLinks: SecondaryLink[];
+    primaryLinks:   PrimaryLink[];
+    secondaryLinks: AryLink[];
 }
 
-export interface ChannelHeaderLinksRendererPrimaryLink {
-    navigationEndpoint: PrimaryLinkNavigationEndpoint;
-    icon:               Icon;
-    title:              ContentClass;
-}
-
-export interface SecondaryLink {
+export interface PrimaryLink {
     navigationEndpoint: SecondaryLinkNavigationEndpoint;
     icon:               Icon;
     title:              ContentClass;
-}
-
-export interface SecondaryLinkNavigationEndpoint {
-    clickTrackingParams: string;
-    commandMetadata:     EndpointCommandMetadata;
-    urlEndpoint:         FluffyURLEndpoint;
-}
-
-export interface FluffyURLEndpoint {
-    url:      string;
-    nofollow: boolean;
 }
 
 export interface SubscribeButton {
@@ -1816,11 +1897,11 @@ export interface IndigoButtonRenderer {
     size:               string;
     isDisabled:         boolean;
     text:               ChannelHandleText;
-    navigationEndpoint: FriskyNavigationEndpoint;
+    navigationEndpoint: MischievousNavigationEndpoint;
     trackingParams:     string;
 }
 
-export interface FriskyNavigationEndpoint {
+export interface MischievousNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     PurpleCommandMetadata;
     modalEndpoint:       StickyModalEndpoint;
@@ -1849,11 +1930,11 @@ export interface IndecentButtonRenderer {
     size:               string;
     isDisabled:         boolean;
     text:               ContentClass;
-    navigationEndpoint: MischievousNavigationEndpoint;
+    navigationEndpoint: BraggadociousNavigationEndpoint;
     trackingParams:     string;
 }
 
-export interface MischievousNavigationEndpoint {
+export interface BraggadociousNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
     signInEndpoint:      IndigoSignInEndpoint;
@@ -1916,7 +1997,7 @@ export interface MicroformatDataRenderer {
     noindex:            boolean;
     unlisted:           boolean;
     familySafe:         boolean;
-    tags:               string[];
+    tags?:              string[];
     availableCountries: string[];
     linkAlternates:     LinkAlternate[];
 }
@@ -2062,12 +2143,12 @@ export interface TopbarButtonButtonRenderer {
     size:               string;
     text:               ChannelHandleText;
     icon:               IconImage;
-    navigationEndpoint: BraggadociousNavigationEndpoint;
+    navigationEndpoint: NavigationEndpoint1;
     trackingParams:     string;
     targetId:           string;
 }
 
-export interface BraggadociousNavigationEndpoint {
+export interface NavigationEndpoint1 {
     clickTrackingParams: string;
     commandMetadata:     EndpointCommandMetadata;
     signInEndpoint:      IndecentSignInEndpoint;
