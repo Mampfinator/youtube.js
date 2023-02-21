@@ -27,7 +27,7 @@ export class ChannelScraper {
     }
 
     public async fetchPosts(): Promise<Result<CommunityPost[], FetchError | Error>> {
-        const result = await this.factory.fromUrl<CommunityContext>(this.builder.tab(ChannelTab.Community).build());
+        const result = await this.factory.fromUrl(this.builder.tab(ChannelTab.Community).build(), CommunityContext);
         if (result.isErr()) return err(result.error);
         
         const context = result.value;

@@ -14,7 +14,7 @@ export class PostScraper {
     public async fetch(): Promise<Result<CommunityPost, Error>> {
         if (this.post) return ok(this.post);
 
-        const context = await this.factory.fromUrl<CommunityPostContext>(`https://youtube.com/post/${this.id}`);
+        const context = await this.factory.fromUrl(`https://youtube.com/post/${this.id}`, CommunityPostContext);
         if (context.isErr()) return err(context.error as Error);
 
         const post = context.value.getPost();
