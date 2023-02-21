@@ -36,6 +36,13 @@ export class ScrapingClient {
         }
     }
 
+    /**
+     * Cleans up and calls `destroy` on the orchestrator, if present.
+     */
+    public async destroy(): Promise<void> {
+        await this.orchestrator.destroy?.();
+    }
+
     public channel(options: ChannelScraperOptions): ChannelScraper {
         return new ChannelScraper(this.contextFactory, options);
     }
