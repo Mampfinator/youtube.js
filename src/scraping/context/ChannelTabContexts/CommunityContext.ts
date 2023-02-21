@@ -6,6 +6,7 @@ import { Post } from "../../types/internal/generated";
 import { Context } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
 import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
+
 /**
  * Channel context for `/community`.
  */
@@ -16,7 +17,8 @@ export class CommunityContext extends Mixin(ChannelTabContext, ElementContext<Co
         const map = new Map<string, CommunityPost>();
 
         for (const renderer of renderers.map(({backstagePostRenderer, sharedPostRenderer}) => (backstagePostRenderer ?? sharedPostRenderer)!)) {
-            map.set(renderer.postId, extractCommunityPost(renderer))
+            const post = extractCommunityPost(renderer);
+            map.set(post.id, post);
         }
 
         return map;
@@ -28,6 +30,8 @@ export class CommunityContext extends Mixin(ChannelTabContext, ElementContext<Co
             yield err([data.error]);
             return;
         }
+
+        // TODO: fix continuation request
 
         const list = data.value!.sectionListRenderer!.contents[0]!.itemSectionRenderer.contents;
 
@@ -57,13 +61,14 @@ export class CommunityContext extends Mixin(ChannelTabContext, ElementContext<Co
                     return;
                 }
 
-                const items = continuedData.value.onResponseReceivedActions!.continuationItems!;
-                yield ok({elements: this.toCommunityPosts(items.filter((item: any) => item.backstagePostRenderer ?? item.sharedPostRenderer))});
+                const items = ((continuedData.value.onResponseReceivedActions ?? (continuedData.value as any).onResponseReceivedEndpoints) as any).map(({appendContinuationItemsAction}: any) => appendContinuationItemsAction?.continuationItems).filter((i: any) => i).flat();
+                yield ok({elements: this.toCommunityPosts(items.map(({backstagePostThreadRenderer}: any) => backstagePostThreadRenderer?.post).filter((item: any) => item?.backstagePostRenderer ?? item?.sharedPostRenderer))});
 
-                token = items[items.length -1]?.continuationEndpoint?.continuationCommand?.token;
+                token = items[items.length -1]?.continuationItemRenderer?.continuationEndpoint?.continuationCommand?.token;
             }
         } catch (error) {
-            return err(error as Error);
+            yield err([error as Error]);
+            return;
         }
     }
 

@@ -1,9 +1,10 @@
 import { ok, err, Result } from "neverthrow";
 import { ChannelTabBuilder, URLBuilder } from "../shared/builders/URLBuilder"
 import { RequireOnlyOne } from "../shared/types"
-import { CommunityContext, ContextFactory } from "./context";
+import { CommunityContext, ContextFactory, ShortsContext } from "./context";
 import { ChannelTab } from "./context/ChannelTabContexts/ChannelTabContext";
 import { FetchError } from "./scraping.interfaces";
+import { ScrapedShort } from "./types";
 import { CommunityPost } from "./types/external/community-posts";
 
 export type ChannelScraperOptions = RequireOnlyOne<{
@@ -26,13 +27,24 @@ export class ChannelScraper {
         this.builder = URLBuilder.channel()[key](value);
     }
 
-    public async fetchPosts(): Promise<Result<CommunityPost[], FetchError | Error>> {
+    public async fetchPosts(): Promise<Result<CommunityPost[], FetchError | Error | Error[]>> {
         const result = await this.factory.fromUrl(this.builder.tab(ChannelTab.Community).build(), CommunityContext);
         if (result.isErr()) return err(result.error);
         
         const context = result.value;
         
-        await context.fetchAll();
+        const fetchResult = await context.fetchAll();
+        if (fetchResult.isErr()) return err(fetchResult.error);
         return ok([...context.get().values()]);
+    }
+
+    public async fetchShorts(): Promise<Result<ScrapedShort[], FetchError | Error | Error[]>> {
+        const context = await this.factory.fromUrl(this.builder.tab(ChannelTab.Shorts).build(), ShortsContext);
+        if (context.isErr()) return err(context.error);
+        
+        
+        const fetchResult = await context.value.fetchAll();
+        if (fetchResult.isErr()) return err(fetchResult.error);
+        return ok([...context.value.get().values()]);
     }
 }

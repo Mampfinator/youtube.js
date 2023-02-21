@@ -1,4 +1,4 @@
-import { FluffyContinuationItemRenderer } from "./generated";
+import { PurpleContinuationItemRenderer } from "./generated";
 
 /**
  * Describes a response from /api/youtubei/browse
@@ -14,7 +14,7 @@ export interface ResponseContext {
 
 }
 
-type ContinuationItemRenderer = FluffyContinuationItemRenderer;
+type ContinuationItemRenderer = {continuationItemRenderer: PurpleContinuationItemRenderer};
 
 
 export interface OnResponseReceivedAction {
