@@ -4,6 +4,7 @@ import { BROWSE_URL, CLIENT_API_KEY, YOUTUBE_CLIENT_VERSION } from "../scraping.
 import { IRequestOrchestrator } from "../scraping.interfaces";
 import { YtInitialData } from "../types/internal";
 import { BrowseResult } from "../types/internal/browse";
+import { ContextOptions } from "./ContextFactory";
 
 interface BrowseParameters {
     token?: string;
@@ -19,16 +20,18 @@ interface BrowseParameters {
 export abstract class ScrapingContext<TData extends {ytInitialData: YtInitialData} = {ytInitialData: YtInitialData}> {
     protected readonly data: TData;
     protected readonly body!: string;
+    protected readonly url: string;
+    protected readonly orchestrator: IRequestOrchestrator;
 
     constructor(
-        protected readonly orchestrator: IRequestOrchestrator,
-        body: string,
-        protected readonly url: string,
+        options: ContextOptions
     ) {
-        this.data = this.extract(body);
+        this.data = this.extract(options.body);
+        this.url = options.url;
+        this.orchestrator = options.orchestrator;
 
         Object.defineProperty(this, "body", {
-            value: body, 
+            value: options.body, 
             enumerable: false
         });
     }
