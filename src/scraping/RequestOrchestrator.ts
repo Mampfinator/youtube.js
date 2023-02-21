@@ -1,10 +1,10 @@
 import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
-import { err, Ok, ok, Result } from "neverthrow";
+import { Err, err, Ok, ok, Result } from "neverthrow";
 import { launch } from "puppeteer";
 import { getStoreByPage } from "puppeteer-tough-cookie-store";
 import { CookieJar, MemoryCookieStore } from "tough-cookie";
-import { sleep } from "../shared/util";
+import { isResult, sleep } from "../shared/util";
 import { COOKIE_BUTON_SELECTOR } from "./scraping.constants";
 import { FetchError, FetchErrorCode, FetchOptions, FetchReturn, FetchTransform, IRequestOrchestrator } from "./scraping.interfaces";
 import { toAxiosConfig } from "./scraping.util";
@@ -91,29 +91,6 @@ export class RequestOrchestrator implements IRequestOrchestrator {
                 jar,
             }));
 
-            // may be necessary again eventually.
-            /*instance.interceptors.request.use((value) => {
-                if (value.url && !value.headers.has("cookie")) {
-                    value.headers.set("cookie", jar.getSetCookieStringsSync(value.url))
-                }
-
-                return value;
-            });
-
-            instance.interceptors.request.use((value) => {
-                if (value.url && value.headers.has("cookie")) {
-                    let cookies = value.headers.get("cookie") as Exclude<ReturnType<AxiosHeaders["get"]>, boolean | number | AxiosHeaders>;
-                    if (!cookies) return value;
-                    if (typeof cookies == "string") cookies = cookies.split(";") as string[];
-                    
-                    for (const cookie of cookies) {
-                        jar.setCookieSync(cookie, value.url);
-                    }
-                };
-
-                return value;
-            });*/
-
             this.initialized = true;
 
             this.interval = setInterval(() => {
@@ -138,7 +115,7 @@ export class RequestOrchestrator implements IRequestOrchestrator {
             .then(async value => {
                 if (item.transform) {
                     const result = await item.transform(value);
-                    if (result.isErr()) return console.error(result.error);
+                    if (result.isErr()) return this.requeue(item, result.error);
                     return result.value;
                 }
 
@@ -147,19 +124,22 @@ export class RequestOrchestrator implements IRequestOrchestrator {
             
             item.resolve(value instanceof Ok ? value : ok(value));
         } catch (error) {
-            const meta = this.queueMeta.get(item)!;
-            ++meta.retries;
-            meta.reasons.push(error ?? new Error("unknown error"));
-
-            if (meta.retries >= meta.maxRetries) {
-                return item.reject(
-                    meta.reasons
-                );
-            }
-
-            this.queue.unshift(item);
+            this.requeue(item, error as Error);
         }
     };
+
+    private requeue(item: RequestQueueItem, error: Error) {
+        const meta = this.queueMeta.get(item)!;
+        ++meta.retries;
+
+        meta.reasons.push(error ?? new Error("unknown error"));
+
+        if (meta.retries >= meta.maxRetries) {
+            return item.reject(meta.reasons);
+        }
+
+        this.queue.unshift(item);
+    }
 
     public async fetch<TTransform extends FetchTransform | undefined = undefined>(options: FetchOptions<TTransform>): FetchReturn<TTransform> {
         if (!this.initialized) return err(new FetchError(options, FetchErrorCode.NotInitialized)) as any;
@@ -182,6 +162,9 @@ export class RequestOrchestrator implements IRequestOrchestrator {
             this.queueMeta.set(item, meta);
             this.queue.push(item);
         });
+    }
 
+    public async destroy(): Promise<void> {
+        clearInterval(this.interval); 
     }
 }
