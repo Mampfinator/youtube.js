@@ -1,6 +1,5 @@
 import { Result } from "neverthrow";
-import { mix, Mixin } from "ts-mixer";
-import { FetchError } from "../../scraping.interfaces";
+import { Mixin } from "ts-mixer";
 import { Context } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
 import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";

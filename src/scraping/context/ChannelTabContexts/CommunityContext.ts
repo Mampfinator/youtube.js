@@ -2,7 +2,7 @@ import { err, ok, Result } from "neverthrow";
 import { Mixin } from "ts-mixer";
 import { extractCommunityPost } from "../../extractors/community-posts";
 import { CommunityPost } from "../../types/external/community-posts";
-import { Post, PostBackstagePostRenderer } from "../../types/internal/generated";
+import { Post } from "../../types/internal/generated";
 import { Context } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
 import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";

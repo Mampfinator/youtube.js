@@ -2,9 +2,7 @@ export type Type<T> = { new (...args: any[]): T }
 
 
 
-/**
- * utility types taken from KPD's answer at https://stackoverflow.com/questions/40510611/typescript-interface-require-one-of-two-properties-to-exist
- */
+// Taken from https://stackoverflow.com/questions/40510611/typescript-interface-require-one-of-two-properties-to-exist#49725198
 export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> =
     Pick<T, Exclude<keyof T, Keys>> 
     & {

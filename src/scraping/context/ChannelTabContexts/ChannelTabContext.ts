@@ -1,6 +1,6 @@
 import { Result, ok, err } from "neverthrow";
 import { YtInitialData } from "../../types";
-import { ChannelRenderer, CommandClass, TabRenderer, TabRendererContent, TwoColumnBrowseResultsRenderer } from "../../types/internal/generated";
+import { CommandClass, TabRenderer, TabRendererContent, TwoColumnBrowseResultsRenderer } from "../../types/internal/generated";
 import { ScrapingContext } from "../ScrapingContext";
 /**
  * matches `youtube.com/@handle`, `youtube.com/channel/id`, `youtube.com/c/vanity_URL`
