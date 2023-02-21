@@ -58,9 +58,9 @@ export class CommunityContext extends Mixin(ChannelTabContext, ElementContext<Co
                 }
 
                 const items = continuedData.value.onResponseReceivedActions!.continuationItems!;
-                yield ok({elements: this.toCommunityPosts(items.filter(item => item.backstagePostRenderer ?? item.sharedPostRenderer))});
+                yield ok({elements: this.toCommunityPosts(items.filter((item: any) => item.backstagePostRenderer ?? item.sharedPostRenderer))});
 
-                token = items[items.length -1]?.continuationEndpoint.continuationCommand?.token;
+                token = items[items.length -1]?.continuationEndpoint?.continuationCommand?.token;
             }
         } catch (error) {
             return err(error as Error);
