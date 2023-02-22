@@ -1,5 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { FetchOptions } from "./scraping.interfaces";
+import { BrowseResult } from "./types/internal/browse";
 
 export function toAxiosConfig(input: FetchOptions<any>): AxiosRequestConfig {
     return {
@@ -38,3 +39,11 @@ export const tryParseDate = (timestamp: string) => {
 
 export const getThumbnail = (thumbnails: { url: string }[]): string =>
     sanitizeUrl(thumbnails[thumbnails.length - 1].url);
+
+/**
+ * Helper method to extract continuation items from all actions/endpoints of a browse response.
+ */
+export function getContinuationItems<T extends object = any>(result: BrowseResult): T[] {
+    const actions = [...(result.onResponseReceivedActions ?? []), ...(result.onResponseReceivedEndpoints ?? [])]
+    return actions.map(({appendContinuationItemsAction}) => appendContinuationItemsAction?.continuationItems!).filter(i => i).flat();
+}

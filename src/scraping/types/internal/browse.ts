@@ -6,7 +6,16 @@ import { PurpleContinuationItemRenderer } from "./generated";
 export interface BrowseResult {
     responseContext: ResponseContext;
     trackingParams: string;
-    onResponseReceivedActions?: OnResponseReceivedAction;
+    onResponseReceivedActions?: {
+        appendContinuationItemsAction: {
+            continuationItems: any[];
+        }
+    }[];
+    onResponseReceivedEndpoints?: {
+        appendContinuationItemsAction: {
+            continuationItems: any[];
+        }
+    }[];
 }
 
 export interface ResponseContext {}

@@ -1,6 +1,7 @@
 import { err, ok, Result } from "neverthrow";
 import { Mixin } from "ts-mixer";
 import { extractCommunityPost } from "../../extractors/community-posts";
+import { getContinuationItems } from "../../scraping.util";
 import { CommunityPost } from "../../types/external/community-posts";
 import { Post } from "../../types/internal/generated";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
@@ -67,28 +68,20 @@ export class CommunityContext extends Mixin(
 
         try {
             while (token) {
-                const continuedData = await this.browse({
+                const continuation = await this.browse({
                     token,
                     clickTrackingParams: trackingParams,
                     visitorData,
                 });
 
-                if (continuedData.isErr()) {
-                    yield err([continuedData.error]);
+                if (continuation.isErr()) {
+                    yield err([continuation.error]);
                     return;
                 }
 
-                const items = (
-                    (continuedData.value.onResponseReceivedActions ??
-                        (continuedData.value as any)
-                            .onResponseReceivedEndpoints) as any
-                )
-                    .map(
-                        ({ appendContinuationItemsAction }: any) =>
-                            appendContinuationItemsAction?.continuationItems,
-                    )
-                    .filter((i: any) => i)
-                    .flat();
+                const items = getContinuationItems(continuation.value)
+
+
                 yield ok({
                     elements: this.toCommunityPosts(
                         items

@@ -1,6 +1,7 @@
 import { err, ok, Result } from "neverthrow";
 import { Mixin } from "ts-mixer";
 import { extractShort } from "../../extractors/videos";
+import { getContinuationItems } from "../../scraping.util";
 import { ScrapedShort } from "../../types";
 import {
     ItemReelItemRenderer,
@@ -82,25 +83,16 @@ export class ShortsContext extends Mixin(
                     return;
                 }
 
-                const items = (
-                    continuation.value.onResponseReceivedActions as any
-                )
-                    .map(
-                        ({ appendContinuationItemsAction }: any) =>
-                            appendContinuationItemsAction?.continuationItems,
-                    )
-                    .filter((i: any) => i)
-                    .flat();
+                const items = getContinuationItems(continuation.value);
 
                 yield ok({
                     elements: this.toShorts(
                         items
-                            .map(
-                                (item: any) =>
+                            .map(item =>
                                     item.richItemRenderer?.content
                                         .reelItemRenderer,
                             )
-                            .filter((i: any) => i),
+                            .filter(i => i),
                     ),
                 });
                 token =
