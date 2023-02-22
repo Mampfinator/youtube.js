@@ -1,17 +1,17 @@
 import { ok, err, Result } from "neverthrow";
 import { ChannelTabBuilder, URLBuilder } from "../shared/builders/URLBuilder";
-import { RequireOnlyOne } from "../shared/types";
-import { CommunityContext, ContextFactory, ShortsContext } from "./context";
+import { RequireOnlyOne, Type } from "../shared/types";
+import { CommunityContext, ContextFactory, ElementContext, ShortsContext } from "./context";
 import { ChannelTab } from "./context/ChannelTabContexts/ChannelTabContext";
 import { FetchError } from "./scraping.interfaces";
-import { ScrapedShort } from "./types";
-import { CommunityPost } from "./types/external/community-posts";
 
 export type ChannelScraperOptions = RequireOnlyOne<{
     tag: string;
     id: string;
     vanityUrl: string;
 }>;
+
+type MapValueType<TMap extends Map<unknown, unknown>> = TMap extends Map<any, infer Value> ? Value : any;
 
 // TODO cache contexts and switch internally.
 export class ChannelScraper {
@@ -34,33 +34,21 @@ export class ChannelScraper {
         this.builder = URLBuilder.channel()[key](value);
     }
 
-    public async fetchPosts(): Promise<
-        Result<CommunityPost[], FetchError | Error | Error[]>
-    > {
-        const result = await this.factory.fromUrl(
-            this.builder.tab(ChannelTab.Community).build(),
-            CommunityContext,
-        );
-        if (result.isErr()) return err(result.error);
-
-        const context = result.value;
-
-        const fetchResult = await context.fetchAll();
-        if (fetchResult.isErr()) return err(fetchResult.error);
-        return ok([...context.get().values()]);
-    }
-
-    public async fetchShorts(): Promise<
-        Result<ScrapedShort[], FetchError | Error | Error[]>
-    > {
-        const context = await this.factory.fromUrl(
-            this.builder.tab(ChannelTab.Shorts).build(),
-            ShortsContext,
-        );
+    private async fetchElements<T extends ElementContext<any>>(tab: ChannelTab, useContext: Type<T>): Promise<Result<MapValueType<ReturnType<T["get"]>>[], FetchError | Error | Error[]>> {
+        const context = await this.factory.fromUrl(this.builder.tab(tab).build(), useContext);
         if (context.isErr()) return err(context.error);
 
         const fetchResult = await context.value.fetchAll();
         if (fetchResult.isErr()) return err(fetchResult.error);
+
         return ok([...context.value.get().values()]);
+    }
+
+    public async fetchPosts() {
+        return this.fetchElements(ChannelTab.Community, CommunityContext);
+    }
+
+    public async fetchShorts() {
+        return this.fetchElements(ChannelTab.Shorts, ShortsContext);
     }
 }
