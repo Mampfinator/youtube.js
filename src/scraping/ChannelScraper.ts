@@ -1,7 +1,7 @@
 import { ok, err, Result } from "neverthrow";
 import { ChannelTabBuilder, URLBuilder } from "../shared/builders/URLBuilder";
 import { RequireOnlyOne, Type } from "../shared/types";
-import { CommunityContext, ContextFactory, ElementContext, ShortsContext } from "./context";
+import { CommunityContext, ContextFactory, ElementContext, ShortsContext, StreamsContext, VideosContext } from "./context";
 import { ChannelTab } from "./context/ChannelTabContexts/ChannelTabContext";
 import { FetchError } from "./scraping.interfaces";
 
@@ -50,5 +50,14 @@ export class ChannelScraper {
 
     public async fetchShorts() {
         return this.fetchElements(ChannelTab.Shorts, ShortsContext);
+    }
+
+
+    public async fetchStreams() {
+        return this.fetchElements(ChannelTab.Streams, StreamsContext);
+    }
+
+    public async fetchVideos() {
+        return this.fetchElements(ChannelTab.Videos, VideosContext);
     }
 }

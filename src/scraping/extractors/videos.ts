@@ -9,19 +9,20 @@ import {
 import {
     GridVideoRenderer,
     ItemReelItemRenderer,
+    PurpleVideoRenderer,
 } from "../types/internal/generated";
 
-export function extractVideo(renderer: GridVideoRenderer): ScrapedVideo {
+export function extractVideo(renderer: GridVideoRenderer & PurpleVideoRenderer): ScrapedVideo {
     const {
         videoId: id,
         thumbnail: { thumbnails },
-        title: { simpleText: title },
+        title: { simpleText: title, runs: titleRuns },
     } = renderer;
 
     return {
         type: VideoType.Video,
         id,
-        title,
+        title: title ?? titleRuns.map(({text}) => text).join(""),
         thumbnail: sanitizeUrl(thumbnails[thumbnails.length - 1].url),
     };
 }
@@ -48,10 +49,10 @@ const STATUS_LOOKUP = {
     LIVE: StreamStatus.Live,
 };
 
-export function extractStream(renderer: GridVideoRenderer): ScrapedStream {
+export function extractStream(renderer: GridVideoRenderer & PurpleVideoRenderer): ScrapedStream {
     const {
         videoId: id,
-        title: { simpleText: title },
+        title: { simpleText: title, runs: titleRuns },
         thumbnail: { thumbnails },
         thumbnailOverlays,
     } = renderer;
@@ -71,7 +72,7 @@ export function extractStream(renderer: GridVideoRenderer): ScrapedStream {
     return {
         type: VideoType.Stream,
         id,
-        title,
+        title: title ?? titleRuns.map(({text}) => text).join(""),
         thumbnail: sanitizeUrl(thumbnails[thumbnails.length - 1].url),
         status,
     };
