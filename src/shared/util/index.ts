@@ -11,7 +11,7 @@ export function isResult(arg: any): arg is Result<any, any> {
 /**
  * @param value value to check. If result, is unpacked first (and returns false is it has errors).
  * @param compareTo value to compare to. Defaults to `true`.
- * @returns 
+ * @returns
  */
 export function isValueOk(value: any, compareTo: any = true): boolean {
     if (isResult(value)) {

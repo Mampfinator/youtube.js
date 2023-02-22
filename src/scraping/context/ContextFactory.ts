@@ -15,42 +15,61 @@ export interface ContextOptions {
 
 export class ContextFactory {
     private readonly matchers: ContextData[];
-    
-    constructor(
-        private readonly orchestrator: IRequestOrchestrator
-    ) {
-        this.matchers = getContexts().sort(({weight: weightA}, {weight: weightB}) => weightB - weightA);
+
+    constructor(private readonly orchestrator: IRequestOrchestrator) {
+        this.matchers = getContexts().sort(
+            ({ weight: weightA }, { weight: weightB }) => weightB - weightA,
+        );
     }
 
     /**
-     * 
+     *
      * @param url URL to fetch from. If `useContext` is not provided, attempts to automatically find a matcher.
      * @param useContext Use this context regardless of which other contexts may match the provided URL.
      */
-    public async fromUrl<T extends object>(url: string, useContext?: Type<T>): Promise<Result<T, FetchError | Error>> {
-        try { new URL(url) } catch (error) { return err(error as TypeError); }
+    public async fromUrl<T extends object>(
+        url: string,
+        useContext?: Type<T>,
+    ): Promise<Result<T, FetchError | Error>> {
+        try {
+            new URL(url);
+        } catch (error) {
+            return err(error as TypeError);
+        }
 
         let data: Result<any, any> | undefined;
-        let options: Partial<ContextOptions> = {orchestrator: this.orchestrator, url: url};
+        let options: Partial<ContextOptions> = {
+            orchestrator: this.orchestrator,
+            url: url,
+        };
 
         if (useContext) {
-            const result = await this.orchestrator.fetch({url, method: "GET"});
+            const result = await this.orchestrator.fetch({
+                url,
+                method: "GET",
+            });
             if (result.isErr()) return err(result.error);
-            const context = this.getContext(useContext, {...options, body: result.value} as ContextOptions);
+            const context = this.getContext(useContext, {
+                ...options,
+                body: result.value,
+            } as ContextOptions);
             return context as any;
         }
 
-        for (const {matcher, constructor} of this.matchers) {
+        for (const { matcher, constructor } of this.matchers) {
             if (!isValueOk(matcher(url))) continue;
 
             if (!data) {
                 // we only fetch once we know we have at least one Context that can do anything with this URL.
-                data = await this.orchestrator.fetch({url, method: "GET"});
+                data = await this.orchestrator.fetch({ url, method: "GET" });
                 if (data.isErr()) return err(data.error);
                 options.body = data.value;
             }
 
-            const result = this.getContext(constructor, options as Required<typeof options>);
+            const result = this.getContext(
+                constructor,
+                options as Required<typeof options>,
+            );
             if (result.isErr()) return err(result.error);
 
             if (!result.value) continue;
@@ -60,14 +79,23 @@ export class ContextFactory {
         return err(new Error(`No matching context found for ${url}.`));
     }
 
-    private getContext<T extends Type<unknown>>(constructor: T, options: ContextOptions): Result<InstanceType<T> | undefined, Error>  {
+    private getContext<T extends Type<unknown>>(
+        constructor: T,
+        options: ContextOptions,
+    ): Result<InstanceType<T> | undefined, Error> {
         if ("from" in constructor && typeof constructor.from === "function") {
             const result = constructor.from(options);
 
-            if (!isResult(result)) return err(new TypeError(`Expected ${constructor.name}.from to return Result, got ${typeof result}.`));
+            if (!isResult(result))
+                return err(
+                    new TypeError(
+                        `Expected ${
+                            constructor.name
+                        }.from to return Result, got ${typeof result}.`,
+                    ),
+                );
             if (result.isErr()) return ok(undefined);
             return ok(result.value as InstanceType<T>);
-
         } else {
             try {
                 const context = new constructor(options);

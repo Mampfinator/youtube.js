@@ -9,15 +9,15 @@ export interface BrowseResult {
     onResponseReceivedActions?: OnResponseReceivedAction;
 }
 
+export interface ResponseContext {}
 
-export interface ResponseContext {
-
-}
-
-type ContinuationItemRenderer = {continuationItemRenderer: PurpleContinuationItemRenderer};
-
+type ContinuationItemRenderer = {
+    continuationItemRenderer: PurpleContinuationItemRenderer;
+};
 
 export interface OnResponseReceivedAction {
     targetId: string;
-    continuationItems?: Record<string, any>[] | [...Record<string,any>[], ContinuationItemRenderer];
+    continuationItems?:
+        | Record<string, any>[]
+        | [...Record<string, any>[], ContinuationItemRenderer];
 }

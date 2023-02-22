@@ -5,7 +5,7 @@ type URLOptions = {
     host: string;
     path: string[];
     query: Record<string, string>;
-}
+};
 
 function fromUrlOptions(options: URLOptions): Result<string, Error> {
     const { path, query } = options;
@@ -26,7 +26,7 @@ function fromUrlOptions(options: URLOptions): Result<string, Error> {
             for ([key, value] of entries) {
                 url += `&${key}=${value}`;
             }
-        } 
+        }
     }
 
     return ok(url);
@@ -35,14 +35,22 @@ function fromUrlOptions(options: URLOptions): Result<string, Error> {
 export const URLBuilder = {
     channel(): ChannelBaseBuilder {
         return new ChannelURLBuilder();
-    }
-}
-
+    },
+};
 
 // ---- CHANNEL BUILDERS ---- //
-export type ChannelBaseBuilder = Pick<ChannelURLBuilder, "tag" | "id" | "vanityUrl">;
-export type ChannelTabBuilder = Pick<ChannelURLBuilder, "tab" | "build" | "buildSafe">;
-export type ChannelBuilderFinished = Pick<ChannelURLBuilder, "build" | "buildSafe">;
+export type ChannelBaseBuilder = Pick<
+    ChannelURLBuilder,
+    "tag" | "id" | "vanityUrl"
+>;
+export type ChannelTabBuilder = Pick<
+    ChannelURLBuilder,
+    "tab" | "build" | "buildSafe"
+>;
+export type ChannelBuilderFinished = Pick<
+    ChannelURLBuilder,
+    "build" | "buildSafe"
+>;
 export class ChannelURLBuilder {
     private readonly _options: URLOptions;
     private get options(): URLOptions {
@@ -53,15 +61,15 @@ export class ChannelURLBuilder {
         options: URLOptions = {
             host: "https://youtube.com/",
             path: [],
-            query: {}
-        }
+            query: {},
+        },
     ) {
         this._options = options;
     }
 
     public tag(tag: string): ChannelTabBuilder {
         if (!tag.startsWith("@")) tag = `@${tag}`;
-        
+
         const options = this.options;
         options.path.push(tag);
         return new ChannelURLBuilder(options);
@@ -78,7 +86,7 @@ export class ChannelURLBuilder {
         options.path.push("c", vanityUrl);
         return new ChannelURLBuilder(options);
     }
-    
+
     public buildSafe(): Result<string, Error> {
         return fromUrlOptions(this.options);
     }

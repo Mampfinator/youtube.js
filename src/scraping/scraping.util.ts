@@ -1,7 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { FetchOptions } from "./scraping.interfaces";
 
-
 export function toAxiosConfig(input: FetchOptions<any>): AxiosRequestConfig {
     return {
         url: input.url,
@@ -16,13 +15,15 @@ export function toAxiosConfig(input: FetchOptions<any>): AxiosRequestConfig {
  * Sanitizes non-standard (YouTube) URL parameters.
  */
 export const sanitizeUrl = (url: string, offset = 0): string => {
-    return url.split("=").slice(0, offset+1).join("");
-}
-
+    return url
+        .split("=")
+        .slice(0, offset + 1)
+        .join("");
+};
 
 type Run = {
     text: string;
-}
+};
 /**
  * Merges {@linkcode Run} Arrays into a single text string.
  */
@@ -33,6 +34,7 @@ export const tryParseDate = (timestamp: string) => {
     const date = new Date(timestamp);
     if (!isValidDate(date)) return undefined;
     return date;
-}
+};
 
-export const getThumbnail = (thumbnails: {url: string}[]): string => sanitizeUrl((thumbnails[thumbnails.length-1]).url);
+export const getThumbnail = (thumbnails: { url: string }[]): string =>
+    sanitizeUrl(thumbnails[thumbnails.length - 1].url);

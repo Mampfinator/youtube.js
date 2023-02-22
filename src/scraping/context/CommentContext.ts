@@ -1,6 +1,6 @@
 import { ElementContext } from "./ElementContext";
 
-type Comment = {}
+type Comment = {};
 
 /**
  * Base class for all comment-related contexts.

@@ -16,7 +16,7 @@ export interface ContentDetails {
     /**
      * The length of the video. The property value is an [ISO 8601 duration](https://en.wikipedia.org/wiki/ISO_8601#Durations).
      */
-    duration: string; 
+    duration: string;
     dimension: "2D" | "3D";
     definition: "hd" | "sd";
     caption: "true" | "false"; // yes, that's per spec on the API. No, I don't understand why.
@@ -24,7 +24,7 @@ export interface ContentDetails {
     regionRestriction: {
         allowed: string[];
         blocked: string[];
-    }
+    };
 
     contentRating: Record<string, string | string[]>; // TODO: type properly. This is a pain.
     projection: "360" | "rectangular";
@@ -79,8 +79,8 @@ export interface Snippet {
         medium: Thumbnail<320, 180>;
         high: Thumbnail<480, 360>;
         standard?: Thumbnail<640, 480>;
-        maxres?: Thumbnail<1280, 720>; 
-    }
+        maxres?: Thumbnail<1280, 720>;
+    };
 
     /**
      * Channel title (name) for the channel that the video belongs to.
@@ -115,7 +115,7 @@ export interface Snippet {
     localized: {
         title: string;
         description: string;
-    }
+    };
 
     defaultAudioLanguage: string;
 }
@@ -123,7 +123,7 @@ export interface Snippet {
 export enum LiveBroadcastContent {
     Live = "live",
     None = "none",
-    Upcoming = "upcoming"
+    Upcoming = "upcoming",
 }
 
 export interface Statistics {
@@ -151,13 +151,12 @@ export interface BaseStatus {
 
 export interface MadeForKidsStatus extends BaseStatus {
     madeForKids: true;
-    selfDeclaredMadeForKids: boolean; // only present if madeForKids is true. 
+    selfDeclaredMadeForKids: boolean; // only present if madeForKids is true.
 }
 
 export interface NotMadeForKidsStatus extends BaseStatus {
     madeForKids: false;
 }
-
 
 export enum UploadStatus {
     Deleted = "deleted",

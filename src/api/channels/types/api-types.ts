@@ -20,7 +20,6 @@ export interface ChannelResourceParts {
     localizations: Localizations;
 }
 
-
 export interface Snippet {
     title: string;
     description: string;
@@ -30,12 +29,12 @@ export interface Snippet {
         default: Thumbnail<88, 88>;
         medium: Thumbnail<240, 240>;
         high: Thumbnail<800, 800>;
-    }
+    };
     defaultLanguage: string;
     localized: {
         title: string;
         description: string;
-    }
+    };
     country: string;
 }
 
@@ -44,7 +43,7 @@ export interface ContentDetails {
         likes: string;
         favorites: string;
         uploads: string;
-    }    
+    };
 }
 
 export interface Statistics {
@@ -80,13 +79,13 @@ export interface BrandingSettings {
         unsubscribedTrailer: string;
         defaultLanguage: string;
         country: string;
-    }
+    };
 
     watch: {
         textColor: string;
         backgroundColor: string;
         featuredPlaylistId: string;
-    }
+    };
 }
 
 export interface AuditDetails {
@@ -100,7 +99,6 @@ export interface ContentOwnerDetails {
     contentOwner: string;
     timeLinked: string;
 }
-
 
 export type Localizations = Record<string, Localization>;
 

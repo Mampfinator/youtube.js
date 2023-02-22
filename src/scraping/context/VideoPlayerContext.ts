@@ -5,9 +5,11 @@ import { Context } from "./decorators/Context";
 import { ScrapingContext } from "./ScrapingContext";
 
 @Context(/youtube\.com\/watch\?|youtu\.be\//)
-export class VideoPlayerContext extends ScrapingContext<{ytInitialData: YtInitialData, ytInitialPlayerResponse: YtInitialPlayerResponse}> {
+export class VideoPlayerContext extends ScrapingContext<{
+    ytInitialData: YtInitialData;
+    ytInitialPlayerResponse: YtInitialPlayerResponse;
+}> {
     protected extract(body: string) {
-
         const result = Result.combine([
             DataExtractors.ytInitialData(body),
             DataExtractors.ytInitialPlayerResponse(body),
@@ -16,6 +18,6 @@ export class VideoPlayerContext extends ScrapingContext<{ytInitialData: YtInitia
         if (result.isErr()) throw result.error;
 
         const [ytInitialData, ytInitialPlayerResponse] = result.value;
-        return {ytInitialData, ytInitialPlayerResponse};
+        return { ytInitialData, ytInitialPlayerResponse };
     }
 }

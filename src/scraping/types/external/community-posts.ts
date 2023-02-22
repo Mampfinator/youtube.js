@@ -8,20 +8,19 @@ export enum AttachmentType {
 }
 
 export interface PollChoice {
-    text: string; 
+    text: string;
     imageUrl?: string;
 }
 
-
 interface BaseCommunityPost {
     id: string;
-    content?: {text: string, url?: string}[];
+    content?: { text: string; url?: string }[];
     attachmentType: AttachmentType;
 }
 
 export interface TextOnlyCommunityPost extends BaseCommunityPost {
     attachmentType: AttachmentType.None;
-    content: {text: string, url?: string}[];
+    content: { text: string; url?: string }[];
 }
 
 export interface ImageCommunityPost extends BaseCommunityPost {
@@ -42,7 +41,7 @@ export interface VideoCommunityPost extends BaseCommunityPost {
         descriptionSnippet?: string;
         thumbnail: string;
         membersOnly: boolean;
-    }
+    };
 }
 
 export interface PlaylistCommunityPost extends BaseCommunityPost {
@@ -54,9 +53,8 @@ export interface PlaylistCommunityPost extends BaseCommunityPost {
         id?: string;
         title: string;
         thumbail: string;
-    }
+    };
 }
-
 
 export interface SharedPostCommunityPost extends BaseCommunityPost {
     attachmentType: AttachmentType.SharedPost;
@@ -66,4 +64,10 @@ export interface SharedPostCommunityPost extends BaseCommunityPost {
 /**
  * Represents a community post. Type can be narrowed by checking the post's {@linkcode AttachmentType}.
  */
-export type CommunityPost = SharedPostCommunityPost | ImageCommunityPost | PollCommunityPost | VideoCommunityPost | PlaylistCommunityPost | TextOnlyCommunityPost;
+export type CommunityPost =
+    | SharedPostCommunityPost
+    | ImageCommunityPost
+    | PollCommunityPost
+    | VideoCommunityPost
+    | PlaylistCommunityPost
+    | TextOnlyCommunityPost;

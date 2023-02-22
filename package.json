@@ -6,6 +6,8 @@
   "scripts": {
     "test": "npx mocha",
     "build": "npx tsc",
+    "format:check": "npx prettier --check \"src/**/*.ts\" \"type-generation/**/*.ts\"",
+    "format:write": "npx prettier --write \"src/**/*.ts\"",
     "generate": "node -r ts-node/register type-generation/generator/cli.ts --all"
   },
   "keywords": [
@@ -35,6 +37,7 @@
     "chai": "^4.3.7",
     "commander": "^10.0.0",
     "mocha": "^10.2.0",
+    "prettier": "^2.8.4",
     "quicktype": "^23.0.1",
     "quicktype-core": "^23.0.1",
     "sinon": "^15.0.1",

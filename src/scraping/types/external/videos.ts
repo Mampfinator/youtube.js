@@ -1,13 +1,13 @@
 export enum VideoType {
     Video = "Video",
     Short = "Short",
-    Stream = "Stream"
+    Stream = "Stream",
 }
 
 export enum StreamStatus {
     Offline = "Offline",
     Live = "Live",
-    Upcoming = "Upcoming"
+    Upcoming = "Upcoming",
 }
 
 export interface BaseVideo {
@@ -28,8 +28,6 @@ export interface ScrapedStream extends BaseVideo {
 export interface ScrapedShort extends BaseVideo {
     type: VideoType.Short;
 }
-
-
 
 /**
  * Represents a video from a channel overview. Can be narrowed by checking its {@linkcode VideoType type}.

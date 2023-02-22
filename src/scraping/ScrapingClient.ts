@@ -1,7 +1,6 @@
 import { RequestOrchestrator } from "./RequestOrchestrator";
 import { IRequestOrchestrator } from "./scraping.interfaces";
-import { ContextFactory, ScrapingContext } from "./context";
-import { Dispatcher } from "undici";
+import { ContextFactory } from "./context";
 import { ChannelScraper, ChannelScraperOptions } from "./ChannelScraper";
 import { PostScraper } from "./PostScraper";
 import { Type } from "../shared/types";
@@ -14,19 +13,20 @@ export interface ScrapingClientOptions {
     useOrchestrator?: IRequestOrchestrator;
 }
 
-
 export class ScrapingClient {
     public readonly orchestrator: IRequestOrchestrator;
     public readonly contextFactory: ContextFactory;
 
-    constructor(
-        options?: ScrapingClientOptions
-    ) {
-        this.orchestrator = options?.useOrchestrator ?? new RequestOrchestrator();
+    constructor(options?: ScrapingClientOptions) {
+        this.orchestrator =
+            options?.useOrchestrator ?? new RequestOrchestrator();
         this.contextFactory = new ContextFactory(this.orchestrator);
     }
 
-    public async contextFromUrl<T extends object>(url: string, useContext?: Type<T>) {
+    public async contextFromUrl<T extends object>(
+        url: string,
+        useContext?: Type<T>,
+    ) {
         return this.contextFactory.fromUrl<T>(url, useContext);
     }
 
