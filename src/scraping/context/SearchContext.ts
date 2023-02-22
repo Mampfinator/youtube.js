@@ -1,7 +1,5 @@
 import { Result } from "neverthrow";
-import { FetchError } from "../scraping.interfaces";
 import { ElementContext } from "./ElementContext";
-import { ScrapingContext } from "./ScrapingContext";
 
 type SearchResult = {};
 

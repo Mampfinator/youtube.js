@@ -6,14 +6,14 @@ import {
     ItemReelItemRenderer,
     PurpleContinuationItemRenderer,
 } from "../../types/internal/generated";
-import { Context } from "../decorators/Context";
+import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
 import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 
 /**
  * Channel context for `/shorts`.
  */
-@Context(getChannelTabRegex("shorts"), 10)
+@Context(getChannelTabRegex("shorts"), DEFAULT_WEIGHT+1)
 export class ShortsContext extends Mixin(
     ChannelTabContext,
     ElementContext<ScrapedShort>,

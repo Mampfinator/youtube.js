@@ -5,7 +5,7 @@ export const CONTEXT_META_KEY = Symbol("Match");
 export const CONTEXT_META_WEIGHT_KEY = Symbol("Weight");
 
 const registered = new Set<Type<unknown>>();
-const DEFAULT_WEIGHT = 0;
+export const DEFAULT_WEIGHT = 0;
 
 export type ContextData = {
     matcher: Matcher;

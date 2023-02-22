@@ -1,13 +1,13 @@
 import { Result } from "neverthrow";
 import { Mixin } from "ts-mixer";
-import { Context } from "../decorators/Context";
+import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
 import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 
 /**
  * Channel context for `/search`.
  */
-@Context(getChannelTabRegex("search"), 10)
+@Context(getChannelTabRegex("search"), DEFAULT_WEIGHT+1)
 export class ChannelSearchContext extends Mixin(
     ChannelTabContext,
     ElementContext<any>,

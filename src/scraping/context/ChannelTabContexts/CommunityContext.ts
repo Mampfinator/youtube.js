@@ -3,14 +3,14 @@ import { Mixin } from "ts-mixer";
 import { extractCommunityPost } from "../../extractors/community-posts";
 import { CommunityPost } from "../../types/external/community-posts";
 import { Post } from "../../types/internal/generated";
-import { Context } from "../decorators/Context";
+import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
 import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 
 /**
  * Channel context for `/community`.
  */
-@Context(getChannelTabRegex("community"), 10)
+@Context(getChannelTabRegex("community"), DEFAULT_WEIGHT+1)
 export class CommunityContext extends Mixin(
     ChannelTabContext,
     ElementContext<CommunityPost>,
