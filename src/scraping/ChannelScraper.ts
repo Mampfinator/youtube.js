@@ -1,7 +1,14 @@
 import { ok, err, Result } from "neverthrow";
 import { ChannelTabBuilder, URLBuilder } from "../shared/builders/URLBuilder";
 import { RequireOnlyOne, Type } from "../shared/types";
-import { CommunityContext, ContextFactory, ElementContext, ShortsContext, StreamsContext, VideosContext } from "./context";
+import {
+    CommunityContext,
+    ContextFactory,
+    ElementContext,
+    ShortsContext,
+    StreamsContext,
+    VideosContext,
+} from "./context";
 import { ChannelTab } from "./context/ChannelTabContexts/ChannelTabContext";
 import { FetchError } from "./scraping.interfaces";
 
@@ -11,7 +18,12 @@ export type ChannelScraperOptions = RequireOnlyOne<{
     vanityUrl: string;
 }>;
 
-type MapValueType<TMap extends Map<unknown, unknown>> = TMap extends Map<any, infer Value> ? Value : any;
+type MapValueType<TMap extends Map<unknown, unknown>> = TMap extends Map<
+    any,
+    infer Value
+>
+    ? Value
+    : any;
 
 // TODO cache contexts and switch internally.
 export class ChannelScraper {
@@ -34,8 +46,19 @@ export class ChannelScraper {
         this.builder = URLBuilder.channel()[key](value);
     }
 
-    private async fetchElements<T extends ElementContext<any>>(tab: ChannelTab, useContext: Type<T>): Promise<Result<MapValueType<ReturnType<T["get"]>>[], FetchError | Error | Error[]>> {
-        const context = await this.factory.fromUrl(this.builder.tab(tab).build(), useContext);
+    private async fetchElements<T extends ElementContext<any>>(
+        tab: ChannelTab,
+        useContext: Type<T>,
+    ): Promise<
+        Result<
+            MapValueType<ReturnType<T["get"]>>[],
+            FetchError | Error | Error[]
+        >
+    > {
+        const context = await this.factory.fromUrl(
+            this.builder.tab(tab).build(),
+            useContext,
+        );
         if (context.isErr()) return err(context.error);
 
         const fetchResult = await context.value.fetchAll();
@@ -51,7 +74,6 @@ export class ChannelScraper {
     public async fetchShorts() {
         return this.fetchElements(ChannelTab.Shorts, ShortsContext);
     }
-
 
     public async fetchStreams() {
         return this.fetchElements(ChannelTab.Streams, StreamsContext);

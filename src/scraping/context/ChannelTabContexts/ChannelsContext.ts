@@ -9,7 +9,7 @@ type Channel = {};
 /**
  * Channel context for `/channels`.
  */
-@Context(getChannelTabRegex("channels"), DEFAULT_WEIGHT+1)
+@Context(getChannelTabRegex("channels"), DEFAULT_WEIGHT + 1)
 export class ChannelsContext extends Mixin(
     ChannelTabContext,
     ElementContext<Channel>,

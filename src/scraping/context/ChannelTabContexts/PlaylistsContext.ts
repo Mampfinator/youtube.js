@@ -8,7 +8,7 @@ type Playlist = {};
 /**
  * channel context for `/playlists`.
  */
-@Context(getChannelTabRegex("playlists"), DEFAULT_WEIGHT+1)
+@Context(getChannelTabRegex("playlists"), DEFAULT_WEIGHT + 1)
 export class PlaylistsContext extends Mixin(
     ChannelTabContext,
     ElementContext<Playlist>,

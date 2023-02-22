@@ -11,7 +11,7 @@ import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 /**
  * Channel context for `/community`.
  */
-@Context(getChannelTabRegex("community"), DEFAULT_WEIGHT+1)
+@Context(getChannelTabRegex("community"), DEFAULT_WEIGHT + 1)
 export class CommunityContext extends Mixin(
     ChannelTabContext,
     ElementContext<CommunityPost>,
@@ -79,8 +79,7 @@ export class CommunityContext extends Mixin(
                     return;
                 }
 
-                const items = getContinuationItems(continuation.value)
-
+                const items = getContinuationItems(continuation.value);
 
                 yield ok({
                     elements: this.toCommunityPosts(

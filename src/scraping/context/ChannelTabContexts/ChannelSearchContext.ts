@@ -7,7 +7,7 @@ import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 /**
  * Channel context for `/search`.
  */
-@Context(getChannelTabRegex("search"), DEFAULT_WEIGHT+1)
+@Context(getChannelTabRegex("search"), DEFAULT_WEIGHT + 1)
 export class ChannelSearchContext extends Mixin(
     ChannelTabContext,
     ElementContext<any>,

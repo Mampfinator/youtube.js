@@ -14,7 +14,7 @@ import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 /**
  * Channel context for `/shorts`.
  */
-@Context(getChannelTabRegex("shorts"), DEFAULT_WEIGHT+1)
+@Context(getChannelTabRegex("shorts"), DEFAULT_WEIGHT + 1)
 export class ShortsContext extends Mixin(
     ChannelTabContext,
     ElementContext<ScrapedShort>,
@@ -88,7 +88,8 @@ export class ShortsContext extends Mixin(
                 yield ok({
                     elements: this.toShorts(
                         items
-                            .map(item =>
+                            .map(
+                                item =>
                                     item.richItemRenderer?.content
                                         .reelItemRenderer,
                             )

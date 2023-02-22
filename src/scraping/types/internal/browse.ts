@@ -9,12 +9,12 @@ export interface BrowseResult {
     onResponseReceivedActions?: {
         appendContinuationItemsAction: {
             continuationItems: any[];
-        }
+        };
     }[];
     onResponseReceivedEndpoints?: {
         appendContinuationItemsAction: {
             continuationItems: any[];
-        }
+        };
     }[];
 }
 

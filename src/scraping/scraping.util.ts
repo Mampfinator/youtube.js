@@ -43,7 +43,18 @@ export const getThumbnail = (thumbnails: { url: string }[]): string =>
 /**
  * Helper method to extract continuation items from all actions/endpoints of a browse response.
  */
-export function getContinuationItems<T extends object = any>(result: BrowseResult): T[] {
-    const actions = [...(result.onResponseReceivedActions ?? []), ...(result.onResponseReceivedEndpoints ?? [])]
-    return actions.map(({appendContinuationItemsAction}) => appendContinuationItemsAction?.continuationItems!).filter(i => i).flat();
+export function getContinuationItems<T extends object = any>(
+    result: BrowseResult,
+): T[] {
+    const actions = [
+        ...(result.onResponseReceivedActions ?? []),
+        ...(result.onResponseReceivedEndpoints ?? []),
+    ];
+    return actions
+        .map(
+            ({ appendContinuationItemsAction }) =>
+                appendContinuationItemsAction?.continuationItems!,
+        )
+        .filter(i => i)
+        .flat();
 }
