@@ -1,5 +1,7 @@
 import { Result, ok, err } from "neverthrow";
+import { extractChannelData } from "../../extractors/channel-data";
 import { YtInitialData } from "../../types";
+import { ChannelData } from "../../types/external/channel";
 import {
     CommandClass,
     TabRenderer,
@@ -7,6 +9,7 @@ import {
     TwoColumnBrowseResultsRenderer,
 } from "../../types/internal/generated";
 import { ScrapingContext } from "../ScrapingContext";
+
 /**
  * matches
  * - `youtube.com/@handle`,
@@ -76,6 +79,14 @@ export abstract class ChannelTabContext<
 
     protected getData(): Result<TabRenderer["content"], Error> {
         return this.tabData.map(data => data.getActive().content);
+    }
+
+    protected getChannelData(): Result<ChannelData, Error> {
+        try {
+            return ok((extractChannelData(this.data.ytInitialData.microformat!.microformatDataRenderer)));
+        } catch (error) {
+            return err(error as Error);
+        }
     }
 }
 
