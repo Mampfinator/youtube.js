@@ -1,6 +1,6 @@
 import { ok, err, Result } from "neverthrow";
 import { ChannelTabBuilder, URLBuilder } from "../shared/builders/URLBuilder";
-import { RequireOnlyOne, Type } from "../shared/types";
+import { Awaitable, RequireOnlyOne, Type } from "../shared/types";
 import {
     CommunityContext,
     ContextFactory,
@@ -10,7 +10,7 @@ import {
     VideosContext,
 } from "./context";
 import { ChannelTab } from "./context/ChannelTabContexts/ChannelTabContext";
-import { FetchError } from "./scraping.interfaces";
+import { FetchError } from "./FetchError";
 
 export type ChannelScraperOptions = RequireOnlyOne<{
     tag: string;
@@ -82,4 +82,27 @@ export class ChannelScraper {
     public async fetchVideos() {
         return this.fetchElements(ChannelTab.Videos, VideosContext);
     }
+
+    /**
+     * Fetches *all* videos (from `/videos`, `/shorts` and `/streams`).
+     * @returns the fetched videos. If a property is undefined, its fetching errors appear in `errors`.
+     */
+    public async fetchAllVideos(): Promise<{shorts?: ReturnHelper<"fetchShorts">, streams?: ReturnHelper<"fetchStreams">, videos?: ReturnHelper<"fetchVideos">, errors: Error[]}> {
+        const shorts = await this.fetchShorts();
+        const streams = await this.fetchStreams(); 
+        const videos = await this.fetchVideos();
+
+        const ret: Awaited<ReturnType<ChannelScraper["fetchAllVideos"]>> = { errors: [] };
+
+        if (shorts.isOk()) ret.shorts = shorts.value;
+        else ret.errors.push(...(Array.isArray(shorts.error) ? shorts.error : [shorts.error]));
+        if (streams.isOk()) ret.streams = streams.value;
+        else ret.errors.push(...(Array.isArray(streams.error) ? streams.error : [streams.error]));
+        if (videos.isOk()) ret.videos = videos.value;
+        else ret.errors.push(...(Array.isArray(videos.error) ? videos.error : [videos.error]));
+
+        return ret;
+    }
 }
+
+type ReturnHelper<TKey extends keyof ChannelScraper> = ChannelScraper[TKey] extends ((...args: any[]) => Awaitable<Result<infer V, any>>) ? V : never;

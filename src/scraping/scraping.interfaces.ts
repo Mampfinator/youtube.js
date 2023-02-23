@@ -1,5 +1,6 @@
 import { Result } from "neverthrow";
 import { Dispatcher } from "undici";
+import { FetchError } from "./FetchError";
 
 export type FetchTransform = (body: string) => Result<any, Error>;
 
@@ -37,27 +38,6 @@ export interface FetchOptions<
     transform?: TTransform;
     headers?: Record<string, string>;
     body?: string | Buffer | object;
-}
-
-export enum FetchErrorCode {
-    /**
-     * Implies the host has blocked further requests.
-     */
-    Blocked = "Blocked",
-    NotFound = "NotFound",
-    BadRequest = "BadRequest",
-    /**
-     * Orchestrator has not been initialized. Make sure `ScrapingClient#start` has been called.
-     */
-    NotInitialized = "NotInitialized",
-}
-
-export class FetchError<TCode extends FetchErrorCode = any> {
-    constructor(
-        public readonly options: FetchOptions<any>,
-        public readonly code: TCode,
-        public readonly errors?: Error[],
-    ) {}
 }
 
 export type IRequestOrchestrator = {

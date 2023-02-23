@@ -1,14 +1,13 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { err, Ok, ok, Result } from "neverthrow";
 import { launch } from "puppeteer";
 import { getStoreByPage } from "puppeteer-tough-cookie-store";
 import { CookieJar, MemoryCookieStore } from "tough-cookie";
 import { sleep } from "../shared/util";
+import { FetchError, FetchErrorCode } from "./FetchError";
 import { COOKIE_BUTON_SELECTOR } from "./scraping.constants";
 import {
-    FetchError,
-    FetchErrorCode,
     FetchOptions,
     FetchReturn,
     FetchTransform,
@@ -181,7 +180,7 @@ export class RequestOrchestrator implements IRequestOrchestrator {
 
             this.queueMeta.set(item, meta);
             this.queue.push(item);
-        });
+        }).catch(() => err(new FetchError(options, FetchErrorCode.Any)));
     }
 
     public async destroy(): Promise<void> {

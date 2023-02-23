@@ -1,7 +1,8 @@
 import { err, ok, Result } from "neverthrow";
 import { Type } from "../../shared/types";
 import { isResult, isValueOk } from "../../shared/util";
-import { FetchError, IRequestOrchestrator } from "../scraping.interfaces";
+import { FetchError } from "../FetchError";
+import { IRequestOrchestrator } from "../scraping.interfaces";
 import { getContexts, ContextData } from "./decorators/Context";
 
 export interface ContextOptions {

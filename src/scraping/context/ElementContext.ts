@@ -1,5 +1,4 @@
 import { err, ok, Result } from "neverthrow";
-import { FetchError } from "../scraping.interfaces";
 import { ScrapingContext } from "./ScrapingContext";
 
 /**
