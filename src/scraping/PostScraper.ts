@@ -11,6 +11,9 @@ export class PostScraper {
         private readonly id: string,
     ) {}
 
+    /**
+     * Fetch the actual post. Returns the post content and makes other methods on the instance available.
+     */
     public async fetch(): Promise<Result<CommunityPost, Error>> {
         if (this.post) return ok(this.post);
 

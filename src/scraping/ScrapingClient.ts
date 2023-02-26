@@ -23,6 +23,9 @@ export class ScrapingClient {
         this.contexts = new ContextFactory(this.orchestrator);
     }
 
+    /**
+     * Initializes the client (and the request orchestrator). Needs to be called before anything else.
+     */
     public async init(): Promise<void> {
         const orchestatorInit = await this.orchestrator.init?.();
         if (orchestatorInit && orchestatorInit.isErr()) {
@@ -37,10 +40,16 @@ export class ScrapingClient {
         await this.orchestrator.destroy?.();
     }
 
+    /**
+     * @returns - a collection of channel-specific methods.
+     */
     public channel(options: ChannelScraperOptions): ChannelScraper {
         return new ChannelScraper(this.contexts, options);
     }
 
+    /**
+     * @returns - a collection of community post-specific methods. 
+     */
     public post(id: string): PostScraper {
         return new PostScraper(this.contexts, id);
     }

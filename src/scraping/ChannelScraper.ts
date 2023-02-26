@@ -26,6 +26,9 @@ type MapValueType<TMap extends Map<unknown, unknown>> = TMap extends Map<
     ? Value
     : any;
 
+/**
+ * Represents a channel as seen on the YouTube website.
+ */
 // TODO cache contexts and switch internally.
 export class ChannelScraper {
     private readonly builder: ChannelTabBuilder;
@@ -68,27 +71,40 @@ export class ChannelScraper {
         return ok([...context.value.get().values()]);
     }
 
+    /**
+     * @returns all posts from this channel.
+     */
     public async fetchPosts() {
         return this.fetchElements(ChannelTab.Community, CommunityContext);
     }
 
+    /**
+     * @returns all shorts from this channel.
+     */
     public async fetchShorts() {
         return this.fetchElements(ChannelTab.Shorts, ShortsContext);
     }
 
+    /**
+     * @returns all streams from this channel.
+     */
     public async fetchStreams() {
         return this.fetchElements(ChannelTab.Streams, StreamsContext);
     }
 
+    /**
+     * Not to be confused with {@linkcode fetchAllVideos}.
+     * @returns all uploads from this channel.
+     */
     public async fetchVideos() {
         return this.fetchElements(ChannelTab.Videos, VideosContext);
     }
 
     /**
-     * Fetches *all* videos (from `/videos`, `/shorts` and `/streams`).
+     * Fetches **all** watchable content (from `/videos`, `/shorts` and `/streams`).
      * @returns the fetched videos. If a property is undefined, its fetching errors appear in `errors`.
      */
-    public async fetchAllVideos(): Promise<{
+    public async fetchAll(): Promise<{
         shorts?: ReturnHelper<"fetchShorts">;
         streams?: ReturnHelper<"fetchStreams">;
         videos?: ReturnHelper<"fetchVideos">;
@@ -98,7 +114,7 @@ export class ChannelScraper {
         const streams = await this.fetchStreams();
         const videos = await this.fetchVideos();
 
-        const ret: Awaited<ReturnType<ChannelScraper["fetchAllVideos"]>> = {
+        const ret: Awaited<ReturnType<ChannelScraper["fetchAll"]>> = {
             errors: [],
         };
 
@@ -127,6 +143,9 @@ export class ChannelScraper {
         return ret;
     }
 
+    /**
+     * @returns a list of channels this channel features.
+     */
     public async fetchFeaturedChannels() {
         return this.fetchElements(ChannelTab.Channels, ChannelsContext);
     }
