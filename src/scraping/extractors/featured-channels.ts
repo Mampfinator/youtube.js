@@ -1,4 +1,3 @@
-import { DeepRequired } from "../../shared/types";
 import { mergeRuns, sanitizeUrl } from "../scraping.util";
 import {
     FeaturedChannelSection,
@@ -9,34 +8,50 @@ import {
 import {
     ChannelRenderer,
     GridChannelRenderer,
+    GridRenderer,
     PurpleShelfRenderer,
 } from "../types/internal/generated";
 
+export const DEFAULT_CHANNEL_SECTION = "DEFAULT_CHANNEL_SECTION";
+
 /**
- * Extracts a featured channel section from a section renderer.
+ * Extracts a featured channel section from a section shelf renderer.
  */
-export function extractFeaturedChannelSections(
-    renderers: PurpleShelfRenderer[],
-): FeaturedChannelSection[] {
-    const sections: FeaturedChannelSection[] = [];
-
-    for (const {
-        title: { runs },
+export function extractShelfSection(
+    renderer: PurpleShelfRenderer,
+): FeaturedChannelSection {
+    const {
+        title: { runs } = { runs: [] },
         content: { expandedShelfContentsRenderer, horizontalListRenderer },
-    } of renderers) {
-        sections.push({
-            title: mergeRuns(runs),
-            channels: expandedShelfContentsRenderer
-                ? expandedShelfContentsRenderer.items
-                      .map(({ channelRenderer }) => channelRenderer!)
-                      .map(extractFullFeaturedChannel)
-                : horizontalListRenderer!.items
-                      .map(({ gridChannelRenderer }) => gridChannelRenderer!)
-                      .map(extractPartialFeaturedChannel),
-        });
-    }
+    } = renderer;
 
-    return sections;
+    return {
+        title: mergeRuns(runs),
+        channels: expandedShelfContentsRenderer
+            ? expandedShelfContentsRenderer.items
+                  .map(({ channelRenderer }) => channelRenderer!)
+                  .map(extractFullFeaturedChannel)
+            : horizontalListRenderer!.items
+                  .map(({ gridChannelRenderer }) => gridChannelRenderer!)
+                  .map(extractPartialFeaturedChannel),
+    };
+}
+
+/**
+ *
+ * @param renderers
+ * @returns
+ */
+export function extractDefaultGridSection(
+    renderers: GridRenderer,
+): FeaturedChannelSection {
+    return {
+        title: DEFAULT_CHANNEL_SECTION,
+        channels: renderers.items
+            .map(({ gridChannelRenderer }) => gridChannelRenderer!)
+            .filter(i => i)
+            .map(extractPartialFeaturedChannel),
+    };
 }
 
 /**
@@ -57,7 +72,7 @@ export function extractFullFeaturedChannel(
         id,
         name,
         avatar: sanitizeUrl(thumbnails[thumbnails.length - 1].url),
-        descriptionSnippet: descriptionSnippet.runs.map(
+        descriptionSnippet: descriptionSnippet?.runs.map(
             ({ text, url }: any) => ({ text, url }),
         ),
     };

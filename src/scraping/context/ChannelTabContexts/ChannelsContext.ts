@@ -1,6 +1,9 @@
 import { err, ok, Result } from "neverthrow";
 import { Mixin } from "ts-mixer";
-import { extractFeaturedChannelSections } from "../../extractors/featured-channels";
+import {
+    extractShelfSection,
+    extractDefaultGridSection,
+} from "../../extractors/featured-channels";
 import { FeaturedChannelSection } from "../../types";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
@@ -23,21 +26,25 @@ export class ChannelsContext extends Mixin(
         if (data.isErr()) return yield err([data.error]);
         if (!data.value) return yield err([new Error("Empty data!")]);
 
-        const renderers = data.value
+        const sections = data.value
             .sectionListRenderer!.contents.map(
-                ({ itemSectionRenderer }) =>
-                    itemSectionRenderer
-                        ?.contents!.map(({ shelfRenderer }) => shelfRenderer!)
-                        .filter(i => i)!,
+                ({ itemSectionRenderer }) => itemSectionRenderer?.contents!,
             )
-            .flat();
+            .flat()
+            .map(({ shelfRenderer, gridRenderer }) => {
+                const sections: FeaturedChannelSection[] = [];
+                if (shelfRenderer)
+                    sections.push(extractShelfSection(shelfRenderer));
+                if (gridRenderer)
+                    sections.push(extractDefaultGridSection(gridRenderer));
+                return sections;
+            })
+            .flat()
+            .filter(i => i);
 
         return yield ok({
             elements: new Map(
-                extractFeaturedChannelSections(renderers).map(section => [
-                    section.title,
-                    section,
-                ]),
+                sections.map(section => [section.title, section]),
             ),
         });
     }

@@ -17,7 +17,7 @@ export interface PartialFeaturedChannel extends BaseFeaturedChannel {
 
 export interface FullFeaturedChannel extends BaseFeaturedChannel {
     type: FeaturedChannelType.Full;
-    descriptionSnippet: { text: string; url?: string }[];
+    descriptionSnippet?: { text: string; url?: string }[];
 }
 
 export interface FeaturedChannelSection {
