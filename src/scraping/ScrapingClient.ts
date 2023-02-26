@@ -15,19 +15,12 @@ export interface ScrapingClientOptions {
 
 export class ScrapingClient {
     public readonly orchestrator: IRequestOrchestrator;
-    public readonly contextFactory: ContextFactory;
+    public readonly contexts: ContextFactory;
 
     constructor(options?: ScrapingClientOptions) {
         this.orchestrator =
             options?.useOrchestrator ?? new RequestOrchestrator();
-        this.contextFactory = new ContextFactory(this.orchestrator);
-    }
-
-    public async contextFromUrl<T extends object>(
-        url: string,
-        useContext?: Type<T>,
-    ) {
-        return this.contextFactory.fromUrl<T>(url, useContext);
+        this.contexts = new ContextFactory(this.orchestrator);
     }
 
     public async init(): Promise<void> {
@@ -45,10 +38,10 @@ export class ScrapingClient {
     }
 
     public channel(options: ChannelScraperOptions): ChannelScraper {
-        return new ChannelScraper(this.contextFactory, options);
+        return new ChannelScraper(this.contexts, options);
     }
 
     public post(id: string): PostScraper {
-        return new PostScraper(this.contextFactory, id);
+        return new PostScraper(this.contexts, id);
     }
 }
