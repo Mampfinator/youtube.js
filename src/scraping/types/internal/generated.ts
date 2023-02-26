@@ -228,7 +228,8 @@ export interface ChannelHandleTextRun {
 export interface ReelItemRendererNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata: EndpointCommandMetadata;
-    reelWatchEndpoint: ReelWatchEndpoint;
+    reelWatchEndpoint?: ReelWatchEndpoint;
+    watchEndpoint?: PurpleWatchEndpoint;
 }
 
 export interface ReelWatchEndpoint {
@@ -272,6 +273,24 @@ export interface ThumbnailThumbnail {
     height: number;
 }
 
+export interface PurpleWatchEndpoint {
+    videoId: string;
+    params: string;
+    watchEndpointSupportedOnesieConfig: WatchEndpointSupportedOnesieConfig;
+}
+
+export interface WatchEndpointSupportedOnesieConfig {
+    html5PlaybackOnesieConfig: Html5PlaybackOnesieConfig;
+}
+
+export interface Html5PlaybackOnesieConfig {
+    commonConfig: CommonConfigElement;
+}
+
+export interface CommonConfigElement {
+    url: string;
+}
+
 export interface SubscriberCountText {
     accessibility: ToggledAccessibilityDataClass;
     simpleText: string;
@@ -283,20 +302,34 @@ export interface PurpleVideoRenderer {
     title: CollapsedStateButtonTextClass;
     descriptionSnippet: ChannelHandleText;
     longBylineText?: LongBylineTextClass;
-    publishedTimeText: ContentClass;
-    lengthText: SubscriberCountText;
-    viewCountText: ContentClass;
+    publishedTimeText?: ContentClass;
+    lengthText?: SubscriberCountText;
+    viewCountText: Text;
     navigationEndpoint: GridVideoRendererNavigationEndpoint;
-    ownerBadges?: OwnerBadgeElement[];
     ownerText?: LongBylineTextClass;
     shortBylineText?: LongBylineTextClass;
     trackingParams: string;
     showActionMenu: boolean;
-    shortViewCountText: SubscriberCountText;
+    shortViewCountText: ShortViewCountText;
     menu: VideoRendererMenu;
     channelThumbnailSupportedRenderers?: ChannelThumbnailSupportedRenderers;
-    thumbnailOverlays: VideoRendererThumbnailOverlay[];
+    thumbnailOverlays: GridVideoRendererThumbnailOverlay[];
     inlinePlaybackEndpoint?: InlinePlaybackEndpoint;
+    ownerBadges?: OwnerBadgeElement[];
+    badges?: PurpleBadge[];
+    upcomingEventData?: UpcomingEventData;
+}
+
+export interface PurpleBadge {
+    metadataBadgeRenderer: PurpleMetadataBadgeRenderer;
+}
+
+export interface PurpleMetadataBadgeRenderer {
+    icon?: IconImage;
+    style: string;
+    label: string;
+    trackingParams: string;
+    accessibilityData?: AccessibilityAccessibilityData;
 }
 
 export interface ChannelThumbnailSupportedRenderers {
@@ -317,7 +350,7 @@ export interface AuthorEndpointClass {
 
 export interface AuthorEndpointBrowseEndpoint {
     browseId: string;
-    canonicalBaseUrl?: string;
+    canonicalBaseUrl: string;
 }
 
 export interface Avatar {
@@ -335,18 +368,6 @@ export interface InlinePlaybackEndpointWatchEndpoint {
     playerParams: string;
     playerExtraUrlParams: Param[];
     watchEndpointSupportedOnesieConfig: WatchEndpointSupportedOnesieConfig;
-}
-
-export interface WatchEndpointSupportedOnesieConfig {
-    html5PlaybackOnesieConfig: Html5PlaybackOnesieConfig;
-}
-
-export interface Html5PlaybackOnesieConfig {
-    commonConfig: CommonConfigElement;
-}
-
-export interface CommonConfigElement {
-    url: string;
 }
 
 export interface LongBylineTextClass {
@@ -456,10 +477,10 @@ export interface CreatePlaylistServiceEndpoint {
 export interface GridVideoRendererNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata: EndpointCommandMetadata;
-    watchEndpoint: PurpleWatchEndpoint;
+    watchEndpoint: FluffyWatchEndpoint;
 }
 
-export interface PurpleWatchEndpoint {
+export interface FluffyWatchEndpoint {
     videoId: string;
     watchEndpointSupportedOnesieConfig: WatchEndpointSupportedOnesieConfig;
 }
@@ -476,24 +497,24 @@ export interface OwnerBadgeMetadataBadgeRenderer {
     accessibilityData: AccessibilityAccessibilityData;
 }
 
-export interface VideoRendererThumbnailOverlay {
-    thumbnailOverlayTimeStatusRenderer?: ThumbnailOverlayTimeStatusRenderer;
+export interface ShortViewCountText {
+    accessibility?: ToggledAccessibilityDataClass;
+    simpleText?: string;
+    runs?: ChannelHandleTextRun[];
+}
+
+export interface GridVideoRendererThumbnailOverlay {
+    thumbnailOverlayTimeStatusRenderer?: PurpleThumbnailOverlayTimeStatusRenderer;
     thumbnailOverlayToggleButtonRenderer?: ThumbnailOverlayToggleButtonRenderer;
-    thumbnailOverlayNowPlayingRenderer?: ThumbnailOverlayLoadingPreviewRendererClass;
-    thumbnailOverlayLoadingPreviewRenderer?: ThumbnailOverlayLoadingPreviewRendererClass;
-    thumbnailOverlayInlineUnplayableRenderer?: ThumbnailOverlayInlineUnplayableRendererClass;
+    thumbnailOverlayNowPlayingRenderer?: ThumbnailOverlayRenderer;
+    thumbnailOverlayLoadingPreviewRenderer?: ThumbnailOverlayRenderer;
 }
 
-export interface ThumbnailOverlayInlineUnplayableRendererClass {
-    text: ChannelHandleText;
-    icon: IconImage;
-}
-
-export interface ThumbnailOverlayLoadingPreviewRendererClass {
+export interface ThumbnailOverlayRenderer {
     text: ChannelHandleText;
 }
 
-export interface ThumbnailOverlayTimeStatusRenderer {
+export interface PurpleThumbnailOverlayTimeStatusRenderer {
     text: SubscriberCountText;
     style: string;
 }
@@ -532,6 +553,17 @@ export interface CollapsedStateButtonTextClass {
     accessibility: ToggledAccessibilityDataClass;
 }
 
+export interface UpcomingEventData {
+    startTime: string;
+    isReminderSet: boolean;
+    upcomingEventText: ChannelHandleText;
+}
+
+export interface Text {
+    simpleText?: string;
+    runs?: ChannelHandleTextRun[];
+}
+
 export interface RichSectionRenderer {
     content: RichSectionRendererContent;
     trackingParams: string;
@@ -562,7 +594,7 @@ export interface FluffyRichItemRenderer {
 
 export interface FluffyContent {
     reelItemRenderer?: PurpleReelItemRenderer;
-    videoRenderer?: PurpleVideoRenderer;
+    videoRenderer?: FluffyVideoRenderer;
 }
 
 export interface PurpleReelItemRenderer {
@@ -607,6 +639,28 @@ export interface PurpleServiceEndpoint {
     clickTrackingParams: string;
     commandMetadata: ContinuationEndpointCommandMetadata;
     shareEntityServiceEndpoint: ShareEntityServiceEndpoint;
+}
+
+export interface FluffyVideoRenderer {
+    videoId: string;
+    thumbnail: Avatar;
+    title: CollapsedStateButtonTextClass;
+    descriptionSnippet: ChannelHandleText;
+    longBylineText: LongBylineTextClass;
+    publishedTimeText: ContentClass;
+    lengthText: SubscriberCountText;
+    viewCountText: ContentClass;
+    navigationEndpoint: GridVideoRendererNavigationEndpoint;
+    ownerBadges?: OwnerBadgeElement[];
+    ownerText: LongBylineTextClass;
+    shortBylineText: LongBylineTextClass;
+    trackingParams: string;
+    showActionMenu: boolean;
+    shortViewCountText: SubscriberCountText;
+    menu: VideoRendererMenu;
+    channelThumbnailSupportedRenderers: ChannelThumbnailSupportedRenderers;
+    thumbnailOverlays: GridVideoRendererThumbnailOverlay[];
+    inlinePlaybackEndpoint: InlinePlaybackEndpoint;
 }
 
 export interface RichShelfRendererEndpoint {
@@ -681,11 +735,6 @@ export interface ShowReloadUICommand {
 
 export interface ToggledStyleClass {
     styleType: string;
-}
-
-export interface Text {
-    runs?: ChannelHandleTextRun[];
-    simpleText?: string;
 }
 
 export interface ClearButtonClass {
@@ -1118,6 +1167,7 @@ export interface GridChannelRenderer {
     title: ContentClass;
     subscribeButton: A11YSkipNavigationButtonClass;
     trackingParams: string;
+    ownerBadges?: OwnerBadgeElement[];
 }
 
 export interface A11YSkipNavigationButtonClass {
@@ -1227,10 +1277,10 @@ export interface GridPlaylistRenderer {
 export interface GridPlaylistRendererNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata: EndpointCommandMetadata;
-    watchEndpoint: FluffyWatchEndpoint;
+    watchEndpoint: TentacledWatchEndpoint;
 }
 
-export interface FluffyWatchEndpoint {
+export interface TentacledWatchEndpoint {
     videoId: string;
     playlistId: string;
     params?: string;
@@ -1244,8 +1294,13 @@ export interface WatchEndpointLoggingContext {
 
 export interface GridPlaylistRendererThumbnailOverlay {
     thumbnailOverlaySidePanelRenderer?: ThumbnailOverlaySidePanelRenderer;
-    thumbnailOverlayHoverTextRenderer?: ThumbnailOverlayInlineUnplayableRendererClass;
-    thumbnailOverlayNowPlayingRenderer?: ThumbnailOverlayLoadingPreviewRendererClass;
+    thumbnailOverlayHoverTextRenderer?: ThumbnailOverlayHoverTextRenderer;
+    thumbnailOverlayNowPlayingRenderer?: ThumbnailOverlayRenderer;
+}
+
+export interface ThumbnailOverlayHoverTextRenderer {
+    text: ChannelHandleText;
+    icon: IconImage;
 }
 
 export interface ThumbnailOverlaySidePanelRenderer {
@@ -1393,8 +1448,8 @@ export interface PurpleShelfRenderer {
 }
 
 export interface IndigoContent {
-    horizontalListRenderer?: HorizontalListRenderer;
     expandedShelfContentsRenderer?: ExpandedShelfContentsRenderer;
+    horizontalListRenderer?: HorizontalListRenderer;
 }
 
 export interface ExpandedShelfContentsRenderer {
@@ -1403,7 +1458,8 @@ export interface ExpandedShelfContentsRenderer {
 }
 
 export interface ExpandedShelfContentsRendererItem {
-    channelRenderer: ChannelRenderer;
+    videoRenderer?: TentacledVideoRenderer;
+    channelRenderer?: ChannelRenderer;
 }
 
 export interface ChannelRenderer {
@@ -1487,17 +1543,39 @@ export interface SubscriptionButton {
     subscribed: boolean;
 }
 
+export interface TentacledVideoRenderer {
+    videoId: string;
+    thumbnail: Avatar;
+    title: SubscriberCountText;
+    descriptionSnippet: ChannelHandleText;
+    longBylineText: LongBylineTextClass;
+    viewCountText: ChannelHandleText;
+    navigationEndpoint: GridVideoRendererNavigationEndpoint;
+    ownerBadges: OwnerBadgeElement[];
+    ownerText: LongBylineTextClass;
+    upcomingEventData: UpcomingEventData;
+    shortBylineText: LongBylineTextClass;
+    trackingParams: string;
+    showActionMenu: boolean;
+    shortViewCountText: ChannelHandleText;
+    menu: VideoRendererMenu;
+    channelThumbnailSupportedRenderers: ChannelThumbnailSupportedRenderers;
+    thumbnailOverlays: GridVideoRendererThumbnailOverlay[];
+}
+
 export interface HorizontalListRenderer {
     items: HorizontalListRendererItem[];
     trackingParams: string;
     visibleItemCount: number;
     nextButton: ShowMoreButtonClass;
     previousButton: ShowMoreButtonClass;
+    collapsedItemCount?: number;
 }
 
 export interface HorizontalListRendererItem {
     gridVideoRenderer?: GridVideoRenderer;
     gridPlaylistRenderer?: GridPlaylistRenderer;
+    gridChannelRenderer?: GridChannelRenderer;
 }
 
 export interface GridVideoRenderer {
@@ -1511,7 +1589,7 @@ export interface GridVideoRenderer {
     trackingParams: string;
     shortViewCountText: SubscriberCountText;
     menu: VideoRendererMenu;
-    thumbnailOverlays: VideoRendererThumbnailOverlay[];
+    thumbnailOverlays: GridVideoRendererThumbnailOverlay[];
     shortBylineText?: LongBylineTextClass;
 }
 
@@ -1594,7 +1672,7 @@ export interface FluffyItemSectionRenderer {
 }
 
 export interface HilariousContent {
-    videoRenderer?: ItemVideoRenderer;
+    videoRenderer?: IndigoVideoRenderer;
     shelfRenderer?: FluffyShelfRenderer;
     reelShelfRenderer?: FluffyReelShelfRenderer;
 }
@@ -1625,10 +1703,10 @@ export interface VerticalListRenderer {
 }
 
 export interface VerticalListRendererItem {
-    videoRenderer: ItemVideoRenderer;
+    videoRenderer: StickyVideoRenderer;
 }
 
-export interface ItemVideoRenderer {
+export interface StickyVideoRenderer {
     videoId: string;
     thumbnail: Avatar;
     title: CollapsedStateButtonTextClass;
@@ -1646,22 +1724,11 @@ export interface ItemVideoRenderer {
     shortViewCountText: SubscriberCountText;
     menu: VideoRendererMenu;
     channelThumbnailSupportedRenderers: ChannelThumbnailSupportedRenderers;
-    thumbnailOverlays: VideoRendererThumbnailOverlay[];
+    thumbnailOverlays: GridVideoRendererThumbnailOverlay[];
     detailedMetadataSnippets: DetailedMetadataSnippet[];
-    inlinePlaybackEndpoint?: InlinePlaybackEndpoint;
+    inlinePlaybackEndpoint: InlinePlaybackEndpoint;
     searchVideoResultEntityKey: string;
     expandableMetadata?: ExpandableMetadata;
-}
-
-export interface PurpleBadge {
-    metadataBadgeRenderer: PurpleMetadataBadgeRenderer;
-}
-
-export interface PurpleMetadataBadgeRenderer {
-    style: string;
-    label: string;
-    trackingParams: string;
-    accessibilityData?: AccessibilityAccessibilityData;
 }
 
 export interface DetailedMetadataSnippet {
@@ -1711,9 +1778,10 @@ export interface MacroMarkersListItemRenderer {
 
 export interface OnTap {
     clickTrackingParams: string;
-    commandExecutorCommand?: CommandExecutorCommand;
     commandMetadata?: EndpointCommandMetadata;
     watchEndpoint?: CommandWatchEndpoint;
+    commandExecutorCommand?: CommandExecutorCommand;
+    entityUpdateCommand?: EntityUpdateCommand;
 }
 
 export interface CommandExecutorCommand {
@@ -1753,8 +1821,8 @@ export interface MarkersVisibilityOverrideEntity {
 
 export interface CommandWatchEndpoint {
     videoId: string;
-    startTimeSeconds?: number;
     watchEndpointSupportedOnesieConfig: WatchEndpointSupportedOnesieConfig;
+    startTimeSeconds?: number;
 }
 
 export interface HorizontalCardListRendererStyle {
@@ -1771,13 +1839,45 @@ export interface ExpandableMetadataRendererHeader {
 export interface FriskyNavigationEndpoint {
     clickTrackingParams: string;
     commandMetadata: EndpointCommandMetadata;
-    watchEndpoint: TentacledWatchEndpoint;
+    watchEndpoint: PurpleWatchEndpoint;
 }
 
-export interface TentacledWatchEndpoint {
+export interface IndigoVideoRenderer {
     videoId: string;
-    params: string;
-    watchEndpointSupportedOnesieConfig: WatchEndpointSupportedOnesieConfig;
+    thumbnail: Avatar;
+    title: CollapsedStateButtonTextClass;
+    longBylineText: LongBylineTextClass;
+    publishedTimeText: ContentClass;
+    lengthText: SubscriberCountText;
+    viewCountText: ContentClass;
+    navigationEndpoint: ReelItemRendererNavigationEndpoint;
+    badges?: PurpleBadge[];
+    ownerBadges?: OwnerBadgeElement[];
+    ownerText: LongBylineTextClass;
+    shortBylineText: LongBylineTextClass;
+    trackingParams: string;
+    showActionMenu: boolean;
+    shortViewCountText: SubscriberCountText;
+    menu: VideoRendererMenu;
+    channelThumbnailSupportedRenderers: ChannelThumbnailSupportedRenderers;
+    thumbnailOverlays: PurpleThumbnailOverlay[];
+    detailedMetadataSnippets?: DetailedMetadataSnippet[];
+    inlinePlaybackEndpoint: InlinePlaybackEndpoint;
+    searchVideoResultEntityKey: string;
+    expandableMetadata?: ExpandableMetadata;
+}
+
+export interface PurpleThumbnailOverlay {
+    thumbnailOverlayTimeStatusRenderer?: FluffyThumbnailOverlayTimeStatusRenderer;
+    thumbnailOverlayToggleButtonRenderer?: ThumbnailOverlayToggleButtonRenderer;
+    thumbnailOverlayNowPlayingRenderer?: ThumbnailOverlayRenderer;
+    thumbnailOverlayLoadingPreviewRenderer?: ThumbnailOverlayRenderer;
+}
+
+export interface FluffyThumbnailOverlayTimeStatusRenderer {
+    text: SubscriberCountText;
+    style: string;
+    icon?: IconImage;
 }
 
 export interface FluffySubMenu {

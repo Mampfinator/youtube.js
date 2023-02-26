@@ -3,14 +3,13 @@ export enum FeedType {
     Playlist = "Playlist",
 }
 
-
 export interface BaseFeed {
     type: FeedType;
-    channel: FeedChannel
+    channel: FeedChannel;
     title: string;
     published: Date;
 
-    entries: FeedEntry[]
+    entries: FeedEntry[];
 }
 
 export interface FeedEntry {
@@ -21,12 +20,10 @@ export interface FeedEntry {
     updated: Date;
 }
 
-
 export interface FeedChannel {
     id: string;
     name: string;
 }
-
 
 export interface ChannelFeed {
     type: FeedType.Channel;

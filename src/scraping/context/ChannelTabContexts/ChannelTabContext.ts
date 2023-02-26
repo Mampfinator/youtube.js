@@ -83,7 +83,12 @@ export abstract class ChannelTabContext<
 
     protected getChannelData(): Result<ChannelData, Error> {
         try {
-            return ok((extractChannelData(this.data.ytInitialData.microformat!.microformatDataRenderer)));
+            return ok(
+                extractChannelData(
+                    this.data.ytInitialData.microformat!
+                        .microformatDataRenderer,
+                ),
+            );
         } catch (error) {
             return err(error as Error);
         }

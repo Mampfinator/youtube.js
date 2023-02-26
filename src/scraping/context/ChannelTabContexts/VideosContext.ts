@@ -4,7 +4,6 @@ import { extractVideo } from "../../extractors/videos";
 import { ScrapedVideo } from "../../types";
 import {
     GridVideoRenderer,
-    ItemVideoRenderer,
     PurpleVideoRenderer,
 } from "../../types/internal/generated";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
@@ -19,11 +18,7 @@ export class VideosContext extends Mixin(
     ElementContext<ScrapedVideo>,
 ) {
     private toVideos(
-        renderers: (
-            | GridVideoRenderer
-            | ItemVideoRenderer
-            | PurpleVideoRenderer
-        )[],
+        renderers: (GridVideoRenderer | PurpleVideoRenderer)[],
     ): Map<string, ScrapedVideo> {
         const map = new Map<string, ScrapedVideo>();
 

@@ -11,7 +11,7 @@ export enum FetchErrorCode {
      * Orchestrator has not been initialized. Make sure `ScrapingClient#start` has been called.
      */
     NotInitialized = "NotInitialized",
-    Any = "Any"
+    Any = "Any",
 }
 
 export class FetchError<TCode extends FetchErrorCode = any> extends Error {
@@ -28,6 +28,7 @@ const FETCH_ERROR_MESSAGE_LOOKUP = {
     [FetchErrorCode.Blocked]: "Request blocked.",
     [FetchErrorCode.NotFound]: "Not found.",
     [FetchErrorCode.BadRequest]: "Bad request.",
-    [FetchErrorCode.NotInitialized]: "Request orchestrator not initialized. Make sure ScrapingClient#init has been called.",
+    [FetchErrorCode.NotInitialized]:
+        "Request orchestrator not initialized. Make sure ScrapingClient#init has been called.",
     [FetchErrorCode.Any]: "Unknown error.",
-}
+};

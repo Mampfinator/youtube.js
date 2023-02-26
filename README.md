@@ -79,5 +79,3 @@ const shorts = await streamsTab.shorts?.goTo();
 await shorts.fetchAll();
 allVideos.push(...shortsTab.get().values());
 ```
-
-Under the hood, they use `/browse`, `/next` and similar requests - what YouTube clients themselve use when you click around on a page.

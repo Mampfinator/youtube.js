@@ -19,5 +19,8 @@ export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
             Partial<Record<Exclude<Keys, K>, undefined>>;
     }[Keys];
 
-
 export type Awaitable<T> = Promise<T> | T;
+
+export type DeepRequired<T extends object> = {
+    [P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
+};

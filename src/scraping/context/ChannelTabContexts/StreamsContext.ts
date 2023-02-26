@@ -5,7 +5,6 @@ import { getContinuationItems } from "../../scraping.util";
 import { ScrapedStream } from "../../types";
 import {
     GridVideoRenderer,
-    ItemVideoRenderer,
     PurpleVideoRenderer,
 } from "../../types/internal/generated";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
@@ -21,11 +20,7 @@ export class StreamsContext extends Mixin(
     ElementContext<ScrapedStream>,
 ) {
     private toStreams(
-        renderers: (
-            | GridVideoRenderer
-            | ItemVideoRenderer
-            | PurpleVideoRenderer
-        )[],
+        renderers: (GridVideoRenderer | PurpleVideoRenderer)[],
     ): Map<string, ScrapedStream> {
         const map = new Map<string, ScrapedStream>();
 
