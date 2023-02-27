@@ -1,0 +1,10 @@
+node_modules
+src
+coverage
+test
+type-generation
+playground.ts
+.prettierrc
+.gitignore
+package-lock.json
+README.md
