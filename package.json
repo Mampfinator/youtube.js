@@ -2,19 +2,31 @@
   "name": "@sireatsalot/youtube.js",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mampfinator/youtube.js.git"
+  },
+  "homepage": "https://github.com/Mampfinator/youtube.js",
+  "bugs": {
+    "url": "https://github.com/Mampfinator/youtube.js/issues"
+  },
+  "types": "./dist/index.d.ts",
   "scripts": {
     "prepublish": "npm run build",
     "test": "npx mocha test/**/*.spec.ts",
     "build": "npx tsc",
     "format:check": "npx prettier --check \"src/**/*.ts\" \"type-generation/**/*.ts\"",
-    "format:write": "npx prettier --write \"src/**/*.ts\"",
+    "format:write": "npx prettier --write \"src/**/*.ts\" \"type-generation/**/*.ts\"",
     "generate": "node -r ts-node/register type-generation/generator/cli.ts --all",
     "np:publish": "npx np"
   },
   "keywords": [
     "youtube",
-    "api"
+    "youtube-api",
+    "youtube-scraping",
+    "youtube-rss-feed",
+    "youtube-pubsub"
   ],
   "author": "Sir Eatsalot",
   "license": "ISC",
