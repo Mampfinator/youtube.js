@@ -19,7 +19,6 @@ async function exec(command: string | string[]): Promise<string> {
     });
 }
 
-
 const orchestrator = new RequestOrchestrator();
 
 (async () => {
@@ -27,15 +26,21 @@ const orchestrator = new RequestOrchestrator();
         .name("type-generator-util")
         .description("Internal YouTube type generator.")
         .option("-d, --initialData", "Generate ytInitialData types.", false)
-        .option("-p, --playerResponse", "Generate ytInitialPlayerResponse types.", false)
+        .option(
+            "-p, --playerResponse",
+            "Generate ytInitialPlayerResponse types.",
+            false,
+        )
         .option("-c, --cfg", "Generate ytCfg types.", false)
         .option("-a, --all", "Generate all types.", false)
         .parse();
 
-    
     const options = command.opts();
 
-    const {all, initialData, playerResponse, cfg} = options as Record<string, boolean>;
+    const { all, initialData, playerResponse, cfg } = options as Record<
+        string,
+        boolean
+    >;
 
     if (!all && !initialData && !playerResponse && !cfg) {
         console.error("At least one option must be selected!");
@@ -44,7 +49,6 @@ const orchestrator = new RequestOrchestrator();
 
     await bootstrap();
 
-    
     const result = await orchestrator.init();
     if (result.isErr()) {
         console.error("Failed setting up orchestrator! See details below.");
@@ -67,32 +71,53 @@ const orchestrator = new RequestOrchestrator();
         promises.push(fetch("ytInitialPlayerResponse"));
     }
 
-    await Promise.all(promises); 
-
+    await Promise.all(promises);
 
     await exec(
-        `npx quicktype ${BASE_OUT_DIR} -o ${join(__dirname, "..", "..", "src", "scraping", "types", "internal", "generated.ts")} --no-enums --no-boolean-strings --just-types`
-    ).then(console.log)
+        `npx quicktype ${BASE_OUT_DIR} -o ${join(
+            __dirname,
+            "..",
+            "..",
+            "src",
+            "scraping",
+            "types",
+            "internal",
+            "generated.ts",
+        )} --no-enums --no-boolean-strings --just-types`,
+    ).then(console.log);
 
     process.exit(0);
-
 })();
 
-async function fetch(type: "ytInitialData" | "ytCfg" | "ytInitialPlayerResponse"): Promise<void> {
+async function fetch(
+    type: "ytInitialData" | "ytCfg" | "ytInitialPlayerResponse",
+): Promise<void> {
     const samples = await fetchData(data[type].sources, DataExtractors[type]);
 
     await Promise.all(
-        samples.map((file, index) => writeFile(join(BASE_OUT_DIR, type, `${type}-${index}.json`), JSON.stringify(file, null, 4)))
-    )
+        samples.map((file, index) =>
+            writeFile(
+                join(BASE_OUT_DIR, type, `${type}-${index}.json`),
+                JSON.stringify(file, null, 4),
+            ),
+        ),
+    );
 }
 
-async function fetchData(urls: string[], transform: (page: string) => Result<object, any>): Promise<object[]> {
+async function fetchData(
+    urls: string[],
+    transform: (page: string) => Result<object, any>,
+): Promise<object[]> {
     const out: object[] = [];
-    
+
     for (let i = 0; i < urls.length; i++) {
         const url = urls[i]!;
-        console.log(`Fetching ${url} (${i+1}/${urls.length})`);
-        const result = await orchestrator.fetch({url, method: "GET", transform});
+        console.log(`Fetching ${url} (${i + 1}/${urls.length})`);
+        const result = await orchestrator.fetch({
+            url,
+            method: "GET",
+            transform,
+        });
 
         if (result.isErr()) {
             console.error(`Failed fetching ${url}. See details below!`);

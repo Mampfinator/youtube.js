@@ -1,4 +1,4 @@
-import { CDN_BASE_URL, ThumbnailQuality } from "./cnd.constants";
+import { CDN_BASE_URL, ThumbnailQuality } from "./cdn.constants";
 
 export class YouTubeCDN {
     public getVideoThumbnail(

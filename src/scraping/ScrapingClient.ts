@@ -48,7 +48,7 @@ export class ScrapingClient {
     }
 
     /**
-     * @returns - a collection of community post-specific methods. 
+     * @returns - a collection of community post-specific methods.
      */
     public post(id: string): PostScraper {
         return new PostScraper(this.contexts, id);
