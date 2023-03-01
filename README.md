@@ -1,6 +1,6 @@
 # youtube.js
 
-A one-stop library for just about all your YouTube needs. Supports the official API, PubSub, XML feeds, scraping and other miscellaneous YouTube things.
+A one-stop library for just about all your YouTube needs. Supports the official API, WebSub, XML feeds, scraping and other miscellaneous YouTube things.
 
 ## Motivation
 
@@ -11,7 +11,7 @@ Initially only meant to replace `googleapis/youtube_v3` in another project, it n
 - [ ] API
   - [ ] Readonly endpoints
   - [ ] Scoped auth provider
-- [ ] PubSub
+- [ ] WebSub
   - [ ] Awaitable subscriptions
   - [ ] Automatic re-leasing
 - [x] RSS/XML feeds
