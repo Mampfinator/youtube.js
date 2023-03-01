@@ -12,7 +12,8 @@ Initially only meant to replace `googleapis/youtube_v3` in another project, it n
   - [ ] Readonly endpoints
   - [ ] Scoped auth provider
 - [ ] WebSub
-  - [ ] Awaitable subscriptions
+  - [x] Awaitable subscription logic
+  - [x] Message and debug events
   - [ ] Automatic re-leasing
 - [x] RSS/XML feeds
   - [x] videos.xml (are there even any other feeds?)
