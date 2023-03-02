@@ -1,4 +1,6 @@
 import { Result, ok, err } from "neverthrow";
+import { YtjsErrorCode } from "../../../shared/errors/ErrorCodes";
+import { YoutubejsError } from "../../../shared/errors/YouTubejsError";
 import { extractChannelData } from "../../extractors/channel-data";
 import { YtInitialData } from "../../types";
 import { ChannelData } from "../../types/external/channel";
@@ -96,15 +98,14 @@ export abstract class ChannelTabContext<
 }
 
 function getTabName(path: string): Result<ChannelTab, Error> {
-    const tab = path
-        .trim()
-        .match(/(?<=\/)[a-z]+$/)?.[0]
-        ?.trim() as ChannelTab;
+    const [, channel, tab] = path.trim().split("/") as [void, string, string];
     if (!tab) return err(new Error(`Could not extract tab name from ${path}.`));
-    if (!IS_CHANNEL_TAB_LOOKUP.has(tab))
-        return err(new Error(`Unknown tab ${tab} in ${path}`));
+    if (!IS_CHANNEL_TAB_LOOKUP.has(tab as any))
+        return err(
+            new YoutubejsError(YtjsErrorCode.UnknownChannelTab, channel, tab),
+        );
 
-    return ok(tab);
+    return ok(tab as ChannelTab);
 }
 
 class TabData<TTab extends ChannelTab = any> {

@@ -11,7 +11,7 @@ import {
     VideosContext,
 } from "./context";
 import { ChannelTab } from "./context/ChannelTabContexts/ChannelTabContext";
-import { FetchError } from "./FetchError";
+import { FetchError, FetchErrorCode } from "./errors/FetchError";
 
 export type ChannelScraperOptions = RequireOnlyOne<{
     tag: string;
@@ -56,7 +56,7 @@ export class ChannelScraper {
     ): Promise<
         Result<
             MapValueType<ReturnType<T["get"]>>[],
-            FetchError | Error | Error[]
+            FetchError
         >
     > {
         const context = await this.factory.fromUrl(
@@ -66,7 +66,7 @@ export class ChannelScraper {
         if (context.isErr()) return err(context.error);
 
         const fetchResult = await context.value.fetchAll();
-        if (fetchResult.isErr()) return err(fetchResult.error);
+        if (fetchResult.isErr()) return err(new FetchError(FetchErrorCode.InternalError, {}, fetchResult.error));
 
         return ok([...context.value.get().values()]);
     }

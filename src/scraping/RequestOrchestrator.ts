@@ -4,9 +4,11 @@ import { err, Ok, ok, Result } from "neverthrow";
 import { launch } from "puppeteer";
 import { getStoreByPage } from "puppeteer-tough-cookie-store";
 import { CookieJar, MemoryCookieStore } from "tough-cookie";
+import { YoutubejsError } from "../shared/errors/YouTubejsError";
+import { Type } from "../shared/types";
 import { sleep } from "../shared/util";
-import { FetchError, FetchErrorCode } from "./FetchError";
-import { COOKIE_BUTON_SELECTOR } from "./scraping.constants";
+import { FetchError, FetchErrorCode } from "./errors/FetchError";
+import { COOKIE_BUTON_SELECTOR, DEFAULT_RETRIES } from "./scraping.constants";
 import {
     FetchOptions,
     FetchReturn,
@@ -21,13 +23,13 @@ type RequestQueueItem = {
     callback: () => Promise<string>;
     transform?: (value: string) => Awaitable<Result<any, any>>;
     resolve: (value: Result<any, FetchError>) => void;
-    reject: (reason: any) => void;
+    reject: (error?: FetchError | YoutubejsError) => void;
 };
 
 type ItemMetadata = {
     retries: number;
-    maxRetries: number;
-    reasons: any[];
+    options: FetchOptions<any>;
+    reasons: Error[];
 };
 
 /**
@@ -125,13 +127,12 @@ export class RequestOrchestrator implements IRequestOrchestrator {
 
         try {
             const value = await item.callback().then(async value => {
-                if (item.transform) {
-                    const result = await item.transform(value);
-                    if (result.isErr()) return this.requeue(item, result.error);
-                    return result.value;
-                }
+                if (!item.transform) return value;
 
-                return value;
+                const result = await item.transform(value);
+                if (result.isOk()) return result.value;
+                
+                throw result.error; // handle in catch block
             });
 
             item.resolve(value instanceof Ok ? value : ok(value));
@@ -144,10 +145,16 @@ export class RequestOrchestrator implements IRequestOrchestrator {
         const meta = this.queueMeta.get(item)!;
         ++meta.retries;
 
+        if (error instanceof FetchError || error instanceof YoutubejsError) {
+            return item.reject(error as any);
+        }
+
         meta.reasons.push(error ?? new Error("unknown error"));
 
-        if (meta.retries >= meta.maxRetries) {
-            return item.reject(meta.reasons);
+        if (meta.retries >= (meta.options.maxRetries ?? DEFAULT_RETRIES)) {
+            return item.reject(
+                new FetchError(FetchErrorCode.RetriesExceeded, meta.options, meta.reasons),
+            );
         }
 
         this.queue.unshift(item);
@@ -158,7 +165,7 @@ export class RequestOrchestrator implements IRequestOrchestrator {
     >(options: FetchOptions<TTransform>): FetchReturn<TTransform> {
         if (!this.initialized)
             return err(
-                new FetchError(options, FetchErrorCode.NotInitialized),
+                new FetchError(FetchErrorCode.NotInitialized, options),
             ) as any;
 
         return new Promise<any>((resolve, reject) => {
@@ -174,13 +181,21 @@ export class RequestOrchestrator implements IRequestOrchestrator {
 
             const meta: ItemMetadata = {
                 retries: 0,
-                maxRetries: options.maxRetries ?? 5,
+                options,
                 reasons: [],
             };
 
             this.queueMeta.set(item, meta);
             this.queue.push(item);
-        }).catch(() => err(new FetchError(options, FetchErrorCode.Any)));
+        }).catch(error =>
+            err(
+                error instanceof FetchError
+                    ? error
+                    : new FetchError(FetchErrorCode.Unknown, options, [
+                          error as Error,
+                      ]),
+            ),
+        );
     }
 
     public async destroy(): Promise<void> {

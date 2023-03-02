@@ -1,4 +1,4 @@
-import { FetchOptions } from "./scraping.interfaces";
+import { FetchOptions } from "../scraping.interfaces";
 
 export enum FetchErrorCode {
     /**
@@ -11,24 +11,30 @@ export enum FetchErrorCode {
      * Orchestrator has not been initialized. Make sure `ScrapingClient#start` has been called.
      */
     NotInitialized = "NotInitialized",
-    Any = "Any",
+    Unknown = "Unknown",
+    RetriesExceeded = "RetriesExceeded",
+    InvalidURL = "InvalidURL",
+    InternalError = "InternalError",
 }
 
 export class FetchError<TCode extends FetchErrorCode = any> extends Error {
     constructor(
-        public readonly options: FetchOptions<any>,
         public readonly code: TCode,
+        public readonly options?: Record<string, any>,
         public readonly errors?: Error[],
     ) {
         super(FETCH_ERROR_MESSAGE_LOOKUP[code] ?? `Unknown error: ${code}.`);
     }
 }
 
-const FETCH_ERROR_MESSAGE_LOOKUP = {
+const FETCH_ERROR_MESSAGE_LOOKUP: Record<FetchErrorCode, string> = {
     [FetchErrorCode.Blocked]: "Request blocked.",
     [FetchErrorCode.NotFound]: "Not found.",
     [FetchErrorCode.BadRequest]: "Bad request.",
     [FetchErrorCode.NotInitialized]:
         "Request orchestrator not initialized. Make sure ScrapingClient#init has been called.",
-    [FetchErrorCode.Any]: "Unknown error.",
+    [FetchErrorCode.Unknown]: "Unknown error.",
+    [FetchErrorCode.RetriesExceeded]: "Retries exceeded.",
+    [FetchErrorCode.InvalidURL]: "Invalid URL.",
+    [FetchErrorCode.InternalError]: "Internal error! Check suberrors for details."
 };

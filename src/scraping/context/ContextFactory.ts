@@ -1,7 +1,8 @@
 import { err, ok, Result } from "neverthrow";
+import { YoutubejsError, YoutubejsTypeError } from "../../shared/errors/YouTubejsError";
 import { Type } from "../../shared/types";
 import { isResult, isValueOk } from "../../shared/util";
-import { FetchError } from "../FetchError";
+import { FetchError, FetchErrorCode } from "../errors/FetchError";
 import { IRequestOrchestrator } from "../scraping.interfaces";
 import { getContexts, ContextData } from "./decorators/Context";
 
@@ -31,11 +32,11 @@ export class ContextFactory {
     public async fromUrl<T extends object>(
         url: string,
         useContext?: Type<T>,
-    ): Promise<Result<T, FetchError | Error>> {
+    ): Promise<Result<T, FetchError>> {
         try {
             new URL(url);
-        } catch (error) {
-            return err(error as TypeError);
+        } catch {
+            return err(new FetchError(FetchErrorCode.InvalidURL));
         }
 
         let data: Result<any, any> | undefined;
@@ -77,23 +78,19 @@ export class ContextFactory {
 
             return result as any;
         }
-        return err(new Error(`No matching context found for ${url}.`));
+        return err(new FetchError(FetchErrorCode.InternalError, {}, [new YoutubejsError("NoContextFound", url)]));
     }
 
     private getContext<T extends Type<unknown>>(
         constructor: T,
         options: ContextOptions,
-    ): Result<InstanceType<T> | undefined, Error> {
+    ): Result<InstanceType<T> | undefined, FetchError> {
         if ("from" in constructor && typeof constructor.from === "function") {
             const result = constructor.from(options);
 
             if (!isResult(result))
                 return err(
-                    new TypeError(
-                        `Expected ${
-                            constructor.name
-                        }.from to return Result, got ${typeof result}.`,
-                    ),
+                    new FetchError(FetchErrorCode.InternalError, {}, [new YoutubejsTypeError("ExpectedResult", result)])
                 );
             if (result.isErr()) return ok(undefined);
             return ok(result.value as InstanceType<T>);
@@ -102,7 +99,7 @@ export class ContextFactory {
                 const context = new constructor(options);
                 return ok(context as InstanceType<T>);
             } catch (error) {
-                return err(error as Error);
+                return err(new FetchError(FetchErrorCode.Unknown, {}, [error as Error]));
             }
         }
     }

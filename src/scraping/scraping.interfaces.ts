@@ -1,6 +1,6 @@
 import { Result } from "neverthrow";
 import { Dispatcher } from "undici";
-import { FetchError } from "./FetchError";
+import { FetchError } from "./errors/FetchError";
 
 export type FetchTransform = (body: string) => Result<any, Error>;
 
