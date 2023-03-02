@@ -40,6 +40,7 @@ export enum ChannelTab {
     Streams = "streams",
     Playlists = "playlists",
     Community = "community",
+    Store = "store",
     Channels = "channels",
     About = "about",
     Search = "search",
