@@ -53,12 +53,7 @@ export class ChannelScraper {
     private async fetchElements<T extends ElementContext<any>>(
         tab: ChannelTab,
         useContext: Type<T>,
-    ): Promise<
-        Result<
-            MapValueType<ReturnType<T["get"]>>[],
-            FetchError
-        >
-    > {
+    ): Promise<Result<MapValueType<ReturnType<T["get"]>>[], FetchError>> {
         const context = await this.factory.fromUrl(
             this.builder.tab(tab).build(),
             useContext,
@@ -66,7 +61,14 @@ export class ChannelScraper {
         if (context.isErr()) return err(context.error);
 
         const fetchResult = await context.value.fetchAll();
-        if (fetchResult.isErr()) return err(new FetchError(FetchErrorCode.InternalError, {}, fetchResult.error));
+        if (fetchResult.isErr())
+            return err(
+                new FetchError(
+                    FetchErrorCode.InternalError,
+                    {},
+                    fetchResult.error,
+                ),
+            );
 
         return ok([...context.value.get().values()]);
     }

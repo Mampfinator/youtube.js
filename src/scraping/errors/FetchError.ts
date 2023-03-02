@@ -36,5 +36,6 @@ const FETCH_ERROR_MESSAGE_LOOKUP: Record<FetchErrorCode, string> = {
     [FetchErrorCode.Unknown]: "Unknown error.",
     [FetchErrorCode.RetriesExceeded]: "Retries exceeded.",
     [FetchErrorCode.InvalidURL]: "Invalid URL.",
-    [FetchErrorCode.InternalError]: "Internal error! Check suberrors for details."
+    [FetchErrorCode.InternalError]:
+        "Internal error! Check suberrors for details.",
 };

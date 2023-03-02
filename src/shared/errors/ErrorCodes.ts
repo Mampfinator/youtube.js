@@ -1,4 +1,9 @@
-const keys = ["UnknownError", "UnknownChannelTab", "ExpectedResult", "NoContextFound"] as const;
+const keys = [
+    "UnknownError",
+    "UnknownChannelTab",
+    "ExpectedResult",
+    "NoContextFound",
+] as const;
 
 export const YtjsErrorCode = Object.fromEntries(
     keys.map(key => [key, key]),

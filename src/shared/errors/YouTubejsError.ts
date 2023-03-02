@@ -7,7 +7,7 @@ interface YoutubejsBaseError extends Error {
 }
 
 // inspired by Discordjs' internal errors.
-export function makeYouTubejsError(Base: Type<Error>)  {
+export function makeYouTubejsError(Base: Type<Error>) {
     return class YoutubejsError<TCode extends YtjsErrorCode> extends Base {
         constructor(
             public readonly code: TCode,

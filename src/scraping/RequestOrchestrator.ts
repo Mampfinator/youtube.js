@@ -131,7 +131,7 @@ export class RequestOrchestrator implements IRequestOrchestrator {
 
                 const result = await item.transform(value);
                 if (result.isOk()) return result.value;
-                
+
                 throw result.error; // handle in catch block
             });
 
@@ -153,7 +153,11 @@ export class RequestOrchestrator implements IRequestOrchestrator {
 
         if (meta.retries >= (meta.options.maxRetries ?? DEFAULT_RETRIES)) {
             return item.reject(
-                new FetchError(FetchErrorCode.RetriesExceeded, meta.options, meta.reasons),
+                new FetchError(
+                    FetchErrorCode.RetriesExceeded,
+                    meta.options,
+                    meta.reasons,
+                ),
             );
         }
 

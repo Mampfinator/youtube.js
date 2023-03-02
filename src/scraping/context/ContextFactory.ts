@@ -1,5 +1,8 @@
 import { err, ok, Result } from "neverthrow";
-import { YoutubejsError, YoutubejsTypeError } from "../../shared/errors/YouTubejsError";
+import {
+    YoutubejsError,
+    YoutubejsTypeError,
+} from "../../shared/errors/YouTubejsError";
 import { Type } from "../../shared/types";
 import { isResult, isValueOk } from "../../shared/util";
 import { FetchError, FetchErrorCode } from "../errors/FetchError";
@@ -78,7 +81,11 @@ export class ContextFactory {
 
             return result as any;
         }
-        return err(new FetchError(FetchErrorCode.InternalError, {}, [new YoutubejsError("NoContextFound", url)]));
+        return err(
+            new FetchError(FetchErrorCode.InternalError, {}, [
+                new YoutubejsError("NoContextFound", url),
+            ]),
+        );
     }
 
     private getContext<T extends Type<unknown>>(
@@ -90,7 +97,9 @@ export class ContextFactory {
 
             if (!isResult(result))
                 return err(
-                    new FetchError(FetchErrorCode.InternalError, {}, [new YoutubejsTypeError("ExpectedResult", result)])
+                    new FetchError(FetchErrorCode.InternalError, {}, [
+                        new YoutubejsTypeError("ExpectedResult", result),
+                    ]),
                 );
             if (result.isErr()) return ok(undefined);
             return ok(result.value as InstanceType<T>);
@@ -99,7 +108,11 @@ export class ContextFactory {
                 const context = new constructor(options);
                 return ok(context as InstanceType<T>);
             } catch (error) {
-                return err(new FetchError(FetchErrorCode.Unknown, {}, [error as Error]));
+                return err(
+                    new FetchError(FetchErrorCode.Unknown, {}, [
+                        error as Error,
+                    ]),
+                );
             }
         }
     }
