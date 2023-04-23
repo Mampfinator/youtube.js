@@ -10,6 +10,10 @@ export const initialDataRe =
 export const playerResponseRe =
     /(?<=var ytInitialPlayerResponse *\= *)\{.*?}(?=\;)(?<![A-z<>])/;
 
+
+/**
+ * Functions used for extracting data from YouTube pages.
+ */
 export namespace DataExtractors {
     function parse<T extends object>(
         source: string,
@@ -25,16 +29,28 @@ export namespace DataExtractors {
         }
     }
 
+    /**
+     * Parses ytInitialData from any YouTube page.
+     * @param source the page's raw HTML string
+     */
     export function ytInitialData(
         source: string,
     ): Result<YtInitialData, Error> {
         return parse<YtInitialData>(source, initialDataRe);
     }
 
+    /**
+     * **NOT IMPLEMENTED**. 
+     * @param source 
+     */
     export function ytCfg(source: string): Result<YtCfg, Error> {
-        return ok({});
+        throw new Error("Not implemented.");
     }
 
+    /**
+     * Parses ytInitialPlayerResponse from a /watch (or youtu.be) page.
+     * @param source the page's raw HTML string
+     */
     export function ytInitialPlayerResponse(
         source: string,
     ): Result<YtInitialPlayerResponse, Error> {

@@ -27,7 +27,8 @@ export function getContexts(): ContextData[] {
 }
 
 /**
- *
+ * Marks this class as a `Context` for links matching the supplied `Matcher` or `RegExp`. 
+ * Contexts are collected by the `ContextFactory` when it's instantiated, and automatically constructed by it depending on supplied URLs (or use overrides).
  * @param regex What paths to match.
  * @param weight The higher the weight, the earlier this matcher is evaluated.
  */

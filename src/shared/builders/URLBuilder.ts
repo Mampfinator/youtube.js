@@ -1,5 +1,5 @@
 import { ok, err, Result } from "neverthrow";
-import { ChannelTab } from "../../scraping/context/ChannelTabContexts/ChannelTabContext";
+import { ChannelTab } from "../../scraping";
 
 type URLOptions = {
     host: string;

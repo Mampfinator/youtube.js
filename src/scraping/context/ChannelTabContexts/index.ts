@@ -7,3 +7,5 @@ export * from "./ShortsContext";
 export * from "./StreamsContext";
 export * from "./VideosContext";
 export * from "./ChannelSearchContext";
+
+export {ChannelTab, ChannelTabContext, CHANNEL_BASE_REGEX as CHANNEL_URL_REGEX} from "./ChannelTabContext";
