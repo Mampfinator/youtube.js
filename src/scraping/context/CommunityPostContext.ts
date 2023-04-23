@@ -1,8 +1,9 @@
 import { err, ok, Result } from "neverthrow";
 import { extractCommunityPost } from "../extractors/community-posts";
-import { CommunityPost } from "../types/external/community-posts";
+import { CommunityPost, ChannelData } from "../types";
 import { Context } from "./decorators/Context";
 import { ScrapingContext } from "./ScrapingContext";
+import { extractChannelData } from "../extractors/channel-data";
 
 /**
  * Context for individual community posts.
@@ -25,6 +26,19 @@ export class CommunityPostContext extends ScrapingContext {
                 extractCommunityPost(
                     (renderer.backstagePostRenderer ??
                         renderer.sharedPostRenderer)!,
+                ),
+            );
+        } catch (error) {
+            return err(error as Error);
+        }
+    }
+
+    public getChannelData(): Result<ChannelData, Error> {
+        try {
+            return ok(
+                extractChannelData(
+                    this.data.ytInitialData.microformat!
+                        .microformatDataRenderer,
                 ),
             );
         } catch (error) {
