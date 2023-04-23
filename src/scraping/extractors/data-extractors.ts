@@ -20,7 +20,7 @@ export namespace DataExtractors {
         regex: RegExp,
     ): Result<T, Error> {
         try {
-            const match = initialDataRe.exec(source);
+            const match = regex.exec(source);
             if (!match || match.length == 0)
                 return err(new Error(`No match found!`));
             return ok(JSON.parse(match[0]) as T);
