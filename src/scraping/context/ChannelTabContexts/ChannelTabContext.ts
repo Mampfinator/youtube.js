@@ -5,7 +5,7 @@ import { extractChannelData } from "../../extractors/channel-data";
 import { YtInitialData } from "../../types";
 import { ChannelData } from "../../types/external/channel";
 import {
-    CommandClass,
+    MoreEndpoint,
     TabRenderer,
     TabRendererContent,
     TwoColumnBrowseResultsRenderer,
@@ -28,7 +28,7 @@ export function getChannelTabRegex(tab: string): RegExp {
 }
 
 interface Tab<Active extends boolean = false> {
-    endpoint: CommandClass;
+    endpoint: MoreEndpoint;
     selected: boolean;
     content: Active extends true ? TabRendererContent : undefined;
 }
@@ -39,6 +39,7 @@ export enum ChannelTab {
     Shorts = "shorts",
     Streams = "streams",
     Playlists = "playlists",
+    Podcasts = "podcasts",
     Community = "community",
     Store = "store",
     Channels = "channels",
