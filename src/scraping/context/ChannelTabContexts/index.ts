@@ -9,4 +9,8 @@ export * from "./VideosContext";
 export * from "./ChannelSearchContext";
 export * from "./PodcastsContext";
 
-export {ChannelTab, ChannelTabContext, CHANNEL_BASE_REGEX as CHANNEL_URL_REGEX} from "./ChannelTabContext";
+export {
+    ChannelTab,
+    ChannelTabContext,
+    CHANNEL_BASE_REGEX as CHANNEL_URL_REGEX,
+} from "./ChannelTabContext";

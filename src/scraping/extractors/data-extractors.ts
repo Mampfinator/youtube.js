@@ -10,7 +10,6 @@ export const initialDataRe =
 export const playerResponseRe =
     /(?<=var ytInitialPlayerResponse *\= *)\{.*?}(?=\;)(?<![A-z<>])/;
 
-
 /**
  * Functions used for extracting data from YouTube pages.
  */
@@ -40,8 +39,8 @@ export namespace DataExtractors {
     }
 
     /**
-     * **NOT IMPLEMENTED**. 
-     * @param source 
+     * **NOT IMPLEMENTED**.
+     * @param source
      */
     export function ytCfg(source: string): Result<YtCfg, Error> {
         throw new Error("Not implemented.");

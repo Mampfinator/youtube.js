@@ -15,9 +15,13 @@ type Playlist = {};
 @Context(getChannelTabRegex("podcasts"), DEFAULT_WEIGHT + 1)
 export class PodcastsContext extends Mixin(
     ChannelTabContext,
-    ElementContext<Playlist>
+    ElementContext<Playlist>,
 ) {
-    protected getElements(): AsyncGenerator<Result<{ elements: Map<string, Playlist>; }, Error[]>, any, unknown> {
+    protected getElements(): AsyncGenerator<
+        Result<{ elements: Map<string, Playlist> }, Error[]>,
+        any,
+        unknown
+    > {
         throw new Error("Method not implemented.");
     }
 }
