@@ -84,7 +84,7 @@ export abstract class ChannelTabContext<
         return this.tabData.map(data => data.getActive().content);
     }
 
-    protected getChannelData(): Result<ChannelData, Error> {
+    public getChannelData(): Result<ChannelData, Error> {
         try {
             return ok(
                 extractChannelData(

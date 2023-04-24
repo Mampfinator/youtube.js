@@ -10,8 +10,9 @@ import {
     StreamsContext,
     VideosContext,
 } from "./context";
-import { ChannelTab } from "./context/ChannelTabContexts/ChannelTabContext";
+import { ChannelTab, ChannelTabContext } from "./context/ChannelTabContexts/ChannelTabContext";
 import { FetchError, FetchErrorCode } from "./errors/FetchError";
+import { ChannelData } from "./types";
 
 export type ChannelScraperOptions = RequireOnlyOne<{
     tag: string;
@@ -32,6 +33,7 @@ type MapValueType<TMap extends Map<unknown, unknown>> = TMap extends Map<
 // TODO cache contexts and switch internally.
 export class ChannelScraper {
     private readonly builder: ChannelTabBuilder;
+    private lastContext?: ChannelTabContext;
 
     constructor(
         private readonly factory: ContextFactory,
@@ -50,7 +52,7 @@ export class ChannelScraper {
         this.builder = URLBuilder.channel()[key](value);
     }
 
-    private async fetchElements<T extends ElementContext<any>>(
+    private async fetchElements<T extends (ElementContext<any> & ChannelTabContext)>(
         tab: ChannelTab,
         useContext: Type<T>,
     ): Promise<Result<MapValueType<ReturnType<T["get"]>>[], FetchError>> {
@@ -59,6 +61,8 @@ export class ChannelScraper {
             useContext,
         );
         if (context.isErr()) return err(context.error);
+        
+        this.lastContext = context.value;
 
         const fetchResult = await context.value.fetchAll();
         if (fetchResult.isErr())
@@ -100,6 +104,15 @@ export class ChannelScraper {
      */
     public async fetchVideos() {
         return this.fetchElements(ChannelTab.Videos, VideosContext);
+    }
+
+    /**
+     * Extracts the channel's metadata. Requires any `fetch` method to have been called previously.
+     */
+    public getChannelData(): Result<ChannelData, Error> {
+        if (!this.lastContext) return err(new Error(`To extract channel data, make any other request first!`));
+
+        return this.lastContext.getChannelData();
     }
 
     /**
