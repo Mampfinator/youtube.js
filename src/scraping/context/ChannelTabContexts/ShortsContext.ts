@@ -9,12 +9,12 @@ import {
 } from "../../types/internal/generated";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
-import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
+import { ChannelTab, ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 
 /**
  * Channel context for `/shorts`.
  */
-@Context(getChannelTabRegex("shorts"), DEFAULT_WEIGHT + 1)
+@Context(getChannelTabRegex(ChannelTab.Shorts), DEFAULT_WEIGHT + 1)
 export class ShortsContext extends Mixin(
     ChannelTabContext,
     ElementContext<ScrapedShort>,

@@ -7,12 +7,12 @@ import {
 import { FeaturedChannelSection } from "../../types";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
-import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
+import { ChannelTab, ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 
 /**
  * Channel context for `/channels`.
  */
-@Context(getChannelTabRegex("channels"), DEFAULT_WEIGHT + 1)
+@Context(getChannelTabRegex(ChannelTab.Channels), DEFAULT_WEIGHT + 1)
 export class ChannelsContext extends Mixin(
     ChannelTabContext,
     ElementContext<FeaturedChannelSection>,

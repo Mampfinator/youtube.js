@@ -2,13 +2,13 @@ import { Result } from "neverthrow";
 import { Mixin } from "ts-mixer";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
-import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
+import { ChannelTab, ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 
 type Playlist = {};
 /**
  * channel context for `/playlists`.
  */
-@Context(getChannelTabRegex("playlists"), DEFAULT_WEIGHT + 1)
+@Context(getChannelTabRegex(ChannelTab.Playlists), DEFAULT_WEIGHT + 1)
 export class PlaylistsContext extends Mixin(
     ChannelTabContext,
     ElementContext<Playlist>,

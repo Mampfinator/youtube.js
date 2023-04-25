@@ -6,12 +6,12 @@ import { CommunityPost } from "../../types/external/community-posts";
 import { Post } from "../../types/internal/generated";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
-import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
+import { ChannelTab, ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 
 /**
  * Channel context for `/community`.
  */
-@Context(getChannelTabRegex("community"), DEFAULT_WEIGHT + 1)
+@Context(getChannelTabRegex(ChannelTab.Community), DEFAULT_WEIGHT + 1)
 export class CommunityContext extends Mixin(
     ChannelTabContext,
     ElementContext<CommunityPost>,

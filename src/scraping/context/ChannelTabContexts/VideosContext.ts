@@ -8,11 +8,11 @@ import {
 } from "../../types/internal/generated";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
-import { ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
+import { ChannelTab, ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
 /**
  * Channel context for `/videos`.
  */
-@Context(getChannelTabRegex("videos"), DEFAULT_WEIGHT + 1)
+@Context(getChannelTabRegex(ChannelTab.Videos), DEFAULT_WEIGHT + 1)
 export class VideosContext extends Mixin(
     ChannelTabContext,
     ElementContext<ScrapedVideo>,
