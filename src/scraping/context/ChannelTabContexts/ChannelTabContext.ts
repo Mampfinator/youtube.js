@@ -37,7 +37,11 @@ export enum ChannelTab {
     Featured = "featured",
     Videos = "videos",
     Shorts = "shorts",
+    /**
+     * aka "Live"
+     */
     Streams = "streams",
+    Releases = "releases",
     Playlists = "playlists",
     Podcasts = "podcasts",
     Community = "community",
