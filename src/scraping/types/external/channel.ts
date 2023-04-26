@@ -7,3 +7,14 @@ export interface ChannelData {
     tags: string[];
     unlisted: boolean;
 }
+
+export interface FullChannelData extends ChannelData {
+    primaryLinks: PrimaryLink[];
+    channelViews: number;
+}
+
+export interface PrimaryLink {
+    title: string;
+    icon: string;
+    url: string;
+}

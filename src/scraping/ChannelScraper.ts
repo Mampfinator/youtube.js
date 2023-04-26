@@ -1,7 +1,8 @@
-import { ok, err, Result } from "neverthrow";
+import { ok, err, Result, Err } from "neverthrow";
 import { ChannelTabBuilder, URLBuilder } from "../shared/builders/URLBuilder";
 import { Awaitable, RequireOnlyOne, Type } from "../shared/types";
 import {
+    AboutContext,
     ChannelsContext,
     CommunityContext,
     ContextFactory,
@@ -166,6 +167,17 @@ export class ChannelScraper {
             );
 
         return ret;
+    }
+
+    public async fetchAbout() {
+        const context = await this.factory.fromUrl(
+            this.builder.tab(ChannelTab.About).build(),
+            AboutContext,
+        );
+
+        if (context.isErr()) return context as Err<never, FetchError>;
+
+        return context.value.getAbout();
     }
 
     /**
