@@ -6,7 +6,11 @@ import { CommunityPost } from "../../types/external/community-posts";
 import { Post } from "../../types/internal/generated";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ElementContext } from "../ElementContext";
-import { ChannelTab, ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
+import {
+    ChannelTab,
+    ChannelTabContext,
+    getChannelTabRegex,
+} from "./ChannelTabContext";
 
 /**
  * Channel context for `/community`.

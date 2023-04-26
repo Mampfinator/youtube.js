@@ -1,5 +1,9 @@
 import { Mixin } from "ts-mixer";
-import { ChannelTab, ChannelTabContext, getChannelTabRegex } from "./ChannelTabContext";
+import {
+    ChannelTab,
+    ChannelTabContext,
+    getChannelTabRegex,
+} from "./ChannelTabContext";
 import { ElementContext } from "../ElementContext";
 import { Result } from "neverthrow";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
