@@ -1,8 +1,6 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { err, Ok, ok, Result } from "neverthrow";
-import { launch } from "puppeteer";
-import { getStoreByPage } from "puppeteer-tough-cookie-store";
 import { CookieJar, MemoryCookieStore } from "tough-cookie";
 import { YoutubejsError } from "../shared/errors/YouTubejsError";
 import { Type } from "../shared/types";
@@ -40,7 +38,7 @@ export class RequestOrchestrator implements IRequestOrchestrator {
     private readonly queueMeta = new WeakMap<RequestQueueItem, ItemMetadata>();
 
     private initialized = false;
-    private instance!: AxiosInstance;
+    private axios!: AxiosInstance;
     private interval!: NodeJS.Timeout;
 
     constructor() {
@@ -51,62 +49,32 @@ export class RequestOrchestrator implements IRequestOrchestrator {
     }
 
     public async init(): Promise<Result<void, Error>> {
+        this.axios = wrapper(
+            axios.create({ jar: new CookieJar(new MemoryCookieStore()) }),
+        );
+
         try {
-            const browser = await launch({
-                headless: true,
+            await this.axios.get("https://youtube.com/");
+            await this.axios.post(
+                "https://www.youtube.com/upgrade_visitor_cookie",
+                null,
+                { params: { eom: 1 } },
+            );
+            await this.axios.post("https://consent.youtube.com/save", null, {
+                params: {
+                    gl: "GB",
+                    m: 0,
+                    pc: "yt",
+                    x: 5,
+                    src: 2,
+                    hl: "en",
+                    /**
+                     * from some preliminary testing, this appears to be a constant for `Reject All`.
+                     */
+                    bl: 529290703,
+                    set_eom: true,
+                },
             });
-
-            const page = await browser.newPage();
-            const pageJar = new CookieJar(await getStoreByPage(page));
-
-            const response = await page.goto("https://youtube.com/");
-            if (response && !response.ok())
-                return err(
-                    new Error(
-                        `Error getting cookies: ${response.statusText()} (${
-                            response.status
-                        })`,
-                    ),
-                );
-
-            let failed = 0;
-
-            while (true) {
-                await sleep(250);
-
-                const button = await page.$(COOKIE_BUTON_SELECTOR);
-
-                if (button) {
-                    await button.click();
-                    break;
-                } else {
-                    ++failed;
-
-                    if (failed > 5) {
-                        const cookies = await pageJar.getCookies(
-                            "https://youtube.com/",
-                        );
-                        if (cookies.length >= 3) break; // success
-
-                        return err(
-                            new Error(
-                                "Failed getting cookies: button selector invalid.",
-                            ),
-                        );
-                    }
-                }
-            }
-
-            const jar = await pageJar.clone(new MemoryCookieStore());
-
-            await page.close();
-            await browser.close();
-
-            const instance = (this.instance = wrapper(
-                axios.create({
-                    jar,
-                }),
-            ));
 
             this.initialized = true;
 
@@ -114,10 +82,9 @@ export class RequestOrchestrator implements IRequestOrchestrator {
                 this.next();
             }, 1250);
 
-            return ok(undefined);
+            return ok(undefined as void);
         } catch (error) {
-            if (error instanceof Error) return err(error);
-            return err(new Error(`Unknown error: ${String(error)}`));
+            return err(error as Error);
         }
     }
 
@@ -177,7 +144,7 @@ export class RequestOrchestrator implements IRequestOrchestrator {
                 resolve,
                 reject,
                 callback: () =>
-                    this.instance(toAxiosConfig(options)).then(
+                    this.axios(toAxiosConfig(options)).then(
                         response => response.data,
                     ),
                 transform: options.transform,
