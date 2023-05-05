@@ -97,7 +97,11 @@ export class ChannelScraper {
      * @returns the most recent posts on this channel, up to `recentOverrie`.
      */
     public async fetchRecentPosts(recentOverride?: number) {
-        return this.fetchElements(ChannelTab.Community, CommunityContext, recentOverride ?? RECENT_LIMIT);
+        return this.fetchElements(
+            ChannelTab.Community,
+            CommunityContext,
+            recentOverride ?? RECENT_LIMIT,
+        );
     }
 
     /**
@@ -112,7 +116,11 @@ export class ChannelScraper {
      * @returns the most recent shorts on this channel, up to `recentOverrie`.
      */
     public async fetchRecentShorts(recentOverride?: number) {
-        return this.fetchElements(ChannelTab.Shorts, ShortsContext, recentOverride ?? RECENT_LIMIT);
+        return this.fetchElements(
+            ChannelTab.Shorts,
+            ShortsContext,
+            recentOverride ?? RECENT_LIMIT,
+        );
     }
 
     /**
@@ -127,7 +135,11 @@ export class ChannelScraper {
      * @returns the most recent streams on this channel, up to `recentOverrie`.
      */
     public async fetchRecentStreams(recentOverride?: number) {
-        return this.fetchElements(ChannelTab.Streams, StreamsContext, recentOverride ?? RECENT_LIMIT);
+        return this.fetchElements(
+            ChannelTab.Streams,
+            StreamsContext,
+            recentOverride ?? RECENT_LIMIT,
+        );
     }
 
     /**
@@ -142,7 +154,11 @@ export class ChannelScraper {
      * @returns the most recent videos on this channel, up to `recentOverrie`.
      */
     public async fetchRecentVideos(recentOverride?: number) {
-        return this.fetchElements(ChannelTab.Videos, VideosContext, recentOverride ?? RECENT_LIMIT);
+        return this.fetchElements(
+            ChannelTab.Videos,
+            VideosContext,
+            recentOverride ?? RECENT_LIMIT,
+        );
     }
 
     /**

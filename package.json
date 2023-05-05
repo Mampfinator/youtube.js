@@ -16,8 +16,8 @@
     "prepublish": "npm run build",
     "test": "npx mocha -r ts-node/register test/**/*.spec.ts",
     "build": "npx tsc",
-    "format:check": "npx prettier --check \"src/**/*.ts\" \"type-generation/**/*.ts\"",
-    "format:write": "npx prettier --write \"src/**/*.ts\" \"type-generation/**/*.ts\"",
+    "format:check": "npx prettier --check \"src/**/*.ts\" \"type-generation/**/*.ts\" \"test/**/*.ts\"",
+    "format:write": "npx prettier --write \"src/**/*.ts\" \"type-generation/**/*.ts\" \"test/**/*.ts\"",
     "generate": "node -r ts-node/register type-generation/generator/cli.ts --all",
     "np:publish": "npx np"
   },
