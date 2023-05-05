@@ -1,6 +1,7 @@
 export enum AttachmentType {
     Image = "Image",
     Poll = "Poll",
+    Quiz = "Quiz",
     Video = "Video",
     Playlist = "Playlist",
     SharedPost = "SharedPost",
@@ -10,6 +11,10 @@ export enum AttachmentType {
 export interface PollChoice {
     text: string;
     imageUrl?: string;
+}
+
+export interface QuizChoice extends PollChoice {
+    isCorrect: boolean;
 }
 
 interface BaseCommunityPost {
@@ -31,6 +36,11 @@ export interface ImageCommunityPost extends BaseCommunityPost {
 export interface PollCommunityPost extends BaseCommunityPost {
     attachmentType: AttachmentType.Poll;
     choices: PollChoice[];
+}
+
+export interface QuizCommunityPost extends BaseCommunityPost {
+    attachmentType: AttachmentType.Quiz;
+    choices: QuizChoice[];
 }
 
 export interface VideoCommunityPost extends BaseCommunityPost {
@@ -68,6 +78,7 @@ export type CommunityPost =
     | SharedPostCommunityPost
     | ImageCommunityPost
     | PollCommunityPost
+    | QuizCommunityPost
     | VideoCommunityPost
     | PlaylistCommunityPost
     | TextOnlyCommunityPost;

@@ -3,6 +3,7 @@ import {
     AttachmentType,
     CommunityPost,
     PollChoice,
+    QuizChoice,
 } from "../types/external/community-posts";
 
 // TODO: type properly; figure out where quicktype put shared posts (if it even put them anywhere)
@@ -38,6 +39,9 @@ export function extractCommunityPost(
             break;
         case attachment.playlistRenderer != undefined:
             attachmentType = AttachmentType.Playlist;
+            break;
+        case attachment.quizRenderer != undefined:
+            attachmentType = AttachmentType.Quiz;
             break;
         default:
             attachmentType = "INVALID";
@@ -128,7 +132,7 @@ export function extractCommunityPost(
         return images;
     })();
 
-    const choices = (() => {
+    const pollChoices = (() => {
         if (attachmentType !== AttachmentType.Poll) return;
         const { choices: rawChoices } = attachment.pollRenderer;
 
@@ -141,6 +145,32 @@ export function extractCommunityPost(
                 const choice: PollChoice = { text };
                 if (rawChoice.image)
                     choice.imageUrl = getThumbnail(rawChoice.image.thumbnails);
+                return choice;
+            },
+        );
+    })();
+
+    const quizChoices = (() => {
+        if (attachmentType !== AttachmentType.Quiz) return;
+
+        const { choices } = attachment.quizRenderer;
+
+        return choices.map(
+            ({
+                text,
+                image,
+                isCorrect,
+            }: {
+                text: Record<string, any>;
+                image?: Record<string, any>;
+                isCorrect: boolean;
+            }) => {
+                const choice: QuizChoice = {
+                    text: mergeRuns(text.runs),
+                    isCorrect,
+                };
+                if (image) choice.imageUrl = getThumbnail(image.thumbnails);
+
                 return choice;
             },
         );
@@ -204,7 +234,9 @@ export function extractCommunityPost(
 
     if (post.attachmentType === AttachmentType.Image) post.images = images!;
     else if (post.attachmentType === AttachmentType.Poll)
-        post.choices = choices;
+        post.choices = pollChoices;
+    else if (post.attachmentType === AttachmentType.Quiz)
+        post.choices = quizChoices;
     else if (post.attachmentType === AttachmentType.Video) post.video = video!;
     else if (post.attachmentType === AttachmentType.Playlist)
         post.playlist = playlist!;
