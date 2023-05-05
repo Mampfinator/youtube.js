@@ -70,7 +70,7 @@ export class ChannelScraper {
 
         this.lastContext = context.value;
 
-        const fetchResult = await context.value.fetchAll();
+        const fetchResult = await context.value.fetchElements();
         if (fetchResult.isErr())
             return err(
                 new FetchError(

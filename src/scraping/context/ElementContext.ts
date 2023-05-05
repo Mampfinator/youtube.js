@@ -21,12 +21,15 @@ export abstract class ElementContext<
         Result<{ elements: Map<string, TElement> }, Error[]>
     >;
 
-    public async fetchAll(): Promise<Result<void, Error[]>> {
+    // TODO: implement `fetchRecent` methods to `ChannelScraper`.
+    public async fetchElements(amount?: number): Promise<Result<void, Error[]>> {
         for await (const result of this.getElements()) {
             if (result.isErr()) return err(result.error);
 
             for (const [key, value] of result.value.elements) {
                 this.elements.set(key, value);
+
+                if (amount !== undefined && this.elements.size >= amount) return ok(undefined);
             }
         }
 
