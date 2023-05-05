@@ -14,7 +14,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "prepublish": "npm run build",
-    "test": "npx mocha test/**/*.spec.ts",
+    "test": "npx mocha -r ts-node/register test/**/*.spec.ts",
     "build": "npx tsc",
     "format:check": "npx prettier --check \"src/**/*.ts\" \"type-generation/**/*.ts\"",
     "format:write": "npx prettier --write \"src/**/*.ts\" \"type-generation/**/*.ts\"",
