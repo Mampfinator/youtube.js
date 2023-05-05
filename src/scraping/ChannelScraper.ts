@@ -17,6 +17,7 @@ import {
 } from "./context/ChannelTabContexts/ChannelTabContext";
 import { FetchError, FetchErrorCode } from "./errors/FetchError";
 import { ChannelData } from "./types";
+import { RECENT_LIMIT } from "./scraping.constants";
 
 export type ChannelScraperOptions = RequireOnlyOne<{
     tag: string;
@@ -61,6 +62,7 @@ export class ChannelScraper {
     >(
         tab: ChannelTab,
         useContext: Type<T>,
+        limit?: number,
     ): Promise<Result<MapValueType<ReturnType<T["get"]>>[], FetchError>> {
         const context = await this.factory.fromUrl(
             this.builder.tab(tab).build(),
@@ -70,7 +72,7 @@ export class ChannelScraper {
 
         this.lastContext = context.value;
 
-        const fetchResult = await context.value.fetchElements();
+        const fetchResult = await context.value.fetchElements(limit);
         if (fetchResult.isErr())
             return err(
                 new FetchError(
@@ -86,30 +88,61 @@ export class ChannelScraper {
     /**
      * @returns all posts from this channel.
      */
-    public async fetchPosts() {
+    public async fetchAllPosts() {
         return this.fetchElements(ChannelTab.Community, CommunityContext);
+    }
+
+    /**
+     * @param recentOverride how many posts to fetch. Defaults to 15.
+     * @returns the most recent posts on this channel, up to `recentOverrie`.
+     */
+    public async fetchRecentPosts(recentOverride?: number) {
+        return this.fetchElements(ChannelTab.Community, CommunityContext, recentOverride ?? RECENT_LIMIT);
     }
 
     /**
      * @returns all shorts from this channel.
      */
-    public async fetchShorts() {
+    public async fetchAllShorts() {
         return this.fetchElements(ChannelTab.Shorts, ShortsContext);
+    }
+
+    /**
+     * @param recentOverride how many shorts to fetch. Defaults to 15.
+     * @returns the most recent shorts on this channel, up to `recentOverrie`.
+     */
+    public async fetchRecentShorts(recentOverride?: number) {
+        return this.fetchElements(ChannelTab.Shorts, ShortsContext, recentOverride ?? RECENT_LIMIT);
     }
 
     /**
      * @returns all streams from this channel.
      */
-    public async fetchStreams() {
+    public async fetchAllStreams() {
         return this.fetchElements(ChannelTab.Streams, StreamsContext);
     }
 
     /**
-     * Not to be confused with {@linkcode fetchAllVideos}.
+     * @param recentOverride how many streams to fetch. Defaults to 15.
+     * @returns the most recent streams on this channel, up to `recentOverrie`.
+     */
+    public async fetchRecentStreams(recentOverride?: number) {
+        return this.fetchElements(ChannelTab.Streams, StreamsContext, recentOverride ?? RECENT_LIMIT);
+    }
+
+    /**
      * @returns all uploads from this channel.
      */
-    public async fetchVideos() {
+    public async fetchAllVideos() {
         return this.fetchElements(ChannelTab.Videos, VideosContext);
+    }
+
+    /**
+     * @param recentOverride how many videos to fetch. Defaults to 15.
+     * @returns the most recent videos on this channel, up to `recentOverrie`.
+     */
+    public async fetchRecentVideos(recentOverride?: number) {
+        return this.fetchElements(ChannelTab.Videos, VideosContext, recentOverride ?? RECENT_LIMIT);
     }
 
     /**
@@ -131,14 +164,14 @@ export class ChannelScraper {
      * @returns the fetched videos. If a property is undefined, its fetching errors appear in `errors`.
      */
     public async fetchAll(): Promise<{
-        shorts?: ReturnHelper<"fetchShorts">;
-        streams?: ReturnHelper<"fetchStreams">;
-        videos?: ReturnHelper<"fetchVideos">;
+        shorts?: ReturnHelper<"fetchAllShorts">;
+        streams?: ReturnHelper<"fetchAllStreams">;
+        videos?: ReturnHelper<"fetchAllVideos">;
         errors: Error[];
     }> {
-        const shorts = await this.fetchShorts();
-        const streams = await this.fetchStreams();
-        const videos = await this.fetchVideos();
+        const shorts = await this.fetchAllShorts();
+        const streams = await this.fetchAllStreams();
+        const videos = await this.fetchAllVideos();
 
         const ret: Awaited<ReturnType<ChannelScraper["fetchAll"]>> = {
             errors: [],
