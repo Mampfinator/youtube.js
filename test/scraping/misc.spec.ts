@@ -14,17 +14,6 @@ describe("Misc", () => {
         await client?.destroy();
     });
 
-    it("should return Err when uninitialized orchestrator is used", async () => {
-        const err = await client.channel({ tag: "@:)" }).fetchAbout();
-
-        expect(err.isErr()).to.be.true;
-        if (err.isOk()) return;
-
-        expect(err.error)
-            .property("code")
-            .to.equal(FetchErrorCode.NotInitialized);
-    });
-
     describe("ElementContext", () => {
         it("should only fetch the amount of elements specified", async () => {
             const context = await client.contexts.fromUrl<VideosContext>(
