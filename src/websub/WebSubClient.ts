@@ -46,6 +46,7 @@ interface WebSubClientEvents {
     entryAdded: (payload: EntryPayload) => void;
     entryUpdated: (payload: EntryPayload) => void;
     feedModified: (payload: EntryPayload) => void;
+    error: (error: any) => void;
 }
 
 export class WebSubClient extends EventEmitter {
@@ -109,27 +110,31 @@ export class WebSubClient extends EventEmitter {
             const [, channelId] = topic.split("=");
             if (!channelId) return res.writeHead(400);
 
-            switch (mode as ResponseMode) {
-                case "denied":
-                    this.pending.get(`subscribe:${channelId}`)!(
-                        err(new Error("Subscription denied.")),
-                    );
-                    this.emit("denied", channelId);
-                    break;
-                case "subscribe":
-                    this.pending.get(`subscribe:${channelId}`)!(ok(undefined));
-                    this.emit("subscribed", channelId);
-                    break;
-                case "unsubscribe":
-                    this.pending.get(`unsubscribe:${channelId}`)?.(
-                        ok(undefined),
-                    );
-                    this.emit("unsubscribed", channelId);
-                    break;
-                default:
-                    throw new Error(
-                        `Unknown mode "${mode}" in YouTube WebSub message.`,
-                    );
+            try {
+                switch (mode as ResponseMode) {
+                    case "denied":
+                        this.pending.get(`subscribe:${channelId}`)?.(
+                            err(new Error("Subscription denied.")),
+                        );
+                        this.emit("denied", channelId);
+                        break;
+                    case "subscribe":
+                        this.pending.get(`subscribe:${channelId}`)?.(ok(undefined));
+                        this.emit("subscribed", channelId);
+                        break;
+                    case "unsubscribe":
+                        this.pending.get(`unsubscribe:${channelId}`)?.(
+                            ok(undefined),
+                        );
+                        this.emit("unsubscribed", channelId);
+                        break;
+                    default:
+                        throw new Error(
+                            `Unknown mode "${mode}" in YouTube WebSub message for ${channelId}.`,
+                        );
+                    }
+            } catch (error) {
+                this.emit("error", error);
             }
 
             res.send(challenge);
@@ -327,6 +332,16 @@ export class WebSubClient extends EventEmitter {
         eventName: "feedModified",
         listener: WebSubClientEvents["feedModified"],
     ): this;
+
+    /**
+     * Emitted when an unexpected `Error` is thrown.
+     * @event
+     */
+    public on(
+        eventName: "error",
+        listener: WebSubClientEvents["error"],
+    ): this;
+
     /**
      * Add a listener to this emitter that is called when the corresponding event is emitted.
      */
