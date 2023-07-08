@@ -6,9 +6,9 @@ import {
 import { Result, ok, err } from "neverthrow";
 
 export const initialDataRe =
-    /(?<=var ytInitialData *\= *)\{.*?}(?=\;)(?<![A-z<>])/;
+    /(?<=var ytInitialData *\= *)\{.*?}(?=\;)(?<![A-Za-z<>])/;
 export const playerResponseRe =
-    /(?<=var ytInitialPlayerResponse *\= *)\{.*?}(?=\;)(?<![A-z<>])/;
+    /(?<=var ytInitialPlayerResponse *\= *)\{.*?}(?=\;)(?<![A-Za-z<>])/;
 
 /**
  * Functions used for extracting data from YouTube pages.

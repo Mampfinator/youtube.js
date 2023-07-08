@@ -9,7 +9,7 @@ import { extractChannelData } from "../extractors/channel-data";
  * Context for individual community posts.
  */
 @Context(
-    /(?<=youtube.com\/post\/)Ug[A-z0-9_\-]+|(?<=youtube.com\/channel\/.+\/community\?lb=)Ug[A-z0-9_\-]/,
+    /(?<=youtube.com\/post\/)Ug[A-Za-z0-9_\-]+|(?<=youtube.com\/channel\/.+\/community\?lb=)Ug[A-Za-z0-9_\-]/,
     2 /* needs to be evaluated **before** CommunityContext */,
 )
 export class CommunityPostContext extends ScrapingContext {

@@ -19,7 +19,7 @@ import { ScrapingContext } from "../ScrapingContext";
  * - `youtube.com/c/vanityURL`
  */
 export const CHANNEL_BASE_REGEX =
-    /youtube\.com\/(@[A-z0-9\-]+|c\/[A-z0-9\-]+|channel\/[A-z0-9\-]+)/;
+    /youtube\.com\/(@[A-Za-z0-9_\-]+|c\/[A-Za-z0-9_\-]+|channel\/[A-Za-z0-9_\-]+)/;
 
 export function getChannelTabRegex(tab: string): RegExp {
     const string =
