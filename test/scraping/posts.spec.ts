@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { ScrapingClient, AttachmentType } from "../../src";
 
 describe("Community Posts", function() {
-    this.timeout(5000);
+    this.timeout(10000);
 
     let client: ScrapingClient;
     before(async () => {
@@ -29,7 +29,7 @@ describe("Community Posts", function() {
 
         it("Image Attachment", async () => {
             const post = await client
-                .post("Ugkxp1_9j8Hi3POvgg6qdsKnJ1BjDrdrn10A")
+                .post("UgkxB55RI7tUNNnuHZ9EeIvPXPIzQ1slEqOD")
                 .getPost();
             expect(post.isOk()).to.be.true;
             if (post.isErr()) return;

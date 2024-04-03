@@ -18,7 +18,7 @@ describe("Misc", () => {
         it("should only fetch the amount of elements specified", async () => {
             const context = await client.contexts.fromUrl<VideosContext>(
                 URLBuilder.channel()
-                    .tag("@SelenTatsuki")
+                    .tag("@Dokibird")
                     .tab(ChannelTab.Streams)
                     .build(),
             );

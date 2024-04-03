@@ -1,4 +1,6 @@
+import { AxiosError } from "axios";
 import { FetchOptions } from "../scraping.interfaces";
+import { Result, err, ok } from "neverthrow";
 
 export enum FetchErrorCode {
     /**
@@ -17,6 +19,13 @@ export enum FetchErrorCode {
     InternalError = "InternalError",
 }
 
+const AXIOS_ERROR_CODE_LOOKUP = {
+    404: FetchErrorCode.NotFound,
+    403: FetchErrorCode.Blocked,
+    500: FetchErrorCode.BadRequest,
+};
+
+
 export class FetchError<TCode extends FetchErrorCode = any> extends Error {
     constructor(
         public readonly code: TCode,
@@ -24,6 +33,13 @@ export class FetchError<TCode extends FetchErrorCode = any> extends Error {
         public readonly errors?: Error[],
     ) {
         super(FETCH_ERROR_MESSAGE_LOOKUP[code] ?? `Unknown error: ${code}.`);
+    }
+
+    static fromAxiosError(error: AxiosError, fetchOptions?: Record<string, any>): Result<FetchError<any>, null> {
+        const code = error.response?.status;
+        if (!code) return err(null);
+        if (!(code in AXIOS_ERROR_CODE_LOOKUP)) return err(null);
+        return ok(new FetchError(AXIOS_ERROR_CODE_LOOKUP[code as keyof typeof AXIOS_ERROR_CODE_LOOKUP], fetchOptions, [error]));
     }
 }
 

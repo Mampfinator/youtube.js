@@ -104,6 +104,11 @@ export class RequestOrchestrator implements IRequestOrchestrator {
 
             item.resolve(value instanceof Ok ? value : ok(value));
         } catch (error) {
+            // if our callback throws a FetchError, we can abort and bubble it up to the caller.
+            if (error instanceof FetchError) {
+                return item.reject(error);
+            }
+
             this.requeue(item, error as Error);
         }
     }
@@ -143,10 +148,26 @@ export class RequestOrchestrator implements IRequestOrchestrator {
             const item: RequestQueueItem = {
                 resolve,
                 reject,
-                callback: () =>
-                    this.axios(toAxiosConfig(options)).then(
-                        response => response.data,
-                    ),
+                callback: async () => {
+                    console.log("Fetching...");
+
+                    try {
+                        const {data: response} = await this.axios(toAxiosConfig(options));
+                        return response;
+
+                    } catch (error) {
+                        console.log("Got error.");
+                        if (!(error instanceof AxiosError)) throw error
+
+                        const fetchError = FetchError.fromAxiosError(error);
+
+                        if (fetchError.isOk()) {
+                            throw fetchError.value;
+                        } else {
+                            throw error;
+                        }
+                    }
+                },
                 transform: options.transform,
             };
 
