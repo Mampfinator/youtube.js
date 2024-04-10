@@ -15,16 +15,23 @@ exports.toAxiosConfig = toAxiosConfig;
  * Sanitizes non-standard (YouTube) URL parameters.
  */
 const sanitizeUrl = (url, offset = 0) => {
-    return url
+    let sanitizedUrl = url
         .split("=")
         .slice(0, offset + 1)
         .join("");
+    if (sanitizedUrl.startsWith("//"))
+        sanitizedUrl = `https:${sanitizedUrl}`;
+    return sanitizedUrl;
 };
 exports.sanitizeUrl = sanitizeUrl;
 /**
  * Merges {@linkcode Run} Arrays into a single text string.
  */
-const mergeRuns = (runs) => runs.map(r => r.text).join("");
+// FIXME: *incredibly* stupid hack. Sometimes `runs` can be undefined, and still get past a type check in FeaturedContext.
+// The current fix (? chaining) can cause issues elsewhere, although for now, this is fine.
+const mergeRuns = (runs) => {
+    return runs?.map(r => r.text).join("");
+};
 exports.mergeRuns = mergeRuns;
 const isValidDate = (date) => !isNaN(date.getTime());
 exports.isValidDate = isValidDate;

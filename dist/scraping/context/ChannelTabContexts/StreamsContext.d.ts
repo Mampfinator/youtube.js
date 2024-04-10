@@ -4,9 +4,9 @@ import { ElementContext } from "../ElementContext";
 import { ChannelTabContext } from "./ChannelTabContext";
 declare const StreamsContext_base: import("ts-mixer/dist/types/types").Class<any[], ChannelTabContext<{
     ytInitialData: import("../../types").YtInitialData;
-}> & ElementContext<ScrapedStream>, (abstract new (options: import("..").ContextOptions) => ChannelTabContext<{
+}> & ElementContext<ScrapedStream, string>, (abstract new (options: import("..").ContextOptions) => ChannelTabContext<{
     ytInitialData: import("../../types").YtInitialData;
-}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<ScrapedStream>), false>;
+}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<ScrapedStream, string>), false>;
 /**
  * Channel context for `/streams`.
  */

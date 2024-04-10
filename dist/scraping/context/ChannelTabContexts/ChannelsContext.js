@@ -32,7 +32,7 @@ let ChannelsContext = class ChannelsContext extends (0, ts_mixer_1.Mixin)(Channe
                 sections.push((0, featured_channels_1.extractShelfSection)(shelfRenderer));
             if (gridRenderer)
                 sections.push((0, featured_channels_1.extractDefaultGridSection)(gridRenderer));
-            return sections;
+            return sections.filter(c => c !== null);
         })
             .flat()
             .filter(i => i);

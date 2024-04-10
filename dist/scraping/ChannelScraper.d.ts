@@ -71,7 +71,7 @@ export declare class ChannelScraper {
     /**
      * @returns a list of channels this channel features.
      */
-    fetchFeaturedChannels(): Promise<Result<import("./types").FeaturedChannelSection[], FetchError<any>>>;
+    fetchFeaturedChannels(): Promise<Result<import("./types").FeaturedChannelSection[], Error>>;
 }
 type ReturnHelper<TKey extends keyof ChannelScraper> = ChannelScraper[TKey] extends (...args: any[]) => Awaitable<Result<infer V, any>> ? V : never;
 export {};

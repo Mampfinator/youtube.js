@@ -8,6 +8,11 @@ exports.DEFAULT_CHANNEL_SECTION = "DEFAULT_CHANNEL_SECTION";
  * Extracts a featured channel section from a section shelf renderer.
  */
 function extractShelfSection(renderer) {
+    if (!renderer)
+        return null;
+    if (!renderer.content.horizontalListRenderer?.items.some(item => item.gridChannelRenderer) && !renderer.content.expandedShelfContentsRenderer) {
+        return null;
+    }
     const { title: { runs } = { runs: [] }, content: { expandedShelfContentsRenderer, horizontalListRenderer }, } = renderer;
     return {
         title: (0, scraping_util_1.mergeRuns)(runs),

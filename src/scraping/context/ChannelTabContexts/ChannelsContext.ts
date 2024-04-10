@@ -19,10 +19,10 @@ import {
 @Context(getChannelTabRegex(ChannelTab.Channels), DEFAULT_WEIGHT + 1)
 export class ChannelsContext extends Mixin(
     ChannelTabContext,
-    ElementContext<FeaturedChannelSection>,
+    ElementContext<FeaturedChannelSection, string | null>,
 ) {
     protected async *getElements(): AsyncGenerator<
-        Result<{ elements: Map<string, FeaturedChannelSection> }, Error[]>,
+        Result<{ elements: Map<string | null, FeaturedChannelSection> }, Error[]>,
         any,
         unknown
     > {
@@ -36,12 +36,12 @@ export class ChannelsContext extends Mixin(
             )
             .flat()
             .map(({ shelfRenderer, gridRenderer }) => {
-                const sections: FeaturedChannelSection[] = [];
+                const sections: (FeaturedChannelSection | null)[] = [];
                 if (shelfRenderer)
                     sections.push(extractShelfSection(shelfRenderer));
                 if (gridRenderer)
                     sections.push(extractDefaultGridSection(gridRenderer));
-                return sections;
+                return sections.filter(c => c !== null) as FeaturedChannelSection[];
             })
             .flat()
             .filter(i => i);

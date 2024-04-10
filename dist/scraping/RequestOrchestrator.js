@@ -1,10 +1,30 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RequestOrchestrator = void 0;
-const axios_1 = __importDefault(require("axios"));
+const axios_1 = __importStar(require("axios"));
 const axios_cookiejar_support_1 = require("axios-cookiejar-support");
 const neverthrow_1 = require("neverthrow");
 const tough_cookie_1 = require("tough-cookie");
@@ -73,6 +93,10 @@ class RequestOrchestrator {
             item.resolve(value instanceof neverthrow_1.Ok ? value : (0, neverthrow_1.ok)(value));
         }
         catch (error) {
+            // if our callback throws a FetchError, we can abort and bubble it up to the caller.
+            if (error instanceof FetchError_1.FetchError) {
+                return item.reject(error);
+            }
             this.requeue(item, error);
         }
     }
@@ -95,7 +119,23 @@ class RequestOrchestrator {
             const item = {
                 resolve,
                 reject,
-                callback: () => this.axios((0, scraping_util_1.toAxiosConfig)(options)).then(response => response.data),
+                callback: async () => {
+                    try {
+                        const { data: response } = await this.axios((0, scraping_util_1.toAxiosConfig)(options));
+                        return response;
+                    }
+                    catch (error) {
+                        if (!(error instanceof axios_1.AxiosError))
+                            throw error;
+                        const fetchError = FetchError_1.FetchError.fromAxiosError(error);
+                        if (fetchError.isOk()) {
+                            throw fetchError.value;
+                        }
+                        else {
+                            throw error;
+                        }
+                    }
+                },
                 transform: options.transform,
             };
             const meta = {

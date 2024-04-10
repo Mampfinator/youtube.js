@@ -4,7 +4,7 @@ export declare const DEFAULT_CHANNEL_SECTION = "DEFAULT_CHANNEL_SECTION";
 /**
  * Extracts a featured channel section from a section shelf renderer.
  */
-export declare function extractShelfSection(renderer: PurpleShelfRenderer): FeaturedChannelSection;
+export declare function extractShelfSection(renderer: PurpleShelfRenderer): FeaturedChannelSection | null;
 /**
  *
  * @param renderers

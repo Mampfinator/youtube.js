@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FetchError = exports.FetchErrorCode = void 0;
+const neverthrow_1 = require("neverthrow");
 var FetchErrorCode;
 (function (FetchErrorCode) {
     /**
@@ -18,6 +19,11 @@ var FetchErrorCode;
     FetchErrorCode["InvalidURL"] = "InvalidURL";
     FetchErrorCode["InternalError"] = "InternalError";
 })(FetchErrorCode = exports.FetchErrorCode || (exports.FetchErrorCode = {}));
+const AXIOS_ERROR_CODE_LOOKUP = {
+    404: FetchErrorCode.NotFound,
+    403: FetchErrorCode.Blocked,
+    500: FetchErrorCode.BadRequest,
+};
 class FetchError extends Error {
     code;
     options;
@@ -27,6 +33,14 @@ class FetchError extends Error {
         this.code = code;
         this.options = options;
         this.errors = errors;
+    }
+    static fromAxiosError(error, fetchOptions) {
+        const code = error.response?.status;
+        if (!code)
+            return (0, neverthrow_1.err)(null);
+        if (!(code in AXIOS_ERROR_CODE_LOOKUP))
+            return (0, neverthrow_1.err)(null);
+        return (0, neverthrow_1.ok)(new FetchError(AXIOS_ERROR_CODE_LOOKUP[code], fetchOptions, [error]));
     }
 }
 exports.FetchError = FetchError;

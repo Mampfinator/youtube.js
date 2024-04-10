@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+import { Result } from "neverthrow";
 export declare enum FetchErrorCode {
     /**
      * Implies the host has blocked further requests.
@@ -19,4 +21,5 @@ export declare class FetchError<TCode extends FetchErrorCode = any> extends Erro
     readonly options?: Record<string, any> | undefined;
     readonly errors?: Error[] | undefined;
     constructor(code: TCode, options?: Record<string, any> | undefined, errors?: Error[] | undefined);
+    static fromAxiosError(error: AxiosError, fetchOptions?: Record<string, any>): Result<FetchError<any>, null>;
 }

@@ -16,10 +16,14 @@ export function toAxiosConfig(input: FetchOptions<any>): AxiosRequestConfig {
  * Sanitizes non-standard (YouTube) URL parameters.
  */
 export const sanitizeUrl = (url: string, offset = 0): string => {
-    return url
+    let sanitizedUrl = url
         .split("=")
         .slice(0, offset + 1)
         .join("");
+
+    if (sanitizedUrl.startsWith("//")) sanitizedUrl = `https:${sanitizedUrl}`;
+
+    return sanitizedUrl;
 };
 
 type Run = {
@@ -28,7 +32,11 @@ type Run = {
 /**
  * Merges {@linkcode Run} Arrays into a single text string.
  */
-export const mergeRuns = (runs: Run[]) => runs.map(r => r.text).join("");
+// FIXME: *incredibly* stupid hack. Sometimes `runs` can be undefined, and still get past a type check in FeaturedContext.
+// The current fix (? chaining) can cause issues elsewhere, although for now, this is fine.
+export const mergeRuns = (runs: Run[]): string => {
+    return runs?.map(r => r.text).join("")!;
+}
 
 export const isValidDate = (date: Date) => !isNaN(date.getTime());
 export const tryParseDate = (timestamp: string) => {

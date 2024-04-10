@@ -19,7 +19,7 @@ export interface FullFeaturedChannel extends BaseFeaturedChannel {
     }[];
 }
 export interface FeaturedChannelSection {
-    title: string;
+    title: string | null;
     channels: FeaturedChannel[];
 }
 export {};

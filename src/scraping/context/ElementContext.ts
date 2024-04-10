@@ -6,19 +6,20 @@ import { ScrapingContext } from "./ScrapingContext";
  */
 export abstract class ElementContext<
     TElement extends object,
+    TKey = string,
 > extends ScrapingContext<any> {
-    protected readonly elements = new Map<string, TElement>();
+    protected readonly elements = new Map<TKey, TElement>();
 
     /**
      * Collect current elements
      * @returns all current known elements.
      */
-    public get(): Map<string, TElement> {
+    public get(): Map<TKey, TElement> {
         return new Map([...this.elements]);
     }
 
     protected abstract getElements(): AsyncGenerator<
-        Result<{ elements: Map<string, TElement> }, Error[]>
+        Result<{ elements: Map<TKey, TElement> }, Error[]>
     >;
 
     // TODO: implement `fetchRecent` methods to `ChannelScraper`.

@@ -128,13 +128,18 @@ class ChannelScraper {
         const context = await this.factory.fromUrl(this.builder.tab(ChannelTabContext_1.ChannelTab.About).build(), context_1.AboutContext);
         if (context.isErr())
             return context;
+        this.lastContext = context.value;
         return context.value.getAbout();
     }
     /**
      * @returns a list of channels this channel features.
      */
     async fetchFeaturedChannels() {
-        return this.fetchElements(ChannelTabContext_1.ChannelTab.Channels, context_1.ChannelsContext);
+        const context = await this.factory.fromUrl(this.builder.build(), context_1.FeaturedContext);
+        if (context.isErr())
+            return (0, neverthrow_1.err)(context.error);
+        this.lastContext = context.value;
+        return context.value.getFeaturedChannels();
     }
 }
 exports.ChannelScraper = ChannelScraper;

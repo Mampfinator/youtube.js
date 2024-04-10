@@ -3,10 +3,10 @@ import { ChannelTabBuilder, URLBuilder } from "../shared/builders/URLBuilder";
 import { Awaitable, RequireOnlyOne, Type } from "../shared/types";
 import {
     AboutContext,
-    ChannelsContext,
     CommunityContext,
     ContextFactory,
     ElementContext,
+    FeaturedContext,
     ShortsContext,
     StreamsContext,
     VideosContext,
@@ -226,6 +226,8 @@ export class ChannelScraper {
 
         if (context.isErr()) return context as Err<never, FetchError>;
 
+        this.lastContext = context.value;
+
         return context.value.getAbout();
     }
 
@@ -233,7 +235,12 @@ export class ChannelScraper {
      * @returns a list of channels this channel features.
      */
     public async fetchFeaturedChannels() {
-        return this.fetchElements(ChannelTab.Channels, ChannelsContext);
+        const context = await this.factory.fromUrl(this.builder.build(), FeaturedContext);
+        if (context.isErr()) return err(context.error);
+
+        this.lastContext = context.value;
+
+        return context.value.getFeaturedChannels();
     }
 }
 

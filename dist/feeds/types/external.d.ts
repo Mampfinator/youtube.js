@@ -20,10 +20,10 @@ export interface FeedChannel {
     id: string;
     name: string;
 }
-export interface ChannelFeed {
+export interface ChannelFeed extends BaseFeed {
     type: FeedType.Channel;
 }
-export interface PlaylistFeed {
+export interface PlaylistFeed extends BaseFeed {
     type: FeedType.Playlist;
     playlistId: string;
 }

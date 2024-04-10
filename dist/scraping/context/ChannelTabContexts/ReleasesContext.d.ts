@@ -4,9 +4,9 @@ import { Result } from "neverthrow";
 type Playlist = {};
 declare const ReleasesContext_base: import("ts-mixer/dist/types/types").Class<any[], ChannelTabContext<{
     ytInitialData: import("../..").YtInitialData;
-}> & ElementContext<Playlist>, (abstract new (options: import("..").ContextOptions) => ChannelTabContext<{
+}> & ElementContext<Playlist, string>, (abstract new (options: import("..").ContextOptions) => ChannelTabContext<{
     ytInitialData: import("../..").YtInitialData;
-}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<Playlist>), false>;
+}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<Playlist, string>), false>;
 export declare class ReleasesContext extends ReleasesContext_base {
     protected getElements(): AsyncGenerator<Result<{
         elements: Map<string, Playlist>;
