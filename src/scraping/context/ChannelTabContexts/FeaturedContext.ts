@@ -1,9 +1,12 @@
 import { Err, Result, err, ok } from "neverthrow";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ChannelTabContext, CHANNEL_BASE_REGEX } from "./ChannelTabContext";
-import { FeaturedChannelSection } from "../../types";
-import { FluffyRun, GridChannelRenderer } from "../../types/internal/generated";
-import { extractPartialFeaturedChannel } from "../../extractors/featured-channels";
+import { FeaturedChannel, FeaturedChannelSection } from "../../types";
+import { FluffyRun } from "../../types/internal/generated";
+import {
+    extractFullFeaturedChannel,
+    extractPartialFeaturedChannel,
+} from "../../extractors/featured-channels";
 import { mergeRuns } from "../../scraping.util";
 
 /**
@@ -21,13 +24,18 @@ export class FeaturedContext extends ChannelTabContext {
 
         if (!contents) return err(new Error("Empty channel data"));
 
+        // TODO: check for potential continuations? Although I'm *somewhat* sure channels are usually all included.
         const channelSections = contents
             .map(section => section.itemSectionRenderer)
             .filter(section =>
-                section?.contents.filter(sectionItems =>
-                    sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.some(
-                        item => item.gridChannelRenderer,
-                    ),
+                section?.contents.filter(
+                    sectionItems =>
+                        sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.some(
+                            item => item.gridChannelRenderer,
+                        ) ??
+                        !!sectionItems.shelfRenderer?.content
+                            .expandedShelfContentsRenderer?.items[0]
+                            ?.channelRenderer,
                 ),
             )
             .map(section => {
@@ -48,19 +56,26 @@ export class FeaturedContext extends ChannelTabContext {
 
                 const channels = section.contents
                     .map(sectionItems => {
-                        return sectionItems.shelfRenderer?.content.horizontalListRenderer?.items
-                            .map(item => item.gridChannelRenderer)
-                            .filter(c => c);
+                        return (
+                            sectionItems.shelfRenderer?.content.horizontalListRenderer?.items
+                                .map(item => item.gridChannelRenderer)
+                                .filter(c => !!c)
+                                .map(c => extractPartialFeaturedChannel(c!)) ??
+                            sectionItems.shelfRenderer?.content.expandedShelfContentsRenderer?.items
+                                .map(item => item.channelRenderer)
+                                .filter(c => !!c)
+                                .map(c => extractFullFeaturedChannel(c!))
+                        );
                     })
                     .flat()
-                    .filter(c => !!c) as GridChannelRenderer[];
+                    .filter(c => !!c) as FeaturedChannel[];
 
                 if (channels.length === 0) {
                     return null;
                 } else {
                     return {
                         title: title ?? "",
-                        channels: channels.map(extractPartialFeaturedChannel),
+                        channels,
                     };
                 }
             })
