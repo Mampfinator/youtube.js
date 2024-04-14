@@ -119,7 +119,9 @@ export class WebSubClient extends EventEmitter {
                         this.emit("denied", channelId);
                         break;
                     case "subscribe":
-                        this.pending.get(`subscribe:${channelId}`)?.(ok(undefined));
+                        this.pending.get(`subscribe:${channelId}`)?.(
+                            ok(undefined),
+                        );
                         this.emit("subscribed", channelId);
                         break;
                     case "unsubscribe":
@@ -132,7 +134,7 @@ export class WebSubClient extends EventEmitter {
                         throw new Error(
                             `Unknown mode "${mode}" in YouTube WebSub message for ${channelId}.`,
                         );
-                    }
+                }
             } catch (error) {
                 this.emit("error", error);
             }
@@ -337,10 +339,7 @@ export class WebSubClient extends EventEmitter {
      * Emitted when an unexpected `Error` is thrown.
      * @event
      */
-    public on(
-        eventName: "error",
-        listener: WebSubClientEvents["error"],
-    ): this;
+    public on(eventName: "error", listener: WebSubClientEvents["error"]): this;
 
     /**
      * Add a listener to this emitter that is called when the corresponding event is emitted.

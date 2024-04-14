@@ -36,7 +36,7 @@ type Run = {
 // The current fix (? chaining) can cause issues elsewhere, although for now, this is fine.
 export const mergeRuns = (runs: Run[]): string => {
     return runs?.map(r => r.text).join("")!;
-}
+};
 
 export const isValidDate = (date: Date) => !isNaN(date.getTime());
 export const tryParseDate = (timestamp: string) => {

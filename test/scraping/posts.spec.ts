@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ScrapingClient, AttachmentType } from "../../src";
 
-describe("Community Posts", function() {
+describe("Community Posts", function () {
     this.timeout(10000);
 
     let client: ScrapingClient;

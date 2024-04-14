@@ -24,17 +24,28 @@ let FeaturedContext = class FeaturedContext extends ChannelTabContext_1.ChannelT
         const contents = data.value?.sectionListRenderer?.contents;
         if (!contents)
             return (0, neverthrow_1.err)(new Error("Empty channel data"));
-        const channelSections = contents.map(section => section.itemSectionRenderer).filter(section => section?.contents.filter(sectionItems => sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.some(item => item.gridChannelRenderer)))
+        const channelSections = contents
+            .map(section => section.itemSectionRenderer)
+            .filter(section => section?.contents.filter(sectionItems => sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.some(item => item.gridChannelRenderer)))
             .map(section => {
             const rawTitle = section.contents.find(c => c.shelfRenderer?.title)?.shelfRenderer?.title;
             if (!rawTitle) {
                 return null;
             }
+            const title = 
             // @ts-ignore
-            const title = rawTitle.simpleText ?? (0, scraping_util_1.mergeRuns)(rawTitle.runs) ?? null;
-            const channels = section.contents.map(sectionItems => {
-                return sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.map(item => item.gridChannelRenderer).filter(c => c);
-            }).flat().filter(c => !!c);
+            rawTitle.simpleText ??
+                // @ts-ignore
+                (0, scraping_util_1.mergeRuns)(rawTitle.runs) ??
+                null;
+            const channels = section.contents
+                .map(sectionItems => {
+                return sectionItems.shelfRenderer?.content.horizontalListRenderer?.items
+                    .map(item => item.gridChannelRenderer)
+                    .filter(c => c);
+            })
+                .flat()
+                .filter(c => !!c);
             if (channels.length === 0) {
                 return null;
             }
@@ -44,7 +55,8 @@ let FeaturedContext = class FeaturedContext extends ChannelTabContext_1.ChannelT
                     channels: channels.map(featured_channels_1.extractPartialFeaturedChannel),
                 };
             }
-        }).filter(c => c !== null);
+        })
+            .filter(c => c !== null);
         return (0, neverthrow_1.ok)(channelSections);
     }
 };

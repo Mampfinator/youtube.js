@@ -25,7 +25,6 @@ const AXIOS_ERROR_CODE_LOOKUP = {
     500: FetchErrorCode.BadRequest,
 };
 
-
 export class FetchError<TCode extends FetchErrorCode = any> extends Error {
     constructor(
         public readonly code: TCode,
@@ -35,11 +34,22 @@ export class FetchError<TCode extends FetchErrorCode = any> extends Error {
         super(FETCH_ERROR_MESSAGE_LOOKUP[code] ?? `Unknown error: ${code}.`);
     }
 
-    static fromAxiosError(error: AxiosError, fetchOptions?: Record<string, any>): Result<FetchError<any>, null> {
+    static fromAxiosError(
+        error: AxiosError,
+        fetchOptions?: Record<string, any>,
+    ): Result<FetchError<any>, null> {
         const code = error.response?.status;
         if (!code) return err(null);
         if (!(code in AXIOS_ERROR_CODE_LOOKUP)) return err(null);
-        return ok(new FetchError(AXIOS_ERROR_CODE_LOOKUP[code as keyof typeof AXIOS_ERROR_CODE_LOOKUP], fetchOptions, [error]));
+        return ok(
+            new FetchError(
+                AXIOS_ERROR_CODE_LOOKUP[
+                    code as keyof typeof AXIOS_ERROR_CODE_LOOKUP
+                ],
+                fetchOptions,
+                [error],
+            ),
+        );
     }
 }
 

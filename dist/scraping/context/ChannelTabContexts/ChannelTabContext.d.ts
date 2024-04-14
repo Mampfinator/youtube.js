@@ -29,8 +29,6 @@ export declare enum ChannelTab {
     Podcasts = "podcasts",
     Community = "community",
     Store = "store",
-    Channels = "channels",
-    About = "about",
     Search = "search"
 }
 /**
@@ -45,7 +43,15 @@ export declare abstract class ChannelTabContext<TExtractData extends {
     protected get tabData(): Result<TabData, Error>;
     private getTabData;
     protected getData(): Result<TabRenderer["content"], Error>;
+    fetchAbout(): Promise<Result<AboutData, Error>>;
     getChannelData(): Result<ChannelData, Error>;
+}
+export interface AboutData {
+    description: string;
+    links: {
+        title: string;
+        url: string;
+    }[];
 }
 declare class TabData<TTab extends ChannelTab = any> {
     private readonly tabs;

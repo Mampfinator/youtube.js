@@ -1,5 +1,3 @@
-export * from "./AboutContext";
-export * from "./ChannelsContext";
 export * from "./CommunityContext";
 export * from "./FeaturedContext";
 export * from "./PlaylistsContext";

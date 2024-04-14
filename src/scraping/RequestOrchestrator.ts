@@ -150,11 +150,12 @@ export class RequestOrchestrator implements IRequestOrchestrator {
                 reject,
                 callback: async () => {
                     try {
-                        const {data: response} = await this.axios(toAxiosConfig(options));
+                        const { data: response } = await this.axios(
+                            toAxiosConfig(options),
+                        );
                         return response;
-
                     } catch (error) {
-                        if (!(error instanceof AxiosError)) throw error
+                        if (!(error instanceof AxiosError)) throw error;
 
                         const fetchError = FetchError.fromAxiosError(error);
 

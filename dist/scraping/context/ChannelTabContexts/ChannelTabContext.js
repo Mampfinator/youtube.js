@@ -6,6 +6,7 @@ const ErrorCodes_1 = require("../../../shared/errors/ErrorCodes");
 const YouTubejsError_1 = require("../../../shared/errors/YouTubejsError");
 const channel_data_1 = require("../../extractors/channel-data");
 const ScrapingContext_1 = require("../ScrapingContext");
+const about_data_1 = require("../../extractors/about-data");
 /**
  * matches
  * - `youtube.com/@handle`,
@@ -32,8 +33,6 @@ var ChannelTab;
     ChannelTab["Podcasts"] = "podcasts";
     ChannelTab["Community"] = "community";
     ChannelTab["Store"] = "store";
-    ChannelTab["Channels"] = "channels";
-    ChannelTab["About"] = "about";
     ChannelTab["Search"] = "search";
 })(ChannelTab = exports.ChannelTab || (exports.ChannelTab = {}));
 const IS_CHANNEL_TAB_LOOKUP = new Set(Object.values(ChannelTab));
@@ -63,6 +62,43 @@ class ChannelTabContext extends ScrapingContext_1.ScrapingContext {
     }
     getData() {
         return this.tabData.map(data => data.getActive().content);
+    }
+    async fetchAbout() {
+        if (!this.data.ytInitialData)
+            return (0, neverthrow_1.err)(new Error(`Something went wrong!`));
+        const links = this.data.ytInitialData.header?.c4TabbedHeaderRenderer?.headerLinks;
+        if (!links)
+            return (0, neverthrow_1.err)(new Error(`No header links present!`));
+        const model = links.channelHeaderLinksViewModel;
+        if (!model)
+            return (0, neverthrow_1.err)(new Error(`No header present!`));
+        if (!model.more)
+            return (0, neverthrow_1.err)(new Error(`No about continuation renderer present!`));
+        const moreEndpoint = model.more.commandRuns[0].onTap.innertubeCommand
+            .showEngagementPanelEndpoint;
+        if (!moreEndpoint)
+            return (0, neverthrow_1.err)(new Error(`No about continuation renderer present!`));
+        const continuationRenderer = moreEndpoint.engagementPanel.engagementPanelSectionListRenderer
+            .content.sectionListRenderer.contents[0].itemSectionRenderer
+            .contents[0].continuationItemRenderer;
+        if (!continuationRenderer)
+            return (0, neverthrow_1.err)(new Error(`No about continuation renderer present!`));
+        const data = await this.browse({
+            clickTrackingParams: continuationRenderer.clickTrackingParams,
+            visitorData: this.getVisitorData(),
+            token: continuationRenderer.continuationEndpoint.continuationCommand
+                .token,
+        });
+        if (data.isErr())
+            return (0, neverthrow_1.err)(data.error);
+        const { onResponseReceivedEndpoints: [{ appendContinuationItemsAction: { continuationItems }, },], } = data.value;
+        const channelData = continuationItems[0].aboutChannelRenderer.metadata;
+        try {
+            return (0, neverthrow_1.ok)((0, about_data_1.extractAboutData)(channelData));
+        }
+        catch (error) {
+            return (0, neverthrow_1.err)(error);
+        }
     }
     getChannelData() {
         try {

@@ -7,7 +7,7 @@ import {
     VideosContext,
 } from "../../src";
 
-describe("Channel Tabs", function() {
+describe("Channel Tabs", function () {
     this.timeout(5000);
 
     let client: ScrapingClient;

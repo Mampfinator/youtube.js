@@ -11,6 +11,7 @@ import {
     TwoColumnBrowseResultsRenderer,
 } from "../../types/internal/generated";
 import { ScrapingContext } from "../ScrapingContext";
+import { extractAboutData } from "../../extractors/about-data";
 
 /**
  * matches
@@ -46,8 +47,6 @@ export enum ChannelTab {
     Podcasts = "podcasts",
     Community = "community",
     Store = "store",
-    Channels = "channels",
-    About = "about",
     Search = "search",
 }
 
@@ -89,6 +88,61 @@ export abstract class ChannelTabContext<
         return this.tabData.map(data => data.getActive().content);
     }
 
+    public async fetchAbout(): Promise<Result<AboutData, Error>> {
+        if (!this.data.ytInitialData)
+            return err(new Error(`Something went wrong!`));
+
+        const links =
+            this.data.ytInitialData.header?.c4TabbedHeaderRenderer?.headerLinks;
+        if (!links) return err(new Error(`No header links present!`));
+
+        const model = (links as any).channelHeaderLinksViewModel;
+
+        if (!model) return err(new Error(`No header present!`));
+        if (!model.more)
+            return err(new Error(`No about continuation renderer present!`));
+
+        const moreEndpoint =
+            model.more.commandRuns[0].onTap.innertubeCommand
+                .showEngagementPanelEndpoint;
+
+        if (!moreEndpoint)
+            return err(new Error(`No about continuation renderer present!`));
+
+        const continuationRenderer =
+            moreEndpoint.engagementPanel.engagementPanelSectionListRenderer
+                .content.sectionListRenderer.contents[0].itemSectionRenderer
+                .contents[0].continuationItemRenderer;
+
+        if (!continuationRenderer)
+            return err(new Error(`No about continuation renderer present!`));
+
+        const data = await this.browse<any>({
+            clickTrackingParams: continuationRenderer.clickTrackingParams,
+            visitorData: this.getVisitorData(),
+            token: continuationRenderer.continuationEndpoint.continuationCommand
+                .token,
+        });
+
+        if (data.isErr()) return err(data.error);
+
+        const {
+            onResponseReceivedEndpoints: [
+                {
+                    appendContinuationItemsAction: { continuationItems },
+                },
+            ],
+        } = data.value;
+
+        const channelData = continuationItems[0].aboutChannelRenderer.metadata;
+
+        try {
+            return ok(extractAboutData(channelData));
+        } catch (error) {
+            return err(error as Error);
+        }
+    }
+
     public getChannelData(): Result<ChannelData, Error> {
         try {
             return ok(
@@ -101,6 +155,11 @@ export abstract class ChannelTabContext<
             return err(error as Error);
         }
     }
+}
+
+export interface AboutData {
+    description: string;
+    links: { title: string; url: string }[];
 }
 
 function getTabName(path: string): Result<ChannelTab, Error> {

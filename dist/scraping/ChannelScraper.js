@@ -125,11 +125,9 @@ class ChannelScraper {
         return ret;
     }
     async fetchAbout() {
-        const context = await this.factory.fromUrl(this.builder.tab(ChannelTabContext_1.ChannelTab.About).build(), context_1.AboutContext);
-        if (context.isErr())
-            return context;
-        this.lastContext = context.value;
-        return context.value.getAbout();
+        if (!this.lastContext)
+            return (0, neverthrow_1.err)(new Error(`To fetch a channel about, make any other request first!`));
+        return this.lastContext.fetchAbout();
     }
     /**
      * @returns a list of channels this channel features.

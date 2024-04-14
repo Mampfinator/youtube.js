@@ -2,7 +2,6 @@ import { Err, Result, err, ok } from "neverthrow";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ChannelTabContext, CHANNEL_BASE_REGEX } from "./ChannelTabContext";
 import { FeaturedChannelSection } from "../../types";
-import { FetchError, FetchErrorCode } from "../../errors/FetchError";
 import { FluffyRun, GridChannelRenderer } from "../../types/internal/generated";
 import { extractPartialFeaturedChannel } from "../../extractors/featured-channels";
 import { mergeRuns } from "../../scraping.util";
@@ -22,33 +21,50 @@ export class FeaturedContext extends ChannelTabContext {
 
         if (!contents) return err(new Error("Empty channel data"));
 
-        const channelSections = contents.map(section => 
-            section.itemSectionRenderer
-        ).filter(section => section?.contents.filter(sectionItems => sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.some(item => item.gridChannelRenderer)))
-        .map(section => {
-            const rawTitle = section.contents.find(c => c.shelfRenderer?.title)?.shelfRenderer?.title;
+        const channelSections = contents
+            .map(section => section.itemSectionRenderer)
+            .filter(section =>
+                section?.contents.filter(sectionItems =>
+                    sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.some(
+                        item => item.gridChannelRenderer,
+                    ),
+                ),
+            )
+            .map(section => {
+                const rawTitle = section.contents.find(
+                    c => c.shelfRenderer?.title,
+                )?.shelfRenderer?.title;
 
-            if (!rawTitle) {
-                return null;
-            }
-
-            // @ts-ignore
-            const title: string | null = rawTitle.simpleText ?? mergeRuns(rawTitle.runs as FluffyRun[] | undefined) ?? null;
-            
-
-            const channels = section.contents.map(sectionItems => {
-                return sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.map(item => item.gridChannelRenderer).filter(c => c);
-            }).flat().filter(c => !!c) as GridChannelRenderer[];
-
-            if (channels.length === 0) {
-                return null;
-            } else {
-                return {
-                    title: title ?? "",
-                    channels: channels.map(extractPartialFeaturedChannel),
+                if (!rawTitle) {
+                    return null;
                 }
-            }
-        }).filter(c => c !== null) as FeaturedChannelSection[];
+
+                const title: string | null =
+                    // @ts-ignore
+                    rawTitle.simpleText ??
+                    // @ts-ignore
+                    mergeRuns(rawTitle.runs as FluffyRun[] | undefined) ??
+                    null;
+
+                const channels = section.contents
+                    .map(sectionItems => {
+                        return sectionItems.shelfRenderer?.content.horizontalListRenderer?.items
+                            .map(item => item.gridChannelRenderer)
+                            .filter(c => c);
+                    })
+                    .flat()
+                    .filter(c => !!c) as GridChannelRenderer[];
+
+                if (channels.length === 0) {
+                    return null;
+                } else {
+                    return {
+                        title: title ?? "",
+                        channels: channels.map(extractPartialFeaturedChannel),
+                    };
+                }
+            })
+            .filter(c => c !== null) as FeaturedChannelSection[];
 
         return ok(channelSections);
     }

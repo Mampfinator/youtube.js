@@ -22,10 +22,14 @@ export function extractShelfSection(
 ): FeaturedChannelSection | null {
     if (!renderer) return null;
 
-    if (!renderer.content.horizontalListRenderer?.items.some(
-        item => item.gridChannelRenderer) && !renderer.content.expandedShelfContentsRenderer) {
+    if (
+        !renderer.content.horizontalListRenderer?.items.some(
+            item => item.gridChannelRenderer,
+        ) &&
+        !renderer.content.expandedShelfContentsRenderer
+    ) {
         return null;
-        }
+    }
 
     const {
         title: { runs } = { runs: [] },

@@ -2,7 +2,6 @@ import { ok, err, Result, Err } from "neverthrow";
 import { ChannelTabBuilder, URLBuilder } from "../shared/builders/URLBuilder";
 import { Awaitable, RequireOnlyOne, Type } from "../shared/types";
 import {
-    AboutContext,
     CommunityContext,
     ContextFactory,
     ElementContext,
@@ -219,23 +218,24 @@ export class ChannelScraper {
     }
 
     public async fetchAbout() {
-        const context = await this.factory.fromUrl(
-            this.builder.tab(ChannelTab.About).build(),
-            AboutContext,
-        );
+        if (!this.lastContext)
+            return err(
+                new Error(
+                    `To fetch a channel about, make any other request first!`,
+                ),
+            );
 
-        if (context.isErr()) return context as Err<never, FetchError>;
-
-        this.lastContext = context.value;
-
-        return context.value.getAbout();
+        return this.lastContext.fetchAbout();
     }
 
     /**
      * @returns a list of channels this channel features.
      */
     public async fetchFeaturedChannels() {
-        const context = await this.factory.fromUrl(this.builder.build(), FeaturedContext);
+        const context = await this.factory.fromUrl(
+            this.builder.build(),
+            FeaturedContext,
+        );
         if (context.isErr()) return err(context.error);
 
         this.lastContext = context.value;

@@ -67,7 +67,7 @@ export declare class ChannelScraper {
         videos?: ReturnHelper<"fetchAllVideos">;
         errors: Error[];
     }>;
-    fetchAbout(): Promise<Result<import("./types").FullChannelData, Error>>;
+    fetchAbout(): Promise<Result<import("./context/ChannelTabContexts/ChannelTabContext").AboutData, Error>>;
     /**
      * @returns a list of channels this channel features.
      */

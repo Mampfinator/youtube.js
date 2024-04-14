@@ -15,8 +15,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CHANNEL_URL_REGEX = exports.ChannelTabContext = exports.ChannelTab = void 0;
-__exportStar(require("./AboutContext"), exports);
-__exportStar(require("./ChannelsContext"), exports);
 __exportStar(require("./CommunityContext"), exports);
 __exportStar(require("./FeaturedContext"), exports);
 __exportStar(require("./PlaylistsContext"), exports);
