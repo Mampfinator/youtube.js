@@ -3,10 +3,8 @@ import { wrapper } from "axios-cookiejar-support";
 import { err, Ok, ok, Result } from "neverthrow";
 import { CookieJar, MemoryCookieStore } from "tough-cookie";
 import { YoutubejsError } from "../shared/errors/YouTubejsError";
-import { Type } from "../shared/types";
-import { sleep } from "../shared/util";
 import { FetchError, FetchErrorCode } from "./errors/FetchError";
-import { COOKIE_BUTON_SELECTOR, DEFAULT_RETRIES } from "./scraping.constants";
+import { DEFAULT_RETRIES } from "./scraping.constants";
 import {
     FetchOptions,
     FetchReturn,
