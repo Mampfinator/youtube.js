@@ -56,6 +56,11 @@ export class ChannelScraper {
         this.builder = URLBuilder.channel()[key](value);
     }
 
+    /**
+     * Navigates to a specific tab on the channel.
+     */
+    async navigate<T extends ChannelTab>(): Promise<void> {}
+
     private async fetchElements<
         T extends ElementContext<any> & ChannelTabContext,
     >(

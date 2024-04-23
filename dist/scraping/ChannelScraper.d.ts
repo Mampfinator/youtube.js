@@ -1,6 +1,7 @@
 import { Result } from "neverthrow";
 import { Awaitable, RequireOnlyOne } from "../shared/types";
 import { ContextFactory } from "./context";
+import { ChannelTab } from "./context/ChannelTabContexts/ChannelTabContext";
 import { FetchError } from "./errors/FetchError";
 import { ChannelData } from "./types";
 export type ChannelScraperOptions = RequireOnlyOne<{
@@ -16,6 +17,10 @@ export declare class ChannelScraper {
     private readonly builder;
     private lastContext?;
     constructor(factory: ContextFactory, options: ChannelScraperOptions);
+    /**
+     * Navigates to a specific tab on the channel.
+     */
+    navigate<T extends ChannelTab>(): Promise<void>;
     private fetchElements;
     /**
      * @returns all posts from this channel.

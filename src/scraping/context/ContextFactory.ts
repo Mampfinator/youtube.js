@@ -8,13 +8,20 @@ import { isResult, isValueOk } from "../../shared/util";
 import { FetchError, FetchErrorCode } from "../errors/FetchError";
 import { IRequestOrchestrator } from "../scraping.interfaces";
 import { getContexts, ContextData } from "./decorators/Context";
+import { YtInitialData, YtInitialPlayerResponse } from "../types";
 
 export interface ContextOptions {
     /**
      * Orchestrator the `ScrapingClient` was instantiated with.
      */
     orchestrator: IRequestOrchestrator;
-    body: string;
+    contextFactory: ContextFactory;
+    body:
+        | string
+        | {
+              ytInitialData?: YtInitialData;
+              ytInitialPlayerResponse?: YtInitialPlayerResponse;
+          };
     url: string;
 }
 
@@ -45,6 +52,7 @@ export class ContextFactory {
         let data: Result<any, any> | undefined;
         let options: Partial<ContextOptions> = {
             orchestrator: this.orchestrator,
+            contextFactory: this,
             url: url,
         };
 
@@ -86,6 +94,30 @@ export class ContextFactory {
                 new YoutubejsError("NoContextFound", url),
             ]),
         );
+    }
+
+    /**
+     * Constructs a Context from an already fetched body and a URL.
+     * @param url The URL to match against to find the appropriate Context
+     * @param data The already fetched body content.
+     * @returns
+     */
+    public fromBodyData<T extends Type<unknown>>(
+        url: string,
+        data: any,
+    ): Result<InstanceType<T> | undefined, FetchError> {
+        const constructor = this.matchers.find(({ matcher }) =>
+            isValueOk(matcher(url)),
+        )?.constructor;
+
+        if (!constructor) return ok(undefined);
+
+        return this.getContext(constructor, {
+            body: data,
+            url,
+            orchestrator: this.orchestrator,
+            contextFactory: this,
+        }) as any;
     }
 
     private getContext<T extends Type<unknown>>(

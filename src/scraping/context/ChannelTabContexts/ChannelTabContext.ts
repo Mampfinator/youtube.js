@@ -12,6 +12,9 @@ import {
 } from "../../types/internal/generated";
 import { ScrapingContext } from "../ScrapingContext";
 import { extractAboutData } from "../../extractors/about-data";
+import type { ChannelContext } from "./helpers";
+import { getContexts } from "../decorators/Context";
+import { isValueOk } from "../../../shared/util";
 
 /**
  * matches
@@ -141,6 +144,53 @@ export abstract class ChannelTabContext<
         } catch (error) {
             return err(error as Error);
         }
+    }
+
+    /**
+     * Navigates to the given tab, if it exists.
+     */
+    public async navigate<T extends ChannelTab>(
+        tab: T,
+    ): Promise<Result<ChannelContext[T], Error>> {
+        const tabData =
+            this.data.ytInitialData.contents.twoColumnBrowseResultsRenderer?.tabs.find(
+                t =>
+                    t.tabRenderer?.endpoint?.commandMetadata?.webCommandMetadata?.url
+                        .split("/")
+                        .filter(p => !!p)
+                        .pop() === tab,
+            );
+
+        if (!tabData) return err(new Error(`Could not find tab ${tab}.`));
+
+        const endpoint = (tabData.tabRenderer ?? tabData.expandableTabRenderer)
+            ?.endpoint;
+
+        if (!endpoint)
+            return err(new Error(`Could not find endpoint for ${tab}.`));
+
+        const newData = await this.browse<any>({
+            clickTrackingParams: endpoint.clickTrackingParams,
+            visitorData: this.getVisitorData(),
+            browseId: endpoint.browseEndpoint.browseId,
+            params: endpoint.browseEndpoint.params,
+        });
+
+        if (newData.isErr()) {
+            return err(newData.error);
+        }
+
+        const url = `https://www.youtube.com${endpoint.browseEndpoint.canonicalBaseUrl}/${tab}`;
+
+        const context = this.contextFactory.fromBodyData(url, {
+            ytInitialData: { ...this.data.ytInitialData, ...newData.value },
+        }) as any;
+
+        if (context.isErr()) return err(context.error);
+
+        context.value._visitorData = this.getVisitorData();
+
+        return context;
     }
 
     public getChannelData(): Result<ChannelData, Error> {

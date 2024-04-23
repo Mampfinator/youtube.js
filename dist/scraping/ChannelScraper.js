@@ -23,6 +23,10 @@ class ChannelScraper {
         const [[key, value]] = entries;
         this.builder = URLBuilder_1.URLBuilder.channel()[key](value);
     }
+    /**
+     * Navigates to a specific tab on the channel.
+     */
+    async navigate() { }
     async fetchElements(tab, useContext, limit) {
         const context = await this.factory.fromUrl(this.builder.tab(tab).build(), useContext);
         if (context.isErr())

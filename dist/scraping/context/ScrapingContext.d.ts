@@ -2,12 +2,14 @@ import { Result } from "neverthrow";
 import { IRequestOrchestrator } from "../scraping.interfaces";
 import { YtInitialData } from "../types/internal";
 import { BrowseResult } from "../types/internal/browse";
-import { ContextOptions } from "./ContextFactory";
+import { ContextFactory, ContextOptions } from "./ContextFactory";
 interface BrowseParameters {
+    browseId?: string;
     token?: string;
     clickTrackingParams: any;
     visitorData: string;
     originalUrl?: string;
+    params?: string;
 }
 /**
  * Represents a page on YouTube.
@@ -22,6 +24,8 @@ export declare abstract class ScrapingContext<TData extends {
     protected readonly body: string;
     protected readonly url: string;
     protected readonly orchestrator: IRequestOrchestrator;
+    protected readonly contextFactory: ContextFactory;
+    protected _visitorData: string | undefined;
     constructor(options: ContextOptions);
     /**
      * Extract data from the initial page for internal usage.

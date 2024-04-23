@@ -28,6 +28,7 @@ class ContextFactory {
         let data;
         let options = {
             orchestrator: this.orchestrator,
+            contextFactory: this,
             url: url,
         };
         if (useContext) {
@@ -63,6 +64,23 @@ class ContextFactory {
         return (0, neverthrow_1.err)(new FetchError_1.FetchError(FetchError_1.FetchErrorCode.InternalError, {}, [
             new YouTubejsError_1.YoutubejsError("NoContextFound", url),
         ]));
+    }
+    /**
+     * Constructs a Context from an already fetched body and a URL.
+     * @param url The URL to match against to find the appropriate Context
+     * @param data The already fetched body content.
+     * @returns
+     */
+    fromBodyData(url, data) {
+        const constructor = this.matchers.find(({ matcher }) => (0, util_1.isValueOk)(matcher(url)))?.constructor;
+        if (!constructor)
+            return (0, neverthrow_1.ok)(undefined);
+        return this.getContext(constructor, {
+            body: data,
+            url,
+            orchestrator: this.orchestrator,
+            contextFactory: this,
+        });
     }
     getContext(constructor, options) {
         if ("from" in constructor && typeof constructor.from === "function") {

@@ -100,6 +100,38 @@ class ChannelTabContext extends ScrapingContext_1.ScrapingContext {
             return (0, neverthrow_1.err)(error);
         }
     }
+    /**
+     * Navigates to the given tab, if it exists.
+     */
+    async navigate(tab) {
+        const tabData = this.data.ytInitialData.contents.twoColumnBrowseResultsRenderer?.tabs.find(t => t.tabRenderer?.endpoint?.commandMetadata?.webCommandMetadata?.url
+            .split("/")
+            .filter(p => !!p)
+            .pop() === tab);
+        if (!tabData)
+            return (0, neverthrow_1.err)(new Error(`Could not find tab ${tab}.`));
+        const endpoint = (tabData.tabRenderer ?? tabData.expandableTabRenderer)
+            ?.endpoint;
+        if (!endpoint)
+            return (0, neverthrow_1.err)(new Error(`Could not find endpoint for ${tab}.`));
+        const newData = await this.browse({
+            clickTrackingParams: endpoint.clickTrackingParams,
+            visitorData: this.getVisitorData(),
+            browseId: endpoint.browseEndpoint.browseId,
+            params: endpoint.browseEndpoint.params,
+        });
+        if (newData.isErr()) {
+            return (0, neverthrow_1.err)(newData.error);
+        }
+        const url = `https://www.youtube.com${endpoint.browseEndpoint.canonicalBaseUrl}/${tab}`;
+        const context = this.contextFactory.fromBodyData(url, {
+            ytInitialData: { ...this.data.ytInitialData, ...newData.value },
+        });
+        if (context.isErr())
+            return (0, neverthrow_1.err)(context.error);
+        context.value._visitorData = this.getVisitorData();
+        return context;
+    }
     getChannelData() {
         try {
             return (0, neverthrow_1.ok)((0, channel_data_1.extractChannelData)(this.data.ytInitialData.microformat

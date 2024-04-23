@@ -24,9 +24,13 @@ let FeaturedContext = class FeaturedContext extends ChannelTabContext_1.ChannelT
         const contents = data.value?.sectionListRenderer?.contents;
         if (!contents)
             return (0, neverthrow_1.err)(new Error("Empty channel data"));
+        // TODO: check for potential continuations? Although I'm *somewhat* sure channels are usually all included.
         const channelSections = contents
             .map(section => section.itemSectionRenderer)
-            .filter(section => section?.contents.filter(sectionItems => sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.some(item => item.gridChannelRenderer)))
+            .filter(section => section?.contents.filter(sectionItems => sectionItems.shelfRenderer?.content.horizontalListRenderer?.items.some(item => item.gridChannelRenderer) ??
+            !!sectionItems.shelfRenderer?.content
+                .expandedShelfContentsRenderer?.items[0]
+                ?.channelRenderer))
             .map(section => {
             const rawTitle = section.contents.find(c => c.shelfRenderer?.title)?.shelfRenderer?.title;
             if (!rawTitle) {
@@ -40,9 +44,14 @@ let FeaturedContext = class FeaturedContext extends ChannelTabContext_1.ChannelT
                 null;
             const channels = section.contents
                 .map(sectionItems => {
-                return sectionItems.shelfRenderer?.content.horizontalListRenderer?.items
+                return (sectionItems.shelfRenderer?.content.horizontalListRenderer?.items
                     .map(item => item.gridChannelRenderer)
-                    .filter(c => c);
+                    .filter(c => !!c)
+                    .map(c => (0, featured_channels_1.extractPartialFeaturedChannel)(c)) ??
+                    sectionItems.shelfRenderer?.content.expandedShelfContentsRenderer?.items
+                        .map(item => item.channelRenderer)
+                        .filter(c => !!c)
+                        .map(c => (0, featured_channels_1.extractFullFeaturedChannel)(c)));
             })
                 .flat()
                 .filter(c => !!c);
@@ -52,7 +61,7 @@ let FeaturedContext = class FeaturedContext extends ChannelTabContext_1.ChannelT
             else {
                 return {
                     title: title ?? "",
-                    channels: channels.map(featured_channels_1.extractPartialFeaturedChannel),
+                    channels,
                 };
             }
         })

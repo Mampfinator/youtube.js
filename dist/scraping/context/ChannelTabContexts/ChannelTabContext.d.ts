@@ -3,6 +3,7 @@ import { YtInitialData } from "../../types";
 import { ChannelData } from "../../types/external/channel";
 import { MoreEndpoint, TabRenderer, TabRendererContent, TwoColumnBrowseResultsRenderer } from "../../types/internal/generated";
 import { ScrapingContext } from "../ScrapingContext";
+import type { ChannelContext } from "./helpers";
 /**
  * matches
  * - `youtube.com/@handle`,
@@ -44,6 +45,10 @@ export declare abstract class ChannelTabContext<TExtractData extends {
     private getTabData;
     protected getData(): Result<TabRenderer["content"], Error>;
     fetchAbout(): Promise<Result<AboutData, Error>>;
+    /**
+     * Navigates to the given tab, if it exists.
+     */
+    navigate<T extends ChannelTab>(tab: T): Promise<Result<ChannelContext[T], Error>>;
     getChannelData(): Result<ChannelData, Error>;
 }
 export interface AboutData {

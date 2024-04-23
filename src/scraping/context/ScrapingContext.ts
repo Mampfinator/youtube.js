@@ -8,13 +8,15 @@ import {
 import { IRequestOrchestrator } from "../scraping.interfaces";
 import { YtInitialData } from "../types/internal";
 import { BrowseResult } from "../types/internal/browse";
-import { ContextOptions } from "./ContextFactory";
+import { ContextFactory, ContextOptions } from "./ContextFactory";
 
 interface BrowseParameters {
+    browseId?: string;
     token?: string;
     clickTrackingParams: any;
     visitorData: string;
     originalUrl?: string;
+    params?: string;
 }
 
 /**
@@ -30,11 +32,19 @@ export abstract class ScrapingContext<
     protected readonly body!: string;
     protected readonly url: string;
     protected readonly orchestrator: IRequestOrchestrator;
+    protected readonly contextFactory: ContextFactory;
+
+    protected _visitorData: string | undefined;
 
     constructor(options: ContextOptions) {
-        this.data = this.extract(options.body);
+        this.data =
+            typeof options.body == "string"
+                ? this.extract(options.body)
+                : (options.body as TData);
+
         this.url = options.url;
         this.orchestrator = options.orchestrator;
+        this.contextFactory = options.contextFactory;
 
         Object.defineProperty(this, "body", {
             value: options.body,
@@ -79,6 +89,7 @@ export abstract class ScrapingContext<
                 Host: "www.youtube.com",
             },
             body: {
+                browseId: options.browseId,
                 context: {
                     client: {
                         clientName: "WEB",
@@ -89,6 +100,7 @@ export abstract class ScrapingContext<
                     clickTracking: { clickTrackingParams },
                 },
                 continuation: token,
+                params: options.params,
             },
             transform: (body: string) => {
                 if (typeof body === "string")
@@ -105,7 +117,11 @@ export abstract class ScrapingContext<
     }
 
     protected getVisitorData() {
-        return this.data.ytInitialData.responseContext
-            .webResponseContextExtensionData.ytConfigData.visitorData;
+        if (this._visitorData) return this._visitorData;
+
+        this._visitorData =
+            this.data.ytInitialData.responseContext.webResponseContextExtensionData.ytConfigData.visitorData;
+
+        return this._visitorData;
     }
 }

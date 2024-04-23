@@ -13,10 +13,16 @@ class ScrapingContext {
     body;
     url;
     orchestrator;
+    contextFactory;
+    _visitorData;
     constructor(options) {
-        this.data = this.extract(options.body);
+        this.data =
+            typeof options.body == "string"
+                ? this.extract(options.body)
+                : options.body;
         this.url = options.url;
         this.orchestrator = options.orchestrator;
+        this.contextFactory = options.contextFactory;
         Object.defineProperty(this, "body", {
             value: options.body,
             enumerable: false,
@@ -54,6 +60,7 @@ class ScrapingContext {
                 Host: "www.youtube.com",
             },
             body: {
+                browseId: options.browseId,
                 context: {
                     client: {
                         clientName: "WEB",
@@ -64,6 +71,7 @@ class ScrapingContext {
                     clickTracking: { clickTrackingParams },
                 },
                 continuation: token,
+                params: options.params,
             },
             transform: (body) => {
                 if (typeof body === "string")
@@ -76,8 +84,11 @@ class ScrapingContext {
         return (0, neverthrow_1.ok)(data.value);
     }
     getVisitorData() {
-        return this.data.ytInitialData.responseContext
-            .webResponseContextExtensionData.ytConfigData.visitorData;
+        if (this._visitorData)
+            return this._visitorData;
+        this._visitorData =
+            this.data.ytInitialData.responseContext.webResponseContextExtensionData.ytConfigData.visitorData;
+        return this._visitorData;
     }
 }
 exports.ScrapingContext = ScrapingContext;
