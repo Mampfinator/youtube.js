@@ -2,9 +2,7 @@ import { Err, Result, err, ok } from "neverthrow";
 import { Context, DEFAULT_WEIGHT } from "../decorators/Context";
 import { ChannelTabContext, CHANNEL_BASE_REGEX } from "./ChannelTabContext";
 import {
-    FeaturedChannel,
     FeaturedChannelSection,
-    PartialFeaturedChannel,
 } from "../../types";
 import {
     ContinuationEndpoint,
@@ -90,8 +88,6 @@ export class FeaturedContext extends ChannelTabContext {
                             .filter(item => item.gridChannelRenderer)
                             .map(item => item.gridChannelRenderer!);
 
-                        console.log(`Initial channels: ${initial.length}`);
-
                         if (initial.length <= 0) return null;
 
                         // channel shelf renderers display a maximum of 12 initial channels. Any channels beyond that are only visible in the full engagement panel.
@@ -105,8 +101,6 @@ export class FeaturedContext extends ChannelTabContext {
                                 shelf.menu.menuRenderer.topLevelButtons[0]
                                     .buttonRenderer.navigationEndpoint
                                     .showEngagementPanelEndpoint;
-
-                            console.log(engagementPanelEndpoint);
 
                             if (engagementPanelEndpoint) {
                                 const continuationRenderer: ContinuationEndpoint =
@@ -146,8 +140,6 @@ export class FeaturedContext extends ChannelTabContext {
                                         )
                                         .map(extractPartialFeaturedChannel),
                                 );
-                            } else {
-                                console.log(JSON.stringify(section, null, 4));
                             }
                         }
                     }
