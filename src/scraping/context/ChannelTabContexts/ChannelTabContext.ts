@@ -97,8 +97,6 @@ export abstract class ChannelTabContext<
         const ytInitialData = this.data.ytInitialData as any;
 
         if ("pageHeaderRenderer" in ytInitialData.header) {
-            console.log("extracting from pageHeaderRenderer");
-
             const model =
                 ytInitialData.header.pageHeaderRenderer.content
                     .pageHeaderViewModel;
@@ -119,8 +117,6 @@ export abstract class ChannelTabContext<
                     .content.sectionListRenderer.contents[0].itemSectionRenderer
                     .contents[0].continuationItemRenderer;
         } else if ("c4TabbedHeaderRenderer" in ytInitialData.header) {
-            console.log("extracting from c4TabbedHeaderRenderer");
-
             const links =
                 ytInitialData.header?.c4TabbedHeaderRenderer?.headerLinks;
             if (!links) return err(new Error(`No header links present!`));
