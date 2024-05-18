@@ -21,12 +21,19 @@ import {
 import { EntryDeletedPayload, EntryPayload } from "./types/external";
 import EventEmitter from "events";
 
+/**
+ * Options for the {@link WebSubClient}.
+ */
 export interface WebSubClientOptions {
     /**
      * Where the client should expect its verification- and messageHandlers.
      */
     callbackUrl: string;
     secret: string;
+    /**
+     * How long the client should wait for verification before timing out.
+     * @default 10000
+     */
     timeout?: number;
     /**
      * Whether to automatically renew subscription leases.
@@ -59,6 +66,12 @@ export class WebSubClient extends EventEmitter {
         `${Mode}:${string}`,
         (arg: Result<void, Error>) => void
     >();
+
+    /**
+     * Map of renewal timers for each channel.
+     * Always empty if `automaticRenewal` is false.
+     */
+    private readonly renewalTimers = new Map<string, NodeJS.Timeout>();
 
     /**
      * Mount as GET handler on the callback path.
@@ -123,11 +136,25 @@ export class WebSubClient extends EventEmitter {
                             ok(undefined),
                         );
                         this.emit("subscribed", channelId);
+
+                        if (this.automaticRenewal) this.renewalTimers.set(
+                            channelId,
+                            setTimeout(() => {
+                                this.subscribe(channelId);
+                                // we attempt to re-lease an hour before our subscription runs out.
+                                // there may be a better way of doing this.
+                            }, Number(lease) * 1000 - 60 * 60 * 1000 ),
+                        );
+
                         break;
                     case "unsubscribe":
                         this.pending.get(`unsubscribe:${channelId}`)?.(
                             ok(undefined),
                         );
+
+                        // clear any active re-leasing timeouts
+                        clearTimeout(this.renewalTimers.get(channelId));
+                        
                         this.emit("unsubscribed", channelId);
                         break;
                     default:
