@@ -203,7 +203,7 @@ export class WebSubClient extends EventEmitter {
                 } = message as { feed: DeletedFeed };
 
                 const {
-                    "@attributes": { ref, when },
+                    "@attributes": { "@_ref": ref, "@_when": when },
                     "at:by": author,
                 } = entry;
 
