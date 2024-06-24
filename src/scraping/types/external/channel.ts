@@ -1,5 +1,6 @@
 export interface ChannelData {
-    id: string;
+    // We may not get anything to infer an ID from from the microformat renderer, as is the case with community posts.
+    id?: string;
     name: string;
     avatar: string;
     description: string;

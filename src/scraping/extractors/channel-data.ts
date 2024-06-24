@@ -16,7 +16,7 @@ export function extractChannelData(
         },
     } = input;
 
-    const id = /(?<=channel\/).+/.exec(url)![0];
+    const id = /(?<=channel\/).+/.exec(url)?.[0];
 
     return {
         id,
