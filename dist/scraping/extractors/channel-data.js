@@ -4,7 +4,7 @@ exports.extractChannelData = void 0;
 const scraping_util_1 = require("../scraping.util");
 function extractChannelData(input) {
     const { title: name, description, tags, unlisted, urlCanonical: url, thumbnail: { thumbnails: [{ url: thumbUrl }], }, } = input;
-    const id = /(?<=channel\/).+/.exec(url)[0];
+    const id = /(?<=channel\/).+/.exec(url)?.[0];
     return {
         id,
         name,

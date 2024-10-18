@@ -31,8 +31,8 @@ export interface DeletedFeed {
 export interface DeletedEntry {
     link: string;
     [XML_FEED_ATTRIBUTES]: {
-        ref: string;
-        when: string;
+        "@_ref": string;
+        "@_when": string;
     };
     "at:by"?: Author;
 }

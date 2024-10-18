@@ -1,5 +1,5 @@
 export interface ChannelData {
-    id: string;
+    id?: string;
     name: string;
     avatar: string;
     description: string;

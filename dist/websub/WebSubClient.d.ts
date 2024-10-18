@@ -4,12 +4,19 @@ import { Result } from "neverthrow";
 import { WebSubMessage } from "./types/internal";
 import { EntryDeletedPayload, EntryPayload } from "./types/external";
 import EventEmitter from "events";
+/**
+ * Options for the {@link WebSubClient}.
+ */
 export interface WebSubClientOptions {
     /**
      * Where the client should expect its verification- and messageHandlers.
      */
     callbackUrl: string;
     secret: string;
+    /**
+     * How long the client should wait for verification before timing out.
+     * @default 10000
+     */
     timeout?: number;
     /**
      * Whether to automatically renew subscription leases.
@@ -36,6 +43,11 @@ export declare class WebSubClient extends EventEmitter {
     private readonly callbackUrl;
     private readonly automaticRenewal;
     private readonly pending;
+    /**
+     * Map of renewal timers for each channel.
+     * Always empty if `automaticRenewal` is false.
+     */
+    private readonly renewalTimers;
     /**
      * Mount as GET handler on the callback path.
      */

@@ -66,21 +66,40 @@ class ChannelTabContext extends ScrapingContext_1.ScrapingContext {
     async fetchAbout() {
         if (!this.data.ytInitialData)
             return (0, neverthrow_1.err)(new Error(`Something went wrong!`));
-        const links = this.data.ytInitialData.header?.c4TabbedHeaderRenderer?.headerLinks;
-        if (!links)
-            return (0, neverthrow_1.err)(new Error(`No header links present!`));
-        const model = links.channelHeaderLinksViewModel;
-        if (!model)
-            return (0, neverthrow_1.err)(new Error(`No header present!`));
-        if (!model.more)
-            return (0, neverthrow_1.err)(new Error(`No about continuation renderer present!`));
-        const moreEndpoint = model.more.commandRuns[0].onTap.innertubeCommand
-            .showEngagementPanelEndpoint;
-        if (!moreEndpoint)
-            return (0, neverthrow_1.err)(new Error(`No about continuation renderer present!`));
-        const continuationRenderer = moreEndpoint.engagementPanel.engagementPanelSectionListRenderer
-            .content.sectionListRenderer.contents[0].itemSectionRenderer
-            .contents[0].continuationItemRenderer;
+        let continuationRenderer;
+        const ytInitialData = this.data.ytInitialData;
+        if ("pageHeaderRenderer" in ytInitialData.header) {
+            const model = ytInitialData.header.pageHeaderRenderer.content
+                .pageHeaderViewModel;
+            if (!model)
+                return (0, neverthrow_1.err)(new Error(`No header present!`));
+            const moreEndpoint = model.attribution.attributionViewModel.suffix.commandRuns[0]
+                .onTap.innertubeCommand.showEngagementPanelEndpoint;
+            if (!moreEndpoint)
+                return (0, neverthrow_1.err)(new Error(`No about continuation renderer present!`));
+            continuationRenderer =
+                moreEndpoint.engagementPanel.engagementPanelSectionListRenderer
+                    .content.sectionListRenderer.contents[0].itemSectionRenderer
+                    .contents[0].continuationItemRenderer;
+        }
+        else if ("c4TabbedHeaderRenderer" in ytInitialData.header) {
+            const links = ytInitialData.header?.c4TabbedHeaderRenderer?.headerLinks;
+            if (!links)
+                return (0, neverthrow_1.err)(new Error(`No header links present!`));
+            const model = links.channelHeaderLinksViewModel;
+            if (!model)
+                return (0, neverthrow_1.err)(new Error(`No header present!`));
+            if (!model.more)
+                return (0, neverthrow_1.err)(new Error(`No about continuation renderer present!`));
+            const moreEndpoint = model.more.commandRuns[0].onTap.innertubeCommand
+                .showEngagementPanelEndpoint;
+            if (!moreEndpoint)
+                return (0, neverthrow_1.err)(new Error(`No about continuation renderer present!`));
+            continuationRenderer =
+                moreEndpoint.engagementPanel.engagementPanelSectionListRenderer
+                    .content.sectionListRenderer.contents[0].itemSectionRenderer
+                    .contents[0].continuationItemRenderer;
+        }
         if (!continuationRenderer)
             return (0, neverthrow_1.err)(new Error(`No about continuation renderer present!`));
         const data = await this.browse({

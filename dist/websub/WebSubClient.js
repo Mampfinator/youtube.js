@@ -17,6 +17,11 @@ class WebSubClient extends events_1.default {
     automaticRenewal;
     pending = new Map();
     /**
+     * Map of renewal timers for each channel.
+     * Always empty if `automaticRenewal` is false.
+     */
+    renewalTimers = new Map();
+    /**
      * Mount as GET handler on the callback path.
      */
     verificationHandler;
@@ -54,9 +59,17 @@ class WebSubClient extends events_1.default {
                     case "subscribe":
                         this.pending.get(`subscribe:${channelId}`)?.((0, neverthrow_1.ok)(undefined));
                         this.emit("subscribed", channelId);
+                        if (this.automaticRenewal)
+                            this.renewalTimers.set(channelId, setTimeout(() => {
+                                this.subscribe(channelId);
+                                // we attempt to re-lease an hour before our subscription runs out.
+                                // there may be a better way of doing this.
+                            }, Number(lease) * 1000 - 60 * 60 * 1000));
                         break;
                     case "unsubscribe":
                         this.pending.get(`unsubscribe:${channelId}`)?.((0, neverthrow_1.ok)(undefined));
+                        // clear any active re-leasing timeouts
+                        clearTimeout(this.renewalTimers.get(channelId));
                         this.emit("unsubscribed", channelId);
                         break;
                     default:
@@ -86,7 +99,7 @@ class WebSubClient extends events_1.default {
             this.emit("message", message);
             if ("at:deleted-entry" in message.feed) {
                 const { feed: { "at:deleted-entry": entry }, } = message;
-                const { "@attributes": { ref, when }, "at:by": author, } = entry;
+                const { "@attributes": { "@_ref": ref, "@_when": when }, "at:by": author, } = entry;
                 this.emit("entryDeleted", {
                     videoId: ref.split(":")[2],
                     when: new Date(when),
