@@ -74,7 +74,8 @@ function extractRedirectTarget(redirectUrl: string): string {
     const [_, url] = redirectUrl.split("&q=");
 
     if (!url) {
-        if (redirectUrl.startsWith("https://www.youtube.com/"))
+        const parsed = new URL(url);
+        if (parsed.hostname === "youtube.com")
             return redirectUrl;
         throw new Error(`Invalid redirect URL: ${redirectUrl}`);
     }
