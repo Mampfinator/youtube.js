@@ -1,4 +1,4 @@
-import { ok, err, Result, Err } from "neverthrow";
+import { ok, err, Result } from "neverthrow";
 import { ChannelTabBuilder, URLBuilder } from "../shared/builders/URLBuilder";
 import { Awaitable, RequireOnlyOne, Type } from "../shared/types";
 import {

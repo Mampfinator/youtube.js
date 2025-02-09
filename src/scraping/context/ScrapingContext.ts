@@ -4,6 +4,7 @@ import {
     BROWSE_URL,
     CLIENT_API_KEY,
     YOUTUBE_CLIENT_VERSION,
+    YOUTUBEI,
 } from "../scraping.constants";
 import { IRequestOrchestrator } from "../scraping.interfaces";
 import { YtInitialData } from "../types/internal";
@@ -11,6 +12,7 @@ import { BrowseResult } from "../types/internal/browse";
 import { ContextOptions } from "./ContextFactory";
 
 interface BrowseParameters {
+    useEndpoint?: string;
     token?: string;
     clickTrackingParams: any;
     visitorData: string;
@@ -66,7 +68,7 @@ export abstract class ScrapingContext<
 
         const data = await this.orchestrator.fetch({
             method: "POST",
-            url: BROWSE_URL,
+            url: options.useEndpoint ? `${YOUTUBEI}/${options.useEndpoint}` : BROWSE_URL,
             query: {
                 key: CLIENT_API_KEY,
             },

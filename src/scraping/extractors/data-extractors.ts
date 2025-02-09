@@ -6,7 +6,7 @@ import {
 import { Result, ok, err } from "neverthrow";
 
 export const initialDataRe =
-    /(?<=var ytInitialData *\= *)\{.*?}(?=\;)(?<![A-Za-z<>])/;
+    /(?<=(window\["ytInitialData"\]|var ytInitialData) *\= *)\{.*?\}(?=\;)(?<![A-Za-z<>])/;
 export const playerResponseRe =
     /(?<=var ytInitialPlayerResponse *\= *)\{.*?}(?=\;)(?<![A-Za-z<>])/;
 
