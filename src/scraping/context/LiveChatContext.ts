@@ -1,6 +1,7 @@
+import { Result } from "neverthrow";
 import { DataExtractors } from "../extractors/data-extractors";
 import { YOUTUBEI } from "../scraping.constants";
-import { YtInitialData } from "../types";
+import { Action, YtInitialData } from "../types";
 import { Context } from "./decorators/Context";
 import { ScrapingContext } from "./ScrapingContext";
 
@@ -12,7 +13,7 @@ export class LiveChatContext extends ScrapingContext {
         return { ytInitialData: result.value };
     }
 
-    public getInitialActions() {
+    public getInitialActions(): Action[] {
         return (this.data.ytInitialData as any)
             .continuationContents.liveChatContinuation
                 .actions;
@@ -23,12 +24,12 @@ export class LiveChatContext extends ScrapingContext {
             .invalidationContinuationData;
     }
 
-    public async getLiveChat(continuation: string, clickTrackingParams: string, visitorData: string) {
+    public async getLiveChat(continuation: string, clickTrackingParams: string, visitorData: string): Promise<Result<{ continuationContents: { liveChatContinuation: { actions: Action[] } } }, Error>> {
         return this.browse({
             useEndpoint: "live_chat/get_live_chat",
             token: continuation,
             clickTrackingParams,
             visitorData,
-        });
+        }) as unknown as Result<{ continuationContents: { liveChatContinuation: { actions: Action[] } } }, Error>;
     }
 }

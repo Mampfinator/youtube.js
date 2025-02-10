@@ -2,6 +2,7 @@ import { sleep } from "../shared/util";
 import { LiveChatContext, VideoPlayerContext } from "./context";
 import { YOUTUBEI } from "./scraping.constants";
 import { ScrapingClient } from "./ScrapingClient";
+import { Action } from "./types";
 
 export type ChatMessage = {
 
@@ -40,8 +41,6 @@ export class ChatClient {
 
         if (liveChatContext.isErr()) throw liveChatContext.error;
 
-        console.log(liveChatContext.value);
-
         return new ChatClient(scraper, liveChatContext.value, streamId, visitorData);
     }
 
@@ -75,3 +74,5 @@ export class ChatClient {
         }
     }
 }
+
+export type StripAction<T> = T extends `liveStream${infer Action}Action` ? Action : T;
