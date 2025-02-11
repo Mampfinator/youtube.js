@@ -4,6 +4,7 @@ import { YtInitialData } from "../types/internal";
 import { BrowseResult } from "../types/internal/browse";
 import { ContextOptions } from "./ContextFactory";
 interface BrowseParameters {
+    useEndpoint?: string;
     token?: string;
     clickTrackingParams: any;
     visitorData: string;

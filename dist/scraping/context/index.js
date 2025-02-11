@@ -19,6 +19,7 @@ __exportStar(require("./decorators/Context"), exports);
 __exportStar(require("./CommentContext"), exports);
 __exportStar(require("./CommunityPostContext"), exports);
 __exportStar(require("./ElementContext"), exports);
+__exportStar(require("./LiveChatContext"), exports);
 __exportStar(require("./ScrapingContext"), exports);
 __exportStar(require("./PlaylistContext"), exports);
 __exportStar(require("./SearchContext"), exports);

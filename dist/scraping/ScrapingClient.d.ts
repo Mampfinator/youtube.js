@@ -2,6 +2,7 @@ import { IRequestOrchestrator } from "./scraping.interfaces";
 import { ContextFactory } from "./context";
 import { ChannelScraper, ChannelScraperOptions } from "./ChannelScraper";
 import { PostScraper } from "./PostScraper";
+import { ChatClient } from "./ChatClient";
 export interface ScrapingClientOptions {
     /**
      * If provided, overrides the default request orchestrator that is responsible for all scraping-related fetching.
@@ -29,4 +30,5 @@ export declare class ScrapingClient {
      * @returns - a collection of community post-specific methods.
      */
     post(id: string): PostScraper;
+    chat(streamId: string): Promise<ChatClient>;
 }
