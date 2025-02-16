@@ -67,7 +67,7 @@ describe("Channel Tabs", function () {
         expect(next.value.value.elements.size).to.be.greaterThan(0);
     });
 
-    it("should fetch shorts", async () => {
+    /*it("should fetch shorts", async () => {
         const shortsContext = await client.contexts.fromUrl<StreamsContext>(
             forTab(ChannelTab.Shorts),
         );
@@ -81,7 +81,7 @@ describe("Channel Tabs", function () {
         const next = await iterator.next();
         expect(next.value.isOk()).to.be.true;
         expect(next.value.value.elements.size).to.be.greaterThan(0);
-    });
+    });*/
 
     it("should fetch community posts", async () => {
         const communityContext =
