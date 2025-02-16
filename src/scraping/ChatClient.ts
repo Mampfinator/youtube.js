@@ -1,12 +1,8 @@
 import { sleep } from "../shared/util";
 import { LiveChatContext, VideoPlayerContext } from "./context";
-import { YOUTUBEI } from "./scraping.constants";
 import { ScrapingClient } from "./ScrapingClient";
 import { Action } from "./types";
-
-export type ChatMessage = {
-
-}
+import { AddChatItemActionItem, FluffyEmoji, PurpleEmoji, Thumbnail } from "./types/internal/messages";
 
 export class ChatClient {
     private constructor(
@@ -44,7 +40,7 @@ export class ChatClient {
         return new ChatClient(scraper, liveChatContext.value, streamId, visitorData);
     }
 
-    public async *read() {
+    public async *readRaw() {
         for (const action of this.context.getInitialActions()) {
             yield action;
         }
@@ -73,6 +69,138 @@ export class ChatClient {
             timeoutMs = nextTimeoutMs;
         }
     }
+
+    public async *read(): AsyncGenerator<ChatMessage> {
+        for await (const rawMessage of this.readRaw()) {
+            const converted = this.convertAction(rawMessage);
+            if (converted) yield converted;
+        }
+    }
+
+    private convertAction(action: Action): ChatMessage | undefined {
+        if (!action.addChatItemAction) return undefined;
+        
+        const { addChatItemAction: {item} } = action;
+
+        const actionType = Object.keys(item)[0] as NonNullable<keyof AddChatItemActionItem>;
+
+        // TODO: find and convert sticker renderers
+
+        if (actionType === "liveChatMembershipItemRenderer") {
+            const {
+                id,
+                timestampUsec,
+                authorExternalChannelId,
+                message,
+                authorName: { simpleText: authorName },
+                authorPhoto,
+            } = item[actionType]!;
+
+            return {
+                type: MessageType.Membership,
+                timestamp: Number(timestampUsec),
+                id,
+                authorName,
+                authorAvatar: authorPhoto.thumbnails.at(-1)!.url,
+                authorId: authorExternalChannelId,
+                message: message ? new MessageContent(message.runs) : undefined,
+            }
+        } else if (actionType === "liveChatPaidMessageRenderer") {
+            const {
+                id,
+                timestampUsec,
+                authorName: { simpleText: authorName },
+                authorPhoto,
+                authorExternalChannelId,
+                purchaseAmountText: { simpleText: amountText },
+                message,
+                bodyBackgroundColor,
+                bodyTextColor,
+                authorNameTextColor,
+            } = item[actionType]!;
+
+            const amount = Number(amountText.match(/\d+/)![0]);
+            const currency = amountText.match(/[^\d]+/)![0].trim();
+
+            return {
+                type: MessageType.SuperChat,
+                id,
+                timestamp: Number(timestampUsec),
+                authorName,
+                authorAvatar: authorPhoto.thumbnails.at(-1)!.url,
+                authorId: authorExternalChannelId,
+                amount, currency,
+                message: message ? new MessageContent(message.runs) : undefined,
+                backgroundColor: bodyBackgroundColor,
+                textColor: bodyTextColor,
+                authorColor: authorNameTextColor,
+            }
+        }
+    }
 }
 
-export type StripAction<T> = T extends `liveStream${infer Action}Action` ? Action : T;
+export type MessageContentRun = {
+    text?: string,
+    url?: string,
+    emoji?: FluffyEmoji,
+}
+
+export class MessageContent {
+    constructor(public readonly runs: MessageContentRun[]) {}
+
+    public get simpleText() {
+        return this.runs.map(run => run.text).join(" ");
+    }
+
+    public get html() {
+        return this.runs.map(run => {
+            if ("emoji" in run) {
+                const image = run.emoji!.image.thumbnails.at(-1)!;
+
+                return `<img alt="${run.text}" src=${image.url}></img>` 
+            } else if ("url" in run) {
+                return `<a href="${run.url}">${run.text}</a>`
+            } else {
+                return `<span>${run.text}</span>`
+            }
+        }).join("");
+    }
+}
+
+export enum MessageType {
+    SuperChat = "SuperChat",
+    SuperSticker = "SuperSticker",
+    Membership = "Membership",
+}
+
+type BaseMessage = {
+    id: string,
+    authorName: string,
+    authorAvatar: string,
+    authorId: string,
+    timestamp: number,
+}
+
+
+export type SuperChat = BaseMessage & {
+    type: MessageType.SuperChat,
+    amount: number,
+    currency: string,
+    backgroundColor: number,
+    textColor: number,
+    authorColor: number,
+    message?: MessageContent,
+}
+
+export type SuperSticker = BaseMessage & {
+    type: MessageType.SuperSticker,
+    sticker: string,
+    color: string,
+}
+
+export type Membership = BaseMessage & {
+    type: MessageType.Membership,
+    message?: MessageContent,
+};
+
+export type ChatMessage = SuperChat | SuperSticker | Membership;
