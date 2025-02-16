@@ -20,8 +20,8 @@ export class LiveChatContext extends ScrapingContext {
     }
 
     public getInitialContinuation(): { clickTrackingParams: string, continuation: string, timeoutMs: number } {
-        return (this.data.ytInitialData as any).continuationContents.liveChatContinuation.continuations[0]
-            .invalidationContinuationData;
+        const continuationContainer = (this.data.ytInitialData as any).continuationContents.liveChatContinuation.continuations[0]
+            return continuationContainer.invalidationContinuationData ?? continuationContainer.timedContinuationData;
     }
 
     public async getLiveChat(continuation: string, clickTrackingParams: string, visitorData: string): Promise<Result<{ continuationContents: { liveChatContinuation: { actions: Action[] } } }, Error>> {
