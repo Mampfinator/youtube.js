@@ -39,7 +39,7 @@ class ScrapingContext {
      */
     async browse(options) {
         const { token, clickTrackingParams, visitorData, originalUrl } = options;
-        const data = await this.orchestrator.fetch({
+        const payload = {
             method: "POST",
             url: options.useEndpoint ? `${scraping_constants_1.YOUTUBEI}/${options.useEndpoint}` : scraping_constants_1.BROWSE_URL,
             query: {
@@ -70,7 +70,11 @@ class ScrapingContext {
                     return neverthrow_1.Result.fromThrowable(JSON.parse, error => error)(body);
                 return (0, neverthrow_1.ok)(body);
             },
-        });
+        };
+        if (options.playerOffsetMs) {
+            payload.body.videoPlayerState = { playerOffsetMs: options.playerOffsetMs };
+        }
+        const data = await this.orchestrator.fetch(payload);
         if (data.isErr())
             return (0, neverthrow_1.err)(data.error);
         return (0, neverthrow_1.ok)(data.value);

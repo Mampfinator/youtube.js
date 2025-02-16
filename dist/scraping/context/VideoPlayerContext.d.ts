@@ -18,4 +18,10 @@ export declare class VideoPlayerContext extends ScrapingContext<{
         coninuation: string;
         clickTrackingParams: string;
     }, string] | null;
+    getStatus(): VideoStatus;
+}
+export declare enum VideoStatus {
+    Live = "Live",
+    Upcoming = "Upcoming",
+    Offline = "Offline"
 }

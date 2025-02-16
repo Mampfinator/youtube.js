@@ -9,6 +9,7 @@ interface BrowseParameters {
     clickTrackingParams: any;
     visitorData: string;
     originalUrl?: string;
+    playerOffsetMs?: string;
 }
 /**
  * Represents a page on YouTube.

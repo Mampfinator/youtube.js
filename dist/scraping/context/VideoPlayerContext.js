@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VideoPlayerContext = exports.ChatType = void 0;
+exports.VideoStatus = exports.VideoPlayerContext = exports.ChatType = void 0;
 const neverthrow_1 = require("neverthrow");
 const data_extractors_1 = require("../extractors/data-extractors");
 const Context_1 = require("./decorators/Context");
@@ -33,8 +33,22 @@ let VideoPlayerContext = class VideoPlayerContext extends ScrapingContext_1.Scra
         const submenus = this.data.ytInitialData.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer.header.liveChatHeaderRenderer.viewSelector.sortFilterSubMenuRenderer.subMenuItems;
         return [submenus[chatType].continuation.reloadContinuationData.continuation, this.getVisitorData()];
     }
+    getStatus() {
+        const videoDetails = this.data.ytInitialPlayerResponse.videoDetails;
+        if (videoDetails.isLive)
+            return VideoStatus.Live;
+        if (videoDetails.isUpcoming)
+            return VideoStatus.Upcoming;
+        return VideoStatus.Offline;
+    }
 };
 VideoPlayerContext = __decorate([
     (0, Context_1.Context)(/youtube\.com\/watch\?|youtu\.be\//)
 ], VideoPlayerContext);
 exports.VideoPlayerContext = VideoPlayerContext;
+var VideoStatus;
+(function (VideoStatus) {
+    VideoStatus["Live"] = "Live";
+    VideoStatus["Upcoming"] = "Upcoming";
+    VideoStatus["Offline"] = "Offline";
+})(VideoStatus = exports.VideoStatus || (exports.VideoStatus = {}));

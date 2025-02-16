@@ -1,4 +1,4 @@
 export type YtCfg = {};
-export type YtInitialPlayerResponse = {};
+export type YtInitialPlayerResponse = Record<string, any>;
 export { YtInitialData } from "./generated";
 export { Action } from "./messages";

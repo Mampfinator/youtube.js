@@ -11,6 +11,13 @@ const data_extractors_1 = require("../extractors/data-extractors");
 const Context_1 = require("./decorators/Context");
 const ScrapingContext_1 = require("./ScrapingContext");
 let LiveChatContext = class LiveChatContext extends ScrapingContext_1.ScrapingContext {
+    live;
+    setIsLive(live) {
+        this.live = live;
+    }
+    getIsLive() {
+        return this.live ?? false;
+    }
     extract(body) {
         const result = data_extractors_1.DataExtractors.ytInitialData(body);
         if (result.isErr())
@@ -23,15 +30,17 @@ let LiveChatContext = class LiveChatContext extends ScrapingContext_1.ScrapingCo
             .actions;
     }
     getInitialContinuation() {
-        return this.data.ytInitialData.continuationContents.liveChatContinuation.continuations[0]
-            .invalidationContinuationData;
+        const continuationContainer = this.data.ytInitialData.continuationContents.liveChatContinuation.continuations[0];
+        // there are *so* many different barely nuanced keys for the different containers, but they all follow the same form - so this will be fine.
+        return continuationContainer[Object.keys(continuationContainer)[0]];
     }
-    async getLiveChat(continuation, clickTrackingParams, visitorData) {
+    async getLiveChat(continuation, clickTrackingParams, visitorData, playerOffsetMs) {
         return this.browse({
-            useEndpoint: "live_chat/get_live_chat",
+            useEndpoint: `live_chat/get_live_chat${this.live ? "" : "_replay"}`,
             token: continuation,
             clickTrackingParams,
             visitorData,
+            playerOffsetMs: playerOffsetMs !== undefined ? String(playerOffsetMs) : undefined,
         });
     }
 };
