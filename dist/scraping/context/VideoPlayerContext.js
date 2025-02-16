@@ -6,11 +6,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VideoPlayerContext = void 0;
+exports.VideoPlayerContext = exports.ChatType = void 0;
 const neverthrow_1 = require("neverthrow");
 const data_extractors_1 = require("../extractors/data-extractors");
 const Context_1 = require("./decorators/Context");
 const ScrapingContext_1 = require("./ScrapingContext");
+var ChatType;
+(function (ChatType) {
+    ChatType[ChatType["Top"] = 0] = "Top";
+    ChatType[ChatType["Live"] = 1] = "Live";
+})(ChatType = exports.ChatType || (exports.ChatType = {}));
 let VideoPlayerContext = class VideoPlayerContext extends ScrapingContext_1.ScrapingContext {
     extract(body) {
         const result = neverthrow_1.Result.combine([
@@ -21,6 +26,12 @@ let VideoPlayerContext = class VideoPlayerContext extends ScrapingContext_1.Scra
             throw result.error;
         const [ytInitialData, ytInitialPlayerResponse] = result.value;
         return { ytInitialData, ytInitialPlayerResponse };
+    }
+    continuation;
+    clickTrackingParams;
+    getLiveChatContinuation(chatType = ChatType.Live) {
+        const submenus = this.data.ytInitialData.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer.header.liveChatHeaderRenderer.viewSelector.sortFilterSubMenuRenderer.subMenuItems;
+        return [submenus[chatType].continuation.reloadContinuationData.continuation, this.getVisitorData()];
     }
 };
 VideoPlayerContext = __decorate([

@@ -4,17 +4,21 @@ import {
     BROWSE_URL,
     CLIENT_API_KEY,
     YOUTUBE_CLIENT_VERSION,
+    YOUTUBEI,
 } from "../scraping.constants";
-import { IRequestOrchestrator } from "../scraping.interfaces";
+import { FetchOptions, IRequestOrchestrator } from "../scraping.interfaces";
 import { YtInitialData } from "../types/internal";
 import { BrowseResult } from "../types/internal/browse";
 import { ContextOptions } from "./ContextFactory";
 
 interface BrowseParameters {
+    useEndpoint?: string;
     token?: string;
     clickTrackingParams: any;
     visitorData: string;
     originalUrl?: string;
+    // ONLY USED IN LIVE CHAT REPLAYS
+    playerOffsetMs?: string;
 }
 
 /**
@@ -64,9 +68,9 @@ export abstract class ScrapingContext<
         const { token, clickTrackingParams, visitorData, originalUrl } =
             options;
 
-        const data = await this.orchestrator.fetch({
+        const payload: FetchOptions<(...args: any[]) => Result<TReturn, any>> = {
             method: "POST",
-            url: BROWSE_URL,
+            url: options.useEndpoint ? `${YOUTUBEI}/${options.useEndpoint}` : BROWSE_URL,
             query: {
                 key: CLIENT_API_KEY,
             },
@@ -98,7 +102,13 @@ export abstract class ScrapingContext<
                     )(body);
                 return ok(body);
             },
-        });
+        };
+
+        if (options.playerOffsetMs) {
+            (payload.body as any).videoPlayerState = { playerOffsetMs: options.playerOffsetMs };
+        }
+
+        const data = await this.orchestrator.fetch(payload);
 
         if (data.isErr()) return err(data.error as Error);
         return ok(data.value as unknown as TReturn);

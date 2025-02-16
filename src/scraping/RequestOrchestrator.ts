@@ -48,7 +48,9 @@ export class RequestOrchestrator implements IRequestOrchestrator {
 
     public async init(): Promise<Result<void, Error>> {
         this.axios = wrapper(
-            axios.create({ jar: new CookieJar(new MemoryCookieStore()) }),
+            axios.create({ 
+                jar: new CookieJar(new MemoryCookieStore()), 
+            }),
         );
 
         try {

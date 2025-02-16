@@ -48,7 +48,9 @@ class RequestOrchestrator {
         });
     }
     async init() {
-        this.axios = (0, axios_cookiejar_support_1.wrapper)(axios_1.default.create({ jar: new tough_cookie_1.CookieJar(new tough_cookie_1.MemoryCookieStore()) }));
+        this.axios = (0, axios_cookiejar_support_1.wrapper)(axios_1.default.create({
+            jar: new tough_cookie_1.CookieJar(new tough_cookie_1.MemoryCookieStore()),
+        }));
         try {
             await this.axios.get("https://youtube.com/");
             await this.axios.post("https://www.youtube.com/upgrade_visitor_cookie", null, { params: { eom: 1 } });

@@ -1,9 +1,10 @@
 import { RequestOrchestrator } from "./RequestOrchestrator";
 import { IRequestOrchestrator } from "./scraping.interfaces";
-import { ContextFactory } from "./context";
+import { ContextFactory, VideoPlayerContext } from "./context";
 import { ChannelScraper, ChannelScraperOptions } from "./ChannelScraper";
 import { PostScraper } from "./PostScraper";
 import { Type } from "../shared/types";
+import { ChatClient } from "./ChatClient";
 
 export interface ScrapingClientOptions {
     /**
@@ -52,5 +53,9 @@ export class ScrapingClient {
      */
     public post(id: string): PostScraper {
         return new PostScraper(this.contexts, id);
+    }
+
+    public async chat(streamId: string): Promise<ChatClient> {
+        return ChatClient.fromStreamId(this, streamId);
     }
 }

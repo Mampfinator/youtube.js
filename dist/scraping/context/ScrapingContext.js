@@ -41,7 +41,7 @@ class ScrapingContext {
         const { token, clickTrackingParams, visitorData, originalUrl } = options;
         const data = await this.orchestrator.fetch({
             method: "POST",
-            url: scraping_constants_1.BROWSE_URL,
+            url: options.useEndpoint ? `${scraping_constants_1.YOUTUBEI}/${options.useEndpoint}` : scraping_constants_1.BROWSE_URL,
             query: {
                 key: scraping_constants_1.CLIENT_API_KEY,
             },

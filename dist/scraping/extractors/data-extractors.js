@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataExtractors = exports.playerResponseRe = exports.initialDataRe = void 0;
 const neverthrow_1 = require("neverthrow");
-exports.initialDataRe = /(?<=var ytInitialData *\= *)\{.*?}(?=\;)(?<![A-Za-z<>])/;
+exports.initialDataRe = /(?<=(window\["ytInitialData"\]|var ytInitialData) *\= *)\{.*?\}(?=\;)(?<![A-Za-z<>])/;
 exports.playerResponseRe = /(?<=var ytInitialPlayerResponse *\= *)\{.*?}(?=\;)(?<![A-Za-z<>])/;
 /**
  * Functions used for extracting data from YouTube pages.

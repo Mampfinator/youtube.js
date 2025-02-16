@@ -5,6 +5,7 @@ const RequestOrchestrator_1 = require("./RequestOrchestrator");
 const context_1 = require("./context");
 const ChannelScraper_1 = require("./ChannelScraper");
 const PostScraper_1 = require("./PostScraper");
+const ChatClient_1 = require("./ChatClient");
 class ScrapingClient {
     orchestrator;
     contexts;
@@ -39,6 +40,9 @@ class ScrapingClient {
      */
     post(id) {
         return new PostScraper_1.PostScraper(this.contexts, id);
+    }
+    async chat(streamId) {
+        return ChatClient_1.ChatClient.fromStreamId(this, streamId);
     }
 }
 exports.ScrapingClient = ScrapingClient;
