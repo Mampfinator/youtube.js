@@ -57,7 +57,14 @@ export class ChatClient {
             const result = await this.context.getLiveChat(continuation, clickTrackingParams, this.visitorData);
             if (result.isErr()) throw result.error;
             
-            for (const action of (result.value as any).continuationContents.liveChatContinuation.actions) {
+            const { liveChatContinuation } = (result.value as any).continuationContents;
+            // no continuation = stream has ended
+            if (!liveChatContinuation) return;
+
+            const actions: Action[] | undefined = liveChatContinuation.actions;
+            if (!actions) continue;
+            
+            for (const action of actions) {
                 yield action;
             }
 
@@ -100,9 +107,7 @@ export class ChatClient {
                 type: MessageType.Membership,
                 timestamp: Number(timestampUsec),
                 id,
-                authorName,
-                authorAvatar: authorPhoto.thumbnails.at(-1)!.url,
-                authorId: authorExternalChannelId,
+                author: new Author(authorName, authorExternalChannelId, authorPhoto.thumbnails),
                 message: message ? new MessageContent(message.runs) : undefined,
             }
         } else if (actionType === "liveChatPaidMessageRenderer") {
@@ -126,9 +131,7 @@ export class ChatClient {
                 type: MessageType.SuperChat,
                 id,
                 timestamp: Number(timestampUsec),
-                authorName,
-                authorAvatar: authorPhoto.thumbnails.at(-1)!.url,
-                authorId: authorExternalChannelId,
+                author: new Author(authorName, authorExternalChannelId, authorPhoto.thumbnails),
                 amount, currency,
                 message: message ? new MessageContent(message.runs) : undefined,
                 backgroundColor: bodyBackgroundColor,
@@ -149,7 +152,15 @@ export class MessageContent {
     constructor(public readonly runs: MessageContentRun[]) {}
 
     public get simpleText() {
-        return this.runs.map(run => run.text).join(" ");
+        return this.runs.map(run => {
+            if ("emoji" in run) {
+                return `:${run.emoji!.shortcuts[0]}:`;
+            } else if ("url" in run) {
+                return `[${run.text}](${run.url})`
+            } else {
+                return run.text!; 
+            }
+        }).join(" ");
     }
 
     public get html() {
@@ -167,6 +178,28 @@ export class MessageContent {
     }
 }
 
+
+// TODO: badges
+export class Author {
+    public readonly avatarUrl: string;
+
+    constructor(
+        public readonly name: string,
+        public readonly channelId: string,
+        avatar: string | { url: string}[]
+    ) {
+        if (typeof avatar === "string") {
+            this.avatarUrl = avatar;
+        } else {
+            this.avatarUrl = avatar.at(-1)!.url
+        }
+    }
+
+    public get channelUrl() {
+        return `https://www.youtube.com/channel/${this.channelId}`;
+    }
+}
+
 export enum MessageType {
     SuperChat = "SuperChat",
     SuperSticker = "SuperSticker",
@@ -175,12 +208,9 @@ export enum MessageType {
 
 type BaseMessage = {
     id: string,
-    authorName: string,
-    authorAvatar: string,
-    authorId: string,
+    author: Author,
     timestamp: number,
 }
-
 
 export type SuperChat = BaseMessage & {
     type: MessageType.SuperChat,
@@ -195,7 +225,7 @@ export type SuperChat = BaseMessage & {
 export type SuperSticker = BaseMessage & {
     type: MessageType.SuperSticker,
     sticker: string,
-    color: string,
+    backgroundColor: string,
 }
 
 export type Membership = BaseMessage & {
