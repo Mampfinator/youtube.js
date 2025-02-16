@@ -16,6 +16,10 @@ export interface Action {
     liveChatReportModerationStateCommand?: LiveChatReportModerationStateCommand;
     removeChatItemAction?:                 RemoveChatItemAction;
     addLiveChatTickerItemAction?:          AddLiveChatTickerItemAction;
+    replayChatItemAction?:                 {
+                                                clickTrackingParams: string;
+                                                actions: [Action]
+                                            };
 }
 
 export interface AddChatItemAction {
@@ -29,6 +33,37 @@ export interface AddChatItemActionItem {
     liveChatMembershipItemRenderer?:          LiveChatMembershipItemRenderer;
     liveChatPlaceholderItemRenderer?:         LiveChatPlaceholderItemRenderer;
     liveChatPaidMessageRenderer?:             LiveChatPaidMessageRenderer;
+    liveChatPaidStickerRenderer?:             LiveChatPaidStickerRenderer;
+}
+
+export interface LiveChatPaidStickerRenderer {
+    id: string;
+    contextMenuEndpoint: ContextMenuEndpoint;
+    contextMenuAccessibility: ContextMenuAccessibility;
+    timestampUsec: string;
+    authorPhoto: SponsorPhotoClass;
+    authorName: AuthorName;
+    authorExternalChannelId: string;
+    timestampText: { simpleText: string };
+    sticker: {
+        thumbnails: Thumbnail[];
+        accessibility: {
+            accessibilityData: {
+                label: string;
+            }
+        }
+    };
+    authorBadges: AuthorBadge[];
+    moneyChipBackgroundColor: number;
+    moneyChipTextColor: number;
+    purchaseAmountText: { simpleText: string };
+    stickerDisplayWidth: number;
+    stickerDisplayHeight: number;
+    backgroundColor: number;
+    authorNameTextColor: number;
+    trackingParams: string;
+    isV2Style: boolean;
+
 }
 
 export interface LiveChatMembershipItemRenderer {

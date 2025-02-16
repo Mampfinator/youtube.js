@@ -1,5 +1,5 @@
 import { sleep } from "../shared/util";
-import { LiveChatContext, VideoPlayerContext } from "./context";
+import { LiveChatContext, VideoPlayerContext, VideoStatus } from "./context";
 import { ScrapingClient } from "./ScrapingClient";
 import { Action } from "./types";
 import { AddChatItemActionItem, FluffyEmoji, PurpleEmoji, Thumbnail } from "./types/internal/messages";
@@ -30,12 +30,16 @@ export class ChatClient {
             throw new Error("Live chat not available");
         }
 
+        const isLive = videoContext.value.getStatus() === VideoStatus.Live;
+
         const liveChatContext = await scraper.contexts.fromUrl(
-            `https://youtube.com/live_chat?continuation=${initialContinuation}`,
+            `https://youtube.com/live_chat${isLive ? "" : "_replay"}?continuation=${initialContinuation}`,
             LiveChatContext,
         );
 
         if (liveChatContext.isErr()) throw liveChatContext.error;
+
+        liveChatContext.value.setIsLive(isLive);
 
         return new ChatClient(scraper, liveChatContext.value, streamId, visitorData);
     }
@@ -51,10 +55,13 @@ export class ChatClient {
             timeoutMs,
         } = this.context.getInitialContinuation();
 
+        let playerOffsetMs = 0;
+
         while (true) {
             await sleep(timeoutMs);
+            playerOffsetMs += timeoutMs;
 
-            const result = await this.context.getLiveChat(continuation, clickTrackingParams, this.visitorData);
+            const result = await this.context.getLiveChat(continuation, clickTrackingParams, this.visitorData, this.context.getIsLive() ? playerOffsetMs : undefined);
             if (result.isErr()) throw result.error;
             
             const { liveChatContinuation } = (result.value as any).continuationContents;
@@ -68,8 +75,10 @@ export class ChatClient {
                 yield action;
             }
 
+            const continuationContainer = (result.value as any).continuationContents.liveChatContinuation.continuations[0];
+
             const { clickTrackingParams: nextClickTrackingParams, continuation: nextContinuation, timeoutMs: nextTimeoutMs } =
-                (result.value as any).continuationContents.liveChatContinuation.continuations[0].invalidationContinuationData;
+                continuationContainer[Object.keys(continuationContainer)[0]];
 
             clickTrackingParams = nextClickTrackingParams;
             continuation = nextContinuation;
@@ -85,9 +94,13 @@ export class ChatClient {
     }
 
     private convertAction(action: Action): ChatMessage | undefined {
-        if (!action.addChatItemAction) return undefined;
+        if ((action as any).replayChatItemAction) {
+            action = (action as any).replayChatItemAction.actions[0];
+        }
+
+        if (!action.addChatItemAction && !(action as any).chatReplayItemAction) return undefined;
         
-        const { addChatItemAction: {item} } = action;
+        const item: AddChatItemActionItem = (action as any).addChatItemAction?.item;
 
         const actionType = Object.keys(item)[0] as NonNullable<keyof AddChatItemActionItem>;
 
@@ -137,6 +150,25 @@ export class ChatClient {
                 backgroundColor: bodyBackgroundColor,
                 textColor: bodyTextColor,
                 authorColor: authorNameTextColor,
+            }
+        } else if (actionType === "liveChatPaidStickerRenderer") {
+            const {
+                id,
+                timestampUsec,
+                authorName: { simpleText: authorName },
+                authorPhoto,
+                authorExternalChannelId,
+                sticker,
+                backgroundColor,
+            } = item[actionType]!;
+
+            return {
+                type: MessageType.SuperSticker,
+                id,
+                timestamp: Number(timestampUsec),
+                author: new Author(authorName, authorExternalChannelId, authorPhoto.thumbnails),
+                sticker: sticker.thumbnails.at(-1)!.url,
+                backgroundColor,
             }
         }
     }
@@ -225,7 +257,7 @@ export type SuperChat = BaseMessage & {
 export type SuperSticker = BaseMessage & {
     type: MessageType.SuperSticker,
     sticker: string,
-    backgroundColor: string,
+    backgroundColor: number,
 }
 
 export type Membership = BaseMessage & {

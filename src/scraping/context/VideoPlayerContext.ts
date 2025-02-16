@@ -36,6 +36,20 @@ export class VideoPlayerContext extends ScrapingContext<{
 
         return [submenus[chatType].continuation.reloadContinuationData.continuation, this.getVisitorData()];
     }
+
+    public getStatus(): VideoStatus {
+        const videoDetails = this.data.ytInitialPlayerResponse.videoDetails;
+
+        if (videoDetails.isLive) return VideoStatus.Live;
+        if (videoDetails.isUpcoming) return VideoStatus.Upcoming;
+        return VideoStatus.Offline;
+    }
+}
+
+export enum VideoStatus {
+    Live = "Live",
+    Upcoming = "Upcoming",
+    Offline = "Offline",
 }
 
 
