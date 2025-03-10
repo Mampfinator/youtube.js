@@ -121,7 +121,7 @@ export class ChatClient {
                 timestamp: Number(timestampUsec),
                 id,
                 author: new Author(authorName, authorExternalChannelId, authorPhoto.thumbnails),
-                message: message ? new MessageContent(message.runs) : undefined,
+                message: message && message.runs?.length > 0 ? new MessageContent(message.runs) : undefined,
             }
         } else if (actionType === "liveChatPaidMessageRenderer") {
             const {
@@ -143,7 +143,7 @@ export class ChatClient {
                 timestamp: Number(timestampUsec),
                 author: new Author(authorName, authorExternalChannelId, authorPhoto.thumbnails),
                 currencyString,
-                message: message ? new MessageContent(message.runs) : undefined,
+                message: message && message.runs?.length > 0 ? new MessageContent(message.runs) : undefined,
                 backgroundColor: bodyBackgroundColor,
                 textColor: bodyTextColor,
                 authorColor: authorNameTextColor,
