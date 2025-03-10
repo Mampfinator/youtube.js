@@ -130,22 +130,19 @@ export class ChatClient {
                 authorName: { simpleText: authorName },
                 authorPhoto,
                 authorExternalChannelId,
-                purchaseAmountText: { simpleText: amountText },
+                purchaseAmountText: { simpleText: currencyString },
                 message,
                 bodyBackgroundColor,
                 bodyTextColor,
                 authorNameTextColor,
             } = item[actionType]!;
 
-            const amount = Number(amountText.match(/\d+/)![0]);
-            const currency = amountText.match(/[^\d]+/)![0].trim();
-
             return {
                 type: MessageType.SuperChat,
                 id,
                 timestamp: Number(timestampUsec),
                 author: new Author(authorName, authorExternalChannelId, authorPhoto.thumbnails),
-                amount, currency,
+                currencyString,
                 message: message ? new MessageContent(message.runs) : undefined,
                 backgroundColor: bodyBackgroundColor,
                 textColor: bodyTextColor,
@@ -160,6 +157,7 @@ export class ChatClient {
                 authorExternalChannelId,
                 sticker,
                 backgroundColor,
+                purchaseAmountText: { simpleText: currencyString },
             } = item[actionType]!;
 
             return {
@@ -169,6 +167,7 @@ export class ChatClient {
                 author: new Author(authorName, authorExternalChannelId, authorPhoto.thumbnails),
                 sticker: sticker.thumbnails.at(-1)!.url,
                 backgroundColor,
+                currencyString,
             }
         }
     }
@@ -246,8 +245,10 @@ type BaseMessage = {
 
 export type SuperChat = BaseMessage & {
     type: MessageType.SuperChat,
-    amount: number,
-    currency: string,
+    /**
+     * The combined amount and currency that was donated with the superchat.
+     */
+    currencyString: string,
     backgroundColor: number,
     textColor: number,
     authorColor: number,
@@ -258,8 +259,13 @@ export type SuperSticker = BaseMessage & {
     type: MessageType.SuperSticker,
     sticker: string,
     backgroundColor: number,
+    /**
+     * The combined amount and currency that was donated with the super sticker.
+     */
+    currencyString: string,
 }
 
+// TODO: tiers
 export type Membership = BaseMessage & {
     type: MessageType.Membership,
     message?: MessageContent,

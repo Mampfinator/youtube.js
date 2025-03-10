@@ -49,8 +49,10 @@ type BaseMessage = {
 };
 export type SuperChat = BaseMessage & {
     type: MessageType.SuperChat;
-    amount: number;
-    currency: string;
+    /**
+     * The combined amount and currency that was donated with the superchat.
+     */
+    currencyString: string;
     backgroundColor: number;
     textColor: number;
     authorColor: number;
@@ -60,6 +62,10 @@ export type SuperSticker = BaseMessage & {
     type: MessageType.SuperSticker;
     sticker: string;
     backgroundColor: number;
+    /**
+     * The combined amount and currency that was donated with the super sticker.
+     */
+    currencyString: string;
 };
 export type Membership = BaseMessage & {
     type: MessageType.Membership;

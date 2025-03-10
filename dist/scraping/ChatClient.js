@@ -89,15 +89,13 @@ class ChatClient {
             };
         }
         else if (actionType === "liveChatPaidMessageRenderer") {
-            const { id, timestampUsec, authorName: { simpleText: authorName }, authorPhoto, authorExternalChannelId, purchaseAmountText: { simpleText: amountText }, message, bodyBackgroundColor, bodyTextColor, authorNameTextColor, } = item[actionType];
-            const amount = Number(amountText.match(/\d+/)[0]);
-            const currency = amountText.match(/[^\d]+/)[0].trim();
+            const { id, timestampUsec, authorName: { simpleText: authorName }, authorPhoto, authorExternalChannelId, purchaseAmountText: { simpleText: currencyString }, message, bodyBackgroundColor, bodyTextColor, authorNameTextColor, } = item[actionType];
             return {
                 type: MessageType.SuperChat,
                 id,
                 timestamp: Number(timestampUsec),
                 author: new Author(authorName, authorExternalChannelId, authorPhoto.thumbnails),
-                amount, currency,
+                currencyString,
                 message: message ? new MessageContent(message.runs) : undefined,
                 backgroundColor: bodyBackgroundColor,
                 textColor: bodyTextColor,
@@ -105,7 +103,7 @@ class ChatClient {
             };
         }
         else if (actionType === "liveChatPaidStickerRenderer") {
-            const { id, timestampUsec, authorName: { simpleText: authorName }, authorPhoto, authorExternalChannelId, sticker, backgroundColor, } = item[actionType];
+            const { id, timestampUsec, authorName: { simpleText: authorName }, authorPhoto, authorExternalChannelId, sticker, backgroundColor, purchaseAmountText: { simpleText: currencyString }, } = item[actionType];
             return {
                 type: MessageType.SuperSticker,
                 id,
@@ -113,6 +111,7 @@ class ChatClient {
                 author: new Author(authorName, authorExternalChannelId, authorPhoto.thumbnails),
                 sticker: sticker.thumbnails.at(-1).url,
                 backgroundColor,
+                currencyString,
             };
         }
     }
