@@ -6,17 +6,24 @@ const context_1 = require("./context");
 class PostScraper {
     factory;
     id;
+    options;
     post;
     channelData;
     context;
-    constructor(factory, id) {
+    constructor(factory, id, options) {
         this.factory = factory;
         this.id = id;
+        this.options = options;
     }
     async ensureContext(forceRefetch) {
         if (!forceRefetch && this.context !== undefined)
             return (0, neverthrow_1.ok)(this.context);
-        const context = await this.factory.fromUrl(`https://youtube.com/post/${this.id}`, context_1.CommunityPostContext);
+        let url = `https://youtube.com/post/${this.id}`;
+        if (this.options?.query) {
+            const query = new URLSearchParams(this.options.query);
+            url += `?${query.toString()}`;
+        }
+        const context = await this.factory.fromUrl(url, context_1.CommunityPostContext);
         if (context.isOk())
             this.context = context.value;
         return context;
@@ -48,6 +55,18 @@ class PostScraper {
         if (channel.isOk())
             this.channelData = channel.value;
         return channel;
+    }
+    async fetchComments() {
+        const context = await this.ensureContext();
+        if (context.isErr())
+            return context;
+        try {
+            const comments = context.value.comments();
+            return (0, neverthrow_1.ok)(comments);
+        }
+        catch (error) {
+            return (0, neverthrow_1.err)(error);
+        }
     }
 }
 exports.PostScraper = PostScraper;

@@ -35,7 +35,7 @@ export declare abstract class ScrapingContext<TData extends {
      * Makes a browse request with the given parameters.
      * @template TReturn specifies return type.
      */
-    protected browse<TReturn extends BrowseResult = BrowseResult>(options: BrowseParameters): Promise<Result<TReturn, Error>>;
-    protected getVisitorData(): string;
+    browse<TReturn extends BrowseResult = BrowseResult>(options: BrowseParameters): Promise<Result<TReturn, Error>>;
+    getVisitorData(): string;
 }
 export {};

@@ -3,6 +3,8 @@ import { ContextFactory } from "./context";
 import { ChannelScraper, ChannelScraperOptions } from "./ChannelScraper";
 import { PostScraper } from "./PostScraper";
 import { ChatClient } from "./ChatClient";
+import { ShortScraper } from "./ShortScraper";
+import { VideoScraper } from "./VideoScraper";
 export interface ScrapingClientOptions {
     /**
      * If provided, overrides the default request orchestrator that is responsible for all scraping-related fetching.
@@ -29,6 +31,8 @@ export declare class ScrapingClient {
     /**
      * @returns - a collection of community post-specific methods.
      */
-    post(id: string): PostScraper;
+    post(id: string, linkedComment?: string): PostScraper;
     chat(streamId: string): Promise<ChatClient>;
+    video(videoId: string, linkedComment?: string): VideoScraper;
+    short(shortId: string, linkedComment?: string): ShortScraper;
 }

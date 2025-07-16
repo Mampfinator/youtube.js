@@ -11,6 +11,7 @@ const neverthrow_1 = require("neverthrow");
 const data_extractors_1 = require("../extractors/data-extractors");
 const Context_1 = require("./decorators/Context");
 const ScrapingContext_1 = require("./ScrapingContext");
+const CommentFetcher_1 = require("../CommentFetcher");
 var ChatType;
 (function (ChatType) {
     ChatType[ChatType["Top"] = 0] = "Top";
@@ -40,6 +41,14 @@ let VideoPlayerContext = class VideoPlayerContext extends ScrapingContext_1.Scra
         if (videoDetails.isUpcoming)
             return VideoStatus.Upcoming;
         return VideoStatus.Offline;
+    }
+    comments() {
+        const contents = this.data.ytInitialData.contents.twoColumnWatchNextResults.results.results.contents;
+        const endpoint = contents.find((content) => content.itemSectionRenderer?.sectionIdentifier === "comment-item-section").itemSectionRenderer.contents[0]?.continuationItemRenderer?.continuationEndpoint;
+        if (!endpoint) {
+            throw new Error("No comments found in the video player context.");
+        }
+        return new CommentFetcher_1.CommentFetcher(this, endpoint.clickTrackingParams, endpoint.continuationCommand.token, "next");
     }
 };
 VideoPlayerContext = __decorate([

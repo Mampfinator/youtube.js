@@ -24,4 +24,5 @@ __exportStar(require("./ScrapingContext"), exports);
 __exportStar(require("./PlaylistContext"), exports);
 __exportStar(require("./SearchContext"), exports);
 __exportStar(require("./VideoPlayerContext"), exports);
+__exportStar(require("./ShortContext"), exports);
 __exportStar(require("./ContextFactory"), exports);
