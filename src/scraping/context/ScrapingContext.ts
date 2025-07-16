@@ -62,7 +62,7 @@ export abstract class ScrapingContext<
      * Makes a browse request with the given parameters.
      * @template TReturn specifies return type.
      */
-    protected async browse<TReturn extends BrowseResult = BrowseResult>(
+    public async browse<TReturn extends BrowseResult = BrowseResult>(
         options: BrowseParameters,
     ): Promise<Result<TReturn, Error>> {
         const { token, clickTrackingParams, visitorData, originalUrl } =
@@ -114,7 +114,7 @@ export abstract class ScrapingContext<
         return ok(data.value as unknown as TReturn);
     }
 
-    protected getVisitorData() {
+    public getVisitorData() {
         return this.data.ytInitialData.responseContext
             .webResponseContextExtensionData.ytConfigData.visitorData;
     }

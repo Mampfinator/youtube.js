@@ -3,8 +3,7 @@ import { DataExtractors } from "../extractors/data-extractors";
 import { YtInitialData, YtInitialPlayerResponse } from "../types/internal";
 import { Context } from "./decorators/Context";
 import { ScrapingContext } from "./ScrapingContext";
-import { sleep } from "../../shared/util";
-import { ChatMessage } from "../ChatClient";
+import { CommentFetcher } from "../CommentFetcher";
 
 export enum ChatType {
     Top = 0,
@@ -43,6 +42,22 @@ export class VideoPlayerContext extends ScrapingContext<{
         if (videoDetails.isLive) return VideoStatus.Live;
         if (videoDetails.isUpcoming) return VideoStatus.Upcoming;
         return VideoStatus.Offline;
+    }
+
+    public comments(): CommentFetcher {
+        const contents = (this.data.ytInitialData.contents as any).twoColumnWatchNextResults.results.results.contents;
+        const endpoint = contents.find((content: any) => content.itemSectionRenderer?.sectionIdentifier === "comment-item-section").itemSectionRenderer.contents[0]?.continuationItemRenderer?.continuationEndpoint;
+        
+        if (!endpoint) {
+            throw new Error("No comments found in the video player context.");
+        }
+
+        return new CommentFetcher(
+            this,
+            endpoint.clickTrackingParams,
+            endpoint.continuationCommand.token,
+            "next",
+        );
     }
 }
 

@@ -108,4 +108,10 @@ export class ShortsContext extends Mixin(
             yield err([error as Error]);
         }
     }
+
+    public async fetchComments(): Promise<Comment[]> {
+        
+        
+        return [];
+    }
 }

@@ -3,8 +3,9 @@ import { IRequestOrchestrator } from "./scraping.interfaces";
 import { ContextFactory, VideoPlayerContext } from "./context";
 import { ChannelScraper, ChannelScraperOptions } from "./ChannelScraper";
 import { PostScraper } from "./PostScraper";
-import { Type } from "../shared/types";
 import { ChatClient } from "./ChatClient";
+import { ShortScraper } from "./ShortScraper";
+import { VideoScraper } from "./VideoScraper";
 
 export interface ScrapingClientOptions {
     /**
@@ -51,11 +52,33 @@ export class ScrapingClient {
     /**
      * @returns - a collection of community post-specific methods.
      */
-    public post(id: string): PostScraper {
-        return new PostScraper(this.contexts, id);
+    public post(id: string, linkedComment?: string): PostScraper {
+        return new PostScraper(this.contexts, id, linkedComment ? { query: { lc: linkedComment } } : undefined);
     }
 
     public async chat(streamId: string): Promise<ChatClient> {
         return ChatClient.fromStreamId(this, streamId);
+    }
+
+    public video(
+        videoId: string,
+        linkedComment?: string,
+    ): VideoScraper {
+        return new VideoScraper(
+            this.contexts,
+            videoId,
+            linkedComment ? { query: { lc: linkedComment } } : undefined,
+        )
+    }
+
+    public short(
+        shortId: string,
+        linkedComment?: string,
+    ): ShortScraper {
+        return new ShortScraper(
+            this.contexts,
+            shortId,
+            linkedComment ? { query: { lc: linkedComment } } : undefined,
+        )
     }
 }

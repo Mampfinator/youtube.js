@@ -4,6 +4,7 @@ import { CommunityPost, ChannelData } from "../types";
 import { Context } from "./decorators/Context";
 import { ScrapingContext } from "./ScrapingContext";
 import { extractChannelData } from "../extractors/channel-data";
+import { CommentFetcher } from "../CommentFetcher";
 
 /**
  * Context for individual community posts.
@@ -44,5 +45,21 @@ export class CommunityPostContext extends ScrapingContext {
         } catch (error) {
             return err(error as Error);
         }
+    }
+
+    public comments(): CommentFetcher {
+        const endpoint = (this.data.ytInitialData as any).contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[1].itemSectionRenderer.contents[0]?.continuationItemRenderer;
+        if (!endpoint) {
+            throw new Error("No comments available for this community post.");
+        }
+        
+        const trackingParams = endpoint.trackingParams;
+        const token = endpoint.continuationEndpoint.continuationCommand.token;
+        return new CommentFetcher(
+            this,
+            trackingParams,
+            token,
+            "browse",
+        );
     }
 }

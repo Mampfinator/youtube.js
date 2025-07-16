@@ -1,7 +1,8 @@
-import { Err, ok, Result } from "neverthrow";
+import { err, Err, ok, Result } from "neverthrow";
 import { CommunityPostContext, ContextFactory } from "./context";
 import { CommunityPost } from "./types/external/community-posts";
 import { ChannelData } from "./types";
+import { CommentFetcher } from "./CommentFetcher";
 
 export class PostScraper {
     private post?: CommunityPost;
@@ -10,7 +11,15 @@ export class PostScraper {
 
     constructor(
         private readonly factory: ContextFactory,
-        private readonly id: string,
+        private readonly id: string, 
+        private readonly options?: {
+            query?: {
+                /**
+                 * Linked comment ID, if any.
+                 */
+                lc?: string
+            }
+        }
     ) {}
 
     private async ensureContext(
@@ -19,8 +28,14 @@ export class PostScraper {
         if (!forceRefetch && this.context !== undefined)
             return ok(this.context);
 
+        let url = `https://youtube.com/post/${this.id}`;
+        if (this.options?.query) {
+            const query = new URLSearchParams(this.options.query);
+            url += `?${query.toString()}`;
+        }
+
         const context = await this.factory.fromUrl(
-            `https://youtube.com/post/${this.id}`,
+            url,
             CommunityPostContext,
         );
 
@@ -61,5 +76,17 @@ export class PostScraper {
         if (channel.isOk()) this.channelData = channel.value;
 
         return channel;
+    }
+
+    public async fetchComments(): Promise<Result<CommentFetcher, Error>> {
+        const context = await this.ensureContext();
+        if (context.isErr()) return context as Result<never, Error>;
+        try {
+            const comments = context.value.comments();
+
+            return ok(comments);
+        } catch (error) {
+            return err(error as Error);
+        }
     }
 }
