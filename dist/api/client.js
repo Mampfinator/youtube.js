@@ -9,6 +9,7 @@ const neverthrow_1 = require("neverthrow");
 const errors_1 = require("./errors");
 const util_1 = require("./util");
 const channels_1 = require("./channels/channels");
+const comments_1 = require("./comments/comments");
 /**
  * YouTube client for all your needs.
  *
@@ -20,6 +21,7 @@ const channels_1 = require("./channels/channels");
 class YouTubeClient extends undici_1.Client {
     videos = new videos_1.VideosEndpoints(this);
     channels = new channels_1.ChannelsEndpoints(this);
+    comments = new comments_1.CommentEndpoints(this);
     key;
     callbackUrl;
     constructor(options) {
