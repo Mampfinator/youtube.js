@@ -8,5 +8,6 @@ export * from "./ScrapingContext";
 export * from "./PlaylistContext";
 export * from "./SearchContext";
 export * from "./VideoPlayerContext";
+export * from "./ShortContext";
 
 export * from "./ContextFactory";

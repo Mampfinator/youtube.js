@@ -12,6 +12,7 @@ const community_posts_1 = require("../extractors/community-posts");
 const Context_1 = require("./decorators/Context");
 const ScrapingContext_1 = require("./ScrapingContext");
 const channel_data_1 = require("../extractors/channel-data");
+const CommentFetcher_1 = require("../CommentFetcher");
 /**
  * Context for individual community posts.
  */
@@ -36,6 +37,15 @@ let CommunityPostContext = class CommunityPostContext extends ScrapingContext_1.
         catch (error) {
             return (0, neverthrow_1.err)(error);
         }
+    }
+    comments() {
+        const endpoint = this.data.ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[1].itemSectionRenderer.contents[0]?.continuationItemRenderer;
+        if (!endpoint) {
+            throw new Error("No comments available for this community post.");
+        }
+        const trackingParams = endpoint.trackingParams;
+        const token = endpoint.continuationEndpoint.continuationCommand.token;
+        return new CommentFetcher_1.CommentFetcher(this, trackingParams, token, "browse");
     }
 };
 CommunityPostContext = __decorate([

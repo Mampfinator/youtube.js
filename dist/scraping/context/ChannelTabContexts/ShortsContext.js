@@ -73,6 +73,9 @@ let ShortsContext = class ShortsContext extends (0, ts_mixer_1.Mixin)(ChannelTab
             yield (0, neverthrow_1.err)([error]);
         }
     }
+    async fetchComments() {
+        return [];
+    }
 };
 ShortsContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Shorts), Context_1.DEFAULT_WEIGHT + 1)

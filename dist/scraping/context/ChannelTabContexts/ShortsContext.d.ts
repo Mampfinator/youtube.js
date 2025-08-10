@@ -15,5 +15,6 @@ export declare class ShortsContext extends ShortsContext_base {
     protected getElements(): AsyncGenerator<Result<{
         elements: Map<string, ScrapedShort>;
     }, Error[]>, undefined, unknown>;
+    fetchComments(): Promise<Comment[]>;
 }
 export {};

@@ -3,6 +3,7 @@ import { Client, Dispatcher } from "undici";
 import { Result } from "neverthrow";
 import { YouTubeAPIError } from "./errors";
 import { ChannelsEndpoints } from "./channels/channels";
+import { CommentEndpoints as CommentsEndpoints } from "./comments/comments";
 interface GetOptions {
     query?: Record<string, string | string[] | number | boolean | undefined>;
     headers?: Record<string, string | undefined>;
@@ -35,6 +36,7 @@ export interface ClientOptions {
 export declare class YouTubeClient extends Client {
     readonly videos: VideosEndpoints;
     readonly channels: ChannelsEndpoints;
+    readonly comments: CommentsEndpoints;
     private readonly key?;
     private readonly callbackUrl?;
     constructor(options: ClientOptions);

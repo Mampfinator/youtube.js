@@ -6,6 +6,7 @@ import { err, ok, Result } from "neverthrow";
 import { APIErrorResponse, isError, YouTubeAPIError } from "./errors";
 import { deepClearRecord } from "./util";
 import { ChannelsEndpoints } from "./channels/channels";
+import { CommentEndpoints as CommentsEndpoints } from "./comments/comments";
 
 interface GetOptions {
     query?: Record<string, string | string[] | number | boolean | undefined>;
@@ -42,6 +43,7 @@ export interface ClientOptions {
 export class YouTubeClient extends Client {
     public readonly videos = new VideosEndpoints(this);
     public readonly channels = new ChannelsEndpoints(this);
+    public readonly comments = new CommentsEndpoints(this);
 
     private readonly key?: string;
     private readonly callbackUrl?: string;

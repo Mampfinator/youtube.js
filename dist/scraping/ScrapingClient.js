@@ -6,6 +6,8 @@ const context_1 = require("./context");
 const ChannelScraper_1 = require("./ChannelScraper");
 const PostScraper_1 = require("./PostScraper");
 const ChatClient_1 = require("./ChatClient");
+const ShortScraper_1 = require("./ShortScraper");
+const VideoScraper_1 = require("./VideoScraper");
 class ScrapingClient {
     orchestrator;
     contexts;
@@ -38,11 +40,17 @@ class ScrapingClient {
     /**
      * @returns - a collection of community post-specific methods.
      */
-    post(id) {
-        return new PostScraper_1.PostScraper(this.contexts, id);
+    post(id, linkedComment) {
+        return new PostScraper_1.PostScraper(this.contexts, id, linkedComment ? { query: { lc: linkedComment } } : undefined);
     }
     async chat(streamId) {
         return ChatClient_1.ChatClient.fromStreamId(this, streamId);
+    }
+    video(videoId, linkedComment) {
+        return new VideoScraper_1.VideoScraper(this.contexts, videoId, linkedComment ? { query: { lc: linkedComment } } : undefined);
+    }
+    short(shortId, linkedComment) {
+        return new ShortScraper_1.ShortScraper(this.contexts, shortId, linkedComment ? { query: { lc: linkedComment } } : undefined);
     }
 }
 exports.ScrapingClient = ScrapingClient;
