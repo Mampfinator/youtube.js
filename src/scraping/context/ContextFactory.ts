@@ -6,7 +6,7 @@ import {
 import { Type } from "../../shared/types";
 import { isResult, isValueOk } from "../../shared/util";
 import { FetchError, FetchErrorCode } from "../errors/FetchError";
-import { IRequestOrchestrator } from "../scraping.interfaces";
+import { FetchOptions, IRequestOrchestrator } from "../scraping.interfaces";
 import { getContexts, ContextData } from "./decorators/Context";
 
 export interface ContextOptions {
@@ -28,34 +28,53 @@ export class ContextFactory {
     }
 
     /**
-     *
      * @param url URL to fetch from. If `useContext` is not provided, attempts to automatically find a matcher.
      * @param useContext Use this context regardless of which other contexts may match the provided URL.
      */
     public async fromUrl<T extends object>(
         url: string,
         useContext?: Type<T>,
+    ): Promise<Result<T, FetchError>>
+    public async fromUrl<T extends object>(
+        options: Partial<FetchOptions<undefined>>,
+        useContext?: Type<T>,
+    ): Promise<Result<T, FetchError>>
+    public async fromUrl<T extends object>(
+        urlOrOptions: string | Partial<FetchOptions<undefined>>,
+        useContext?: Type<T>,
     ): Promise<Result<T, FetchError>> {
-        try {
-            new URL(url);
-        } catch {
-            return err(new FetchError(FetchErrorCode.InvalidURL));
+        if (typeof urlOrOptions == "string") {
+            try {
+                new URL(urlOrOptions);
+            } catch {
+                return err(new FetchError(FetchErrorCode.InvalidURL));
+            }
         }
 
         let data: Result<any, any> | undefined;
         let options: Partial<ContextOptions> = {
             orchestrator: this.orchestrator,
-            url: url,
         };
 
+        if (typeof urlOrOptions === "string") {
+            options.url = urlOrOptions;
+        } else {
+            if (!urlOrOptions.url) {
+                return err(new FetchError(FetchErrorCode.InvalidURL));
+            }
+            options.url = urlOrOptions.url;
+        }
+
+        const fetchOptions = typeof urlOrOptions === "string" ? {
+            url: urlOrOptions,
+            method: "GET",
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+            } 
+        } as FetchOptions<undefined> : urlOrOptions as FetchOptions<undefined>;
+
         if (useContext) {
-            const result = await this.orchestrator.fetch({
-                url,
-                method: "GET",
-                headers: {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
-                }
-            });
+            const result = await this.orchestrator.fetch(fetchOptions);
             if (result.isErr()) return err(result.error);
             const context = this.getContext(useContext, {
                 ...options,
@@ -65,11 +84,11 @@ export class ContextFactory {
         }
 
         for (const { matcher, constructor } of this.matchers) {
-            if (!isValueOk(matcher(url))) continue;
+            if (!isValueOk(matcher(fetchOptions.url))) continue;
 
             if (!data) {
                 // we only fetch once we know we have at least one Context that can do anything with this URL.
-                data = await this.orchestrator.fetch({ url, method: "GET" });
+                data = await this.orchestrator.fetch(fetchOptions);
                 if (data.isErr()) return err(data.error);
                 options.body = data.value;
             }
@@ -86,7 +105,7 @@ export class ContextFactory {
         }
         return err(
             new FetchError(FetchErrorCode.InternalError, {}, [
-                new YoutubejsError("NoContextFound", url),
+                new YoutubejsError("NoContextFound", fetchOptions.url),
             ]),
         );
     }
