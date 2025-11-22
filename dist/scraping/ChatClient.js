@@ -22,12 +22,14 @@ class ChatClient {
         const videoContext = await scraper.contexts.fromUrl(`https://youtube.com/watch?v=${streamId}`, context_1.VideoPlayerContext);
         if (videoContext.isErr())
             throw videoContext.error;
+        // FIXME: this is currently getting the wrong continuation!
         const [initialContinuation, visitorData] = videoContext.value.getLiveChatContinuation();
         if (initialContinuation === null) {
             throw new Error("Live chat not available");
         }
         const isLive = videoContext.value.getStatus() === context_1.VideoStatus.Live;
-        const liveChatContext = await scraper.contexts.fromUrl(`https://youtube.com/live_chat${isLive ? "" : "_replay"}?continuation=${initialContinuation}`, context_1.LiveChatContext);
+        const url = `https://youtube.com/live_chat${isLive ? "" : "_replay"}?continuation=${initialContinuation.continuation}`;
+        const liveChatContext = await scraper.contexts.fromUrl(url, context_1.LiveChatContext);
         if (liveChatContext.isErr())
             throw liveChatContext.error;
         liveChatContext.value.setIsLive(isLive);

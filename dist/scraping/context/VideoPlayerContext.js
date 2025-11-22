@@ -30,9 +30,11 @@ let VideoPlayerContext = class VideoPlayerContext extends ScrapingContext_1.Scra
     }
     continuation;
     clickTrackingParams;
-    getLiveChatContinuation(chatType = ChatType.Live) {
-        const submenus = this.data.ytInitialData.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer.header.liveChatHeaderRenderer.viewSelector.sortFilterSubMenuRenderer.subMenuItems;
-        return [submenus[chatType].continuation.reloadContinuationData.continuation, this.getVisitorData()];
+    //FIXME: chatType = ChatType.Live currently doesn't work! YouTube changed something, and I can't quite figure it out yet.
+    getLiveChatContinuation(chatType = ChatType.Top) {
+        const continuation = this.data.ytInitialData.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer.continuations[0].reloadContinuationData.continuation;
+        const clickTrackingParams = this.data.ytInitialData.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer.header.liveChatHeaderRenderer.viewSelector.sortFilterSubMenuRenderer.subMenuItems[chatType].continuation.reloadContinuationData.clickTrackingParams;
+        return [{ continuation, clickTrackingParams }, this.getVisitorData()];
     }
     getStatus() {
         const videoDetails = this.data.ytInitialPlayerResponse.videoDetails;

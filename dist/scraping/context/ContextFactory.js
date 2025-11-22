@@ -13,31 +13,37 @@ class ContextFactory {
         this.orchestrator = orchestrator;
         this.matchers = (0, Context_1.getContexts)().sort(({ weight: weightA }, { weight: weightB }) => weightB - weightA);
     }
-    /**
-     *
-     * @param url URL to fetch from. If `useContext` is not provided, attempts to automatically find a matcher.
-     * @param useContext Use this context regardless of which other contexts may match the provided URL.
-     */
-    async fromUrl(url, useContext) {
-        try {
-            new URL(url);
-        }
-        catch {
-            return (0, neverthrow_1.err)(new FetchError_1.FetchError(FetchError_1.FetchErrorCode.InvalidURL));
+    async fromUrl(urlOrOptions, useContext) {
+        if (typeof urlOrOptions == "string") {
+            try {
+                new URL(urlOrOptions);
+            }
+            catch {
+                return (0, neverthrow_1.err)(new FetchError_1.FetchError(FetchError_1.FetchErrorCode.InvalidURL));
+            }
         }
         let data;
         let options = {
             orchestrator: this.orchestrator,
-            url: url,
         };
+        if (typeof urlOrOptions === "string") {
+            options.url = urlOrOptions;
+        }
+        else {
+            if (!urlOrOptions.url) {
+                return (0, neverthrow_1.err)(new FetchError_1.FetchError(FetchError_1.FetchErrorCode.InvalidURL));
+            }
+            options.url = urlOrOptions.url;
+        }
+        const fetchOptions = typeof urlOrOptions === "string" ? {
+            url: urlOrOptions,
+            method: "GET",
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+            }
+        } : urlOrOptions;
         if (useContext) {
-            const result = await this.orchestrator.fetch({
-                url,
-                method: "GET",
-                headers: {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
-                }
-            });
+            const result = await this.orchestrator.fetch(fetchOptions);
             if (result.isErr())
                 return (0, neverthrow_1.err)(result.error);
             const context = this.getContext(useContext, {
@@ -47,11 +53,11 @@ class ContextFactory {
             return context;
         }
         for (const { matcher, constructor } of this.matchers) {
-            if (!(0, util_1.isValueOk)(matcher(url)))
+            if (!(0, util_1.isValueOk)(matcher(fetchOptions.url)))
                 continue;
             if (!data) {
                 // we only fetch once we know we have at least one Context that can do anything with this URL.
-                data = await this.orchestrator.fetch({ url, method: "GET" });
+                data = await this.orchestrator.fetch(fetchOptions);
                 if (data.isErr())
                     return (0, neverthrow_1.err)(data.error);
                 options.body = data.value;
@@ -64,7 +70,7 @@ class ContextFactory {
             return result;
         }
         return (0, neverthrow_1.err)(new FetchError_1.FetchError(FetchError_1.FetchErrorCode.InternalError, {}, [
-            new YouTubejsError_1.YoutubejsError("NoContextFound", url),
+            new YouTubejsError_1.YoutubejsError("NoContextFound", fetchOptions.url),
         ]));
     }
     getContext(constructor, options) {

@@ -16,7 +16,7 @@ export declare class VideoPlayerContext extends ScrapingContext<{
     private continuation;
     private clickTrackingParams;
     getLiveChatContinuation(chatType?: ChatType): [{
-        coninuation: string;
+        continuation: string;
         clickTrackingParams: string;
     }, string] | null;
     getStatus(): VideoStatus;
