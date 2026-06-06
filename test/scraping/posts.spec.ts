@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { ScrapingClient, AttachmentType } from "../../src";
+import { describe } from "mocha";
 
 describe("Community Posts", function () {
     this.timeout(10000);

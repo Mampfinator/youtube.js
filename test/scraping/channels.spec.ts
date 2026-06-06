@@ -6,6 +6,7 @@ import {
     StreamsContext,
     VideosContext,
 } from "../../src";
+import { describe } from "mocha";
 
 describe("Channel Tabs", function () {
     this.timeout(5000);

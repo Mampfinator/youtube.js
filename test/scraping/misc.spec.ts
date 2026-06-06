@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ChannelTab, ScrapingClient, VideosContext } from "../../src";
-import { FetchErrorCode } from "../../src/scraping/errors/FetchError";
 import { URLBuilder } from "../../src/shared/builders/URLBuilder";
+import { describe } from "mocha";
 
 describe("Misc", () => {
     let client: ScrapingClient;

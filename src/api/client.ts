@@ -69,7 +69,7 @@ export class YouTubeClient extends Client {
         });
 
         if (isError(response.statusCode)) {
-            const body: APIErrorResponse = await response.body.json();
+            const body = await response.body.json() as APIErrorResponse;
 
             return err(new YouTubeAPIError(body));
         }
