@@ -6,7 +6,7 @@ declare const StoreContext_base: import("ts-mixer/dist/types/types").Class<any[]
     ytInitialData: import("../..").YtInitialData;
 }> & ElementContext<StoreItem, string>, (abstract new (options: import("..").ContextOptions) => ChannelTabContext<{
     ytInitialData: import("../..").YtInitialData;
-}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<StoreItem, string>), false>;
+}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<StoreItem, string>)>;
 /**
  * Channel context for `/store`.
  */

@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { type Request as ExpressRequest, type Response as ExpressResponse } from "express";
 import { Result } from "neverthrow";
 import { WebSubMessage } from "./types/internal";

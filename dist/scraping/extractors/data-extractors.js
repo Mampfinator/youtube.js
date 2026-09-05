@@ -44,4 +44,4 @@ var DataExtractors;
         return parse(source, exports.playerResponseRe);
     }
     DataExtractors.ytInitialPlayerResponse = ytInitialPlayerResponse;
-})(DataExtractors = exports.DataExtractors || (exports.DataExtractors = {}));
+})(DataExtractors || (exports.DataExtractors = DataExtractors = {}));

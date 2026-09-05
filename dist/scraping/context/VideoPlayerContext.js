@@ -16,7 +16,7 @@ var ChatType;
 (function (ChatType) {
     ChatType[ChatType["Top"] = 0] = "Top";
     ChatType[ChatType["Live"] = 1] = "Live";
-})(ChatType = exports.ChatType || (exports.ChatType = {}));
+})(ChatType || (exports.ChatType = ChatType = {}));
 let VideoPlayerContext = class VideoPlayerContext extends ScrapingContext_1.ScrapingContext {
     extract(body) {
         const result = neverthrow_1.Result.combine([
@@ -53,13 +53,13 @@ let VideoPlayerContext = class VideoPlayerContext extends ScrapingContext_1.Scra
         return new CommentFetcher_1.CommentFetcher(this, endpoint.clickTrackingParams, endpoint.continuationCommand.token, "next");
     }
 };
-VideoPlayerContext = __decorate([
+exports.VideoPlayerContext = VideoPlayerContext;
+exports.VideoPlayerContext = VideoPlayerContext = __decorate([
     (0, Context_1.Context)(/youtube\.com\/watch\?|youtu\.be\//)
 ], VideoPlayerContext);
-exports.VideoPlayerContext = VideoPlayerContext;
 var VideoStatus;
 (function (VideoStatus) {
     VideoStatus["Live"] = "Live";
     VideoStatus["Upcoming"] = "Upcoming";
     VideoStatus["Offline"] = "Offline";
-})(VideoStatus = exports.VideoStatus || (exports.VideoStatus = {}));
+})(VideoStatus || (exports.VideoStatus = VideoStatus = {}));

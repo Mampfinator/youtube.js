@@ -101,7 +101,7 @@ class WebSubClient extends events_1.default {
                 const { feed: { "at:deleted-entry": entry }, } = message;
                 const { "@attributes": { "@_ref": ref, "@_when": when }, "at:by": author, } = entry;
                 this.emit("entryDeleted", {
-                    videoId: ref.split(":")[2],
+                    videoId: ref.split(":")[2], // ref format is yt:video:[id]
                     when: new Date(when),
                     channelId: author?.uri.split("/")[4], // URI format is https//youtube.com/channel/[id]
                 });

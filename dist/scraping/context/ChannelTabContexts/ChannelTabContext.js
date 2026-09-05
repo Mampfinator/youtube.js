@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChannelTabContext = exports.ChannelTab = exports.getChannelTabRegex = exports.CHANNEL_BASE_REGEX = void 0;
+exports.ChannelTabContext = exports.ChannelTab = exports.CHANNEL_BASE_REGEX = void 0;
+exports.getChannelTabRegex = getChannelTabRegex;
 const neverthrow_1 = require("neverthrow");
 const ErrorCodes_1 = require("../../../shared/errors/ErrorCodes");
 const YouTubejsError_1 = require("../../../shared/errors/YouTubejsError");
@@ -18,7 +19,6 @@ function getChannelTabRegex(tab) {
     const string = String(exports.CHANNEL_BASE_REGEX).replace(/^(\/)+|(\/)+$/, "") + `${tab}`;
     return new RegExp(string);
 }
-exports.getChannelTabRegex = getChannelTabRegex;
 var ChannelTab;
 (function (ChannelTab) {
     ChannelTab["Featured"] = "featured";
@@ -34,7 +34,7 @@ var ChannelTab;
     ChannelTab["Community"] = "community";
     ChannelTab["Store"] = "store";
     ChannelTab["Search"] = "search";
-})(ChannelTab = exports.ChannelTab || (exports.ChannelTab = {}));
+})(ChannelTab || (exports.ChannelTab = ChannelTab = {}));
 const IS_CHANNEL_TAB_LOOKUP = new Set(Object.values(ChannelTab));
 /**
  * Base class for all channel tabs.

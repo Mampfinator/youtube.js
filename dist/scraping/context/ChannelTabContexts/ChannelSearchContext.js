@@ -19,7 +19,7 @@ let ChannelSearchContext = class ChannelSearchContext extends (0, ts_mixer_1.Mix
         throw new Error("Method not implemented.");
     }
 };
-ChannelSearchContext = __decorate([
+exports.ChannelSearchContext = ChannelSearchContext;
+exports.ChannelSearchContext = ChannelSearchContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Search), Context_1.DEFAULT_WEIGHT + 1)
 ], ChannelSearchContext);
-exports.ChannelSearchContext = ChannelSearchContext;

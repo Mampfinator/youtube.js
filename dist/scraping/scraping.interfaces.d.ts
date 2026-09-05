@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { Result } from "neverthrow";
 import { Dispatcher } from "undici";
 import { FetchError } from "./errors/FetchError";

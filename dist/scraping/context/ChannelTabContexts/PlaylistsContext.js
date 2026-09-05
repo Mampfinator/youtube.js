@@ -19,7 +19,7 @@ let PlaylistsContext = class PlaylistsContext extends (0, ts_mixer_1.Mixin)(Chan
         throw new Error("Method not implemented.");
     }
 };
-PlaylistsContext = __decorate([
+exports.PlaylistsContext = PlaylistsContext;
+exports.PlaylistsContext = PlaylistsContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Playlists), Context_1.DEFAULT_WEIGHT + 1)
 ], PlaylistsContext);
-exports.PlaylistsContext = PlaylistsContext;

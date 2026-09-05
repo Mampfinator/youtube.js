@@ -6,10 +6,10 @@ var VideoType;
     VideoType["Video"] = "Video";
     VideoType["Short"] = "Short";
     VideoType["Stream"] = "Stream";
-})(VideoType = exports.VideoType || (exports.VideoType = {}));
+})(VideoType || (exports.VideoType = VideoType = {}));
 var StreamStatus;
 (function (StreamStatus) {
     StreamStatus["Offline"] = "Offline";
     StreamStatus["Live"] = "Live";
     StreamStatus["Upcoming"] = "Upcoming";
-})(StreamStatus = exports.StreamStatus || (exports.StreamStatus = {}));
+})(StreamStatus || (exports.StreamStatus = StreamStatus = {}));

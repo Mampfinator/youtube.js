@@ -77,7 +77,7 @@ let ShortsContext = class ShortsContext extends (0, ts_mixer_1.Mixin)(ChannelTab
         return [];
     }
 };
-ShortsContext = __decorate([
+exports.ShortsContext = ShortsContext;
+exports.ShortsContext = ShortsContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Shorts), Context_1.DEFAULT_WEIGHT + 1)
 ], ShortsContext);
-exports.ShortsContext = ShortsContext;

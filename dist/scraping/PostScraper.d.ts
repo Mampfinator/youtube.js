@@ -15,8 +15,8 @@ export declare class PostScraper {
             /**
              * Linked comment ID, if any.
              */
-            lc?: string | undefined;
-        } | undefined;
+            lc?: string;
+        };
     } | undefined);
     private ensureContext;
     /**

@@ -19,7 +19,7 @@ let PodcastsContext = class PodcastsContext extends (0, ts_mixer_1.Mixin)(Channe
         throw new Error("Method not implemented.");
     }
 };
-PodcastsContext = __decorate([
+exports.PodcastsContext = PodcastsContext;
+exports.PodcastsContext = PodcastsContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Podcasts), Context_1.DEFAULT_WEIGHT + 1)
 ], PodcastsContext);
-exports.PodcastsContext = PodcastsContext;

@@ -33,7 +33,7 @@ let ShortContext = class ShortContext extends ScrapingContext_1.ScrapingContext 
         return new CommentFetcher_1.CommentFetcher(this, trackingParams, token, "browse");
     }
 };
-ShortContext = __decorate([
+exports.ShortContext = ShortContext;
+exports.ShortContext = ShortContext = __decorate([
     (0, Context_1.Context)(/youtube\.com\/shorts\//)
 ], ShortContext);
-exports.ShortContext = ShortContext;

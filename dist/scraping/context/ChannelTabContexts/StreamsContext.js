@@ -75,7 +75,7 @@ let StreamsContext = class StreamsContext extends (0, ts_mixer_1.Mixin)(ChannelT
         }
     }
 };
-StreamsContext = __decorate([
+exports.StreamsContext = StreamsContext;
+exports.StreamsContext = StreamsContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Streams), Context_1.DEFAULT_WEIGHT + 1)
 ], StreamsContext);
-exports.StreamsContext = StreamsContext;

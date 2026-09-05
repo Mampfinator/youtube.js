@@ -1,4 +1,6 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
+import "axios-cookiejar-support";
+
+import axios, { AxiosError, AxiosInstance, AxiosStatic } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { err, Ok, ok, Result } from "neverthrow";
 import { CookieJar, MemoryCookieStore } from "tough-cookie";
@@ -36,7 +38,7 @@ export class RequestOrchestrator implements IRequestOrchestrator {
     private readonly queueMeta = new WeakMap<RequestQueueItem, ItemMetadata>();
 
     private initialized = false;
-    private axios!: AxiosInstance;
+    private axios!: AxiosInstance | AxiosStatic;
     private interval!: NodeJS.Timeout;
 
     constructor() {
@@ -48,10 +50,11 @@ export class RequestOrchestrator implements IRequestOrchestrator {
 
     public async init(): Promise<Result<void, Error>> {
         this.axios = wrapper(
-            axios.create({ 
-                jar: new CookieJar(new MemoryCookieStore()), 
-            }),
-        );
+            axios.create({
+                //@ts-ignore
+                jar: new CookieJar(new MemoryCookieStore()),
+            }) as any,
+        ) as any;
 
         try {
             await this.axios.get("https://youtube.com/");
@@ -182,8 +185,8 @@ export class RequestOrchestrator implements IRequestOrchestrator {
                 error instanceof FetchError
                     ? error
                     : new FetchError(FetchErrorCode.Unknown, options, [
-                          error as Error,
-                      ]),
+                        error as Error,
+                    ]),
             ),
         );
     }

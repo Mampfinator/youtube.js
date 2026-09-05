@@ -75,7 +75,7 @@ let CommunityContext = class CommunityContext extends (0, ts_mixer_1.Mixin)(Chan
         }
     }
 };
-CommunityContext = __decorate([
+exports.CommunityContext = CommunityContext;
+exports.CommunityContext = CommunityContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Community), Context_1.DEFAULT_WEIGHT + 1)
 ], CommunityContext);
-exports.CommunityContext = CommunityContext;

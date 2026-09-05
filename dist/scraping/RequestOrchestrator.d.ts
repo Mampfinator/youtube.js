@@ -1,3 +1,4 @@
+import "axios-cookiejar-support";
 import { Result } from "neverthrow";
 import { FetchOptions, FetchReturn, FetchTransform, IRequestOrchestrator } from "./scraping.interfaces";
 /**

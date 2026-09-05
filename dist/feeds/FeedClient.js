@@ -17,7 +17,7 @@ class FeedClient {
                 ? external_1.FeedType.Playlist
                 : external_1.FeedType.Channel,
             channel: {
-                id: rawFeed["yt:channelId"],
+                id: rawFeed["yt:channelId"], //? apparently Feed#yt:channelId is just always blank?
                 ...rawFeed.author,
             },
             title: rawFeed.title,

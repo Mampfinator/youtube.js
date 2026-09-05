@@ -48,7 +48,7 @@ let CommunityPostContext = class CommunityPostContext extends ScrapingContext_1.
         return new CommentFetcher_1.CommentFetcher(this, trackingParams, token, "browse");
     }
 };
-CommunityPostContext = __decorate([
+exports.CommunityPostContext = CommunityPostContext;
+exports.CommunityPostContext = CommunityPostContext = __decorate([
     (0, Context_1.Context)(/(?<=youtube.com\/post\/)Ug[A-Za-z0-9_\-]+|(?<=youtube.com\/channel\/.+\/community\?lb=)Ug[A-Za-z0-9_\-]/, 2 /* needs to be evaluated **before** CommunityContext */)
 ], CommunityPostContext);
-exports.CommunityPostContext = CommunityPostContext;

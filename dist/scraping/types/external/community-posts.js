@@ -10,4 +10,4 @@ var AttachmentType;
     AttachmentType["Playlist"] = "Playlist";
     AttachmentType["SharedPost"] = "SharedPost";
     AttachmentType["None"] = "None";
-})(AttachmentType = exports.AttachmentType || (exports.AttachmentType = {}));
+})(AttachmentType || (exports.AttachmentType = AttachmentType = {}));

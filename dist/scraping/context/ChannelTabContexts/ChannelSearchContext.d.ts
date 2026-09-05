@@ -5,7 +5,7 @@ declare const ChannelSearchContext_base: import("ts-mixer/dist/types/types").Cla
     ytInitialData: import("../..").YtInitialData;
 }> & ElementContext<any, string>, (abstract new (options: import("..").ContextOptions) => ChannelTabContext<{
     ytInitialData: import("../..").YtInitialData;
-}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<any, string>), false>;
+}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<any, string>)>;
 /**
  * Channel context for `/search`.
  */

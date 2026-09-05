@@ -6,7 +6,7 @@ var LiveBroadcastContent;
     LiveBroadcastContent["Live"] = "live";
     LiveBroadcastContent["None"] = "none";
     LiveBroadcastContent["Upcoming"] = "upcoming";
-})(LiveBroadcastContent = exports.LiveBroadcastContent || (exports.LiveBroadcastContent = {}));
+})(LiveBroadcastContent || (exports.LiveBroadcastContent = LiveBroadcastContent = {}));
 var UploadStatus;
 (function (UploadStatus) {
     UploadStatus["Deleted"] = "deleted";
@@ -14,7 +14,7 @@ var UploadStatus;
     UploadStatus["Processed"] = "processed";
     UploadStatus["Rejected"] = "rejected";
     UploadStatus["Uploaded"] = "uploaded";
-})(UploadStatus = exports.UploadStatus || (exports.UploadStatus = {}));
+})(UploadStatus || (exports.UploadStatus = UploadStatus = {}));
 var FailureReason;
 (function (FailureReason) {
     FailureReason["Codec"] = "codec";
@@ -23,7 +23,7 @@ var FailureReason;
     FailureReason["InvalidFile"] = "invalidFile";
     FailureReason["TooSmall"] = "tooSmall";
     FailureReason["UploadAborted"] = "uploadAborted";
-})(FailureReason = exports.FailureReason || (exports.FailureReason = {}));
+})(FailureReason || (exports.FailureReason = FailureReason = {}));
 var RejectionReason;
 (function (RejectionReason) {
     RejectionReason["Claim"] = "claim";
@@ -36,15 +36,15 @@ var RejectionReason;
     RejectionReason["Trademark"] = "trademark";
     RejectionReason["UploaderAccountClosed"] = "uploaderAccountClosed";
     RejectionReason["UploaderAccountSuspended"] = "uploaderAccountSuspended";
-})(RejectionReason = exports.RejectionReason || (exports.RejectionReason = {}));
+})(RejectionReason || (exports.RejectionReason = RejectionReason = {}));
 var PrivacyStatus;
 (function (PrivacyStatus) {
     PrivacyStatus["Private"] = "private";
     PrivacyStatus["Public"] = "public";
     PrivacyStatus["Unlisted"] = "unlisted";
-})(PrivacyStatus = exports.PrivacyStatus || (exports.PrivacyStatus = {}));
+})(PrivacyStatus || (exports.PrivacyStatus = PrivacyStatus = {}));
 var VideoLicense;
 (function (VideoLicense) {
     VideoLicense["CreativeCommon"] = "creativeCommon";
     VideoLicense["YouTube"] = "youtube";
-})(VideoLicense = exports.VideoLicense || (exports.VideoLicense = {}));
+})(VideoLicense || (exports.VideoLicense = VideoLicense = {}));

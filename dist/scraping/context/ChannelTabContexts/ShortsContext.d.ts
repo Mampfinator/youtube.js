@@ -3,10 +3,10 @@ import { ScrapedShort } from "../../types";
 import { ElementContext } from "../ElementContext";
 import { ChannelTabContext } from "./ChannelTabContext";
 declare const ShortsContext_base: import("ts-mixer/dist/types/types").Class<any[], ChannelTabContext<{
-    ytInitialData: import("../../types").YtInitialData;
+    ytInitialData: import("../..").YtInitialData;
 }> & ElementContext<ScrapedShort, string>, (abstract new (options: import("..").ContextOptions) => ChannelTabContext<{
-    ytInitialData: import("../../types").YtInitialData;
-}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<ScrapedShort, string>), false>;
+    ytInitialData: import("../..").YtInitialData;
+}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<ScrapedShort, string>)>;
 /**
  * Channel context for `/shorts`.
  */

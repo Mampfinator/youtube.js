@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.YouTubeClientError = exports.YouTubeAPIError = exports.isError = void 0;
+exports.YouTubeClientError = exports.YouTubeAPIError = void 0;
+exports.isError = isError;
 function isError(code) {
     return code >= 400 && code < 600;
 }
-exports.isError = isError;
 class YouTubeAPIError extends Error {
     raw;
     code;

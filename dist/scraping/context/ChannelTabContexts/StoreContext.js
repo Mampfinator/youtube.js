@@ -20,7 +20,7 @@ let StoreContext = class StoreContext extends (0, ts_mixer_1.Mixin)(ChannelTabCo
         throw new Error("Method not implemented.");
     }
 };
-StoreContext = __decorate([
+exports.StoreContext = StoreContext;
+exports.StoreContext = StoreContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Store), Context_1.DEFAULT_WEIGHT + 1)
 ], StoreContext);
-exports.StoreContext = StoreContext;

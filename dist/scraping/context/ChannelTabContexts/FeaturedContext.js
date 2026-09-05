@@ -69,7 +69,7 @@ let FeaturedContext = class FeaturedContext extends ChannelTabContext_1.ChannelT
         return (0, neverthrow_1.ok)(channelSections);
     }
 };
-FeaturedContext = __decorate([
+exports.FeaturedContext = FeaturedContext;
+exports.FeaturedContext = FeaturedContext = __decorate([
     (0, Context_1.Context)(ChannelTabContext_1.CHANNEL_BASE_REGEX, Context_1.DEFAULT_WEIGHT)
 ], FeaturedContext);
-exports.FeaturedContext = FeaturedContext;

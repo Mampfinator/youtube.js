@@ -13,8 +13,8 @@ export declare class VideoScraper {
             /**
              * Linked comment ID, if any.
              */
-            lc?: string | undefined;
-        } | undefined;
+            lc?: string;
+        };
     } | undefined);
     private context?;
     private ensureContext;

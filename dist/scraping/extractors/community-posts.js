@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractCommunityPost = void 0;
+exports.extractCommunityPost = extractCommunityPost;
 const scraping_util_1 = require("../scraping.util");
 const community_posts_1 = require("../types/external/community-posts");
 // TODO: type properly; figure out where quicktype put shared posts (if it even put them anywhere)
@@ -170,4 +170,3 @@ function extractCommunityPost(rawPost) {
         post.sharedPost = extractCommunityPost(originalPost.backstagePostRenderer);
     return post;
 }
-exports.extractCommunityPost = extractCommunityPost;

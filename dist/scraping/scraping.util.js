@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getContinuationItems = exports.getThumbnail = exports.tryParseDate = exports.isValidDate = exports.mergeRuns = exports.sanitizeUrl = exports.toAxiosConfig = void 0;
+exports.getThumbnail = exports.tryParseDate = exports.isValidDate = exports.mergeRuns = exports.sanitizeUrl = void 0;
+exports.toAxiosConfig = toAxiosConfig;
+exports.getContinuationItems = getContinuationItems;
 function toAxiosConfig(input) {
     return {
         url: input.url,
@@ -10,7 +12,6 @@ function toAxiosConfig(input) {
         data: input.body,
     };
 }
-exports.toAxiosConfig = toAxiosConfig;
 /**
  * Sanitizes non-standard (YouTube) URL parameters.
  */
@@ -57,4 +58,3 @@ function getContinuationItems(result) {
         .filter(i => i)
         .flat();
 }
-exports.getContinuationItems = getContinuationItems;

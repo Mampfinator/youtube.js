@@ -75,7 +75,7 @@ let VideosContext = class VideosContext extends (0, ts_mixer_1.Mixin)(ChannelTab
         }
     }
 };
-VideosContext = __decorate([
+exports.VideosContext = VideosContext;
+exports.VideosContext = VideosContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Videos), Context_1.DEFAULT_WEIGHT + 1)
 ], VideosContext);
-exports.VideosContext = VideosContext;

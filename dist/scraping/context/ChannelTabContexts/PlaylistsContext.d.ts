@@ -6,7 +6,7 @@ declare const PlaylistsContext_base: import("ts-mixer/dist/types/types").Class<a
     ytInitialData: import("../..").YtInitialData;
 }> & ElementContext<Playlist, string>, (abstract new (options: import("..").ContextOptions) => ChannelTabContext<{
     ytInitialData: import("../..").YtInitialData;
-}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<Playlist, string>), false>;
+}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<Playlist, string>)>;
 /**
  * channel context for `/playlists`.
  */

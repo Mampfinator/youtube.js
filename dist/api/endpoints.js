@@ -6,7 +6,7 @@ var Method;
     Method["Get"] = "get";
     Method["Post"] = "post";
     Method["Patch"] = "patch";
-})(Method = exports.Method || (exports.Method = {}));
+})(Method || (exports.Method = Method = {}));
 class YouTubeEndpoints {
     client;
     basePath;

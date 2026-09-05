@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractChannelData = void 0;
+exports.extractChannelData = extractChannelData;
 const scraping_util_1 = require("../scraping.util");
 function extractChannelData(input) {
     const { title: name, description, tags, unlisted, urlCanonical: url, thumbnail: { thumbnails: [{ url: thumbUrl }], }, } = input;
@@ -15,4 +15,3 @@ function extractChannelData(input) {
         unlisted,
     };
 }
-exports.extractChannelData = extractChannelData;

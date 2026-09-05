@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractStream = exports.extractShort = exports.extractVideo = void 0;
+exports.extractVideo = extractVideo;
+exports.extractShort = extractShort;
+exports.extractStream = extractStream;
 const scraping_util_1 = require("../scraping.util");
 const videos_1 = require("../types/external/videos");
 function extractVideo(renderer) {
@@ -12,7 +14,6 @@ function extractVideo(renderer) {
         thumbnail: (0, scraping_util_1.sanitizeUrl)(thumbnails[thumbnails.length - 1].url),
     };
 }
-exports.extractVideo = extractVideo;
 function extractShort(renderer) {
     const { videoId: id, headline: { simpleText: title }, thumbnail: { thumbnails }, videoType, } = renderer;
     return {
@@ -22,7 +23,6 @@ function extractShort(renderer) {
         thumbnail: (0, scraping_util_1.sanitizeUrl)(thumbnails[thumbnails.length - 1].url),
     };
 }
-exports.extractShort = extractShort;
 const STATUS_LOOKUP = {
     DEFAULT: videos_1.StreamStatus.Offline,
     UPCOMING: videos_1.StreamStatus.Upcoming,
@@ -42,4 +42,3 @@ function extractStream(renderer) {
         status,
     };
 }
-exports.extractStream = extractStream;

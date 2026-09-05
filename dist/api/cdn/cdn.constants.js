@@ -5,5 +5,5 @@ var ThumbnailQuality;
 (function (ThumbnailQuality) {
     ThumbnailQuality["HQ720"] = "hq720";
     ThumbnailQuality["MaxRes"] = "maxresdefault";
-})(ThumbnailQuality = exports.ThumbnailQuality || (exports.ThumbnailQuality = {}));
+})(ThumbnailQuality || (exports.ThumbnailQuality = ThumbnailQuality = {}));
 exports.CDN_BASE_URL = "https://i.ytimg.com/";

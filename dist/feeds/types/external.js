@@ -5,4 +5,4 @@ var FeedType;
 (function (FeedType) {
     FeedType["Channel"] = "Channel";
     FeedType["Playlist"] = "Playlist";
-})(FeedType = exports.FeedType || (exports.FeedType = {}));
+})(FeedType || (exports.FeedType = FeedType = {}));

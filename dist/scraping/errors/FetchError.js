@@ -18,7 +18,7 @@ var FetchErrorCode;
     FetchErrorCode["RetriesExceeded"] = "RetriesExceeded";
     FetchErrorCode["InvalidURL"] = "InvalidURL";
     FetchErrorCode["InternalError"] = "InternalError";
-})(FetchErrorCode = exports.FetchErrorCode || (exports.FetchErrorCode = {}));
+})(FetchErrorCode || (exports.FetchErrorCode = FetchErrorCode = {}));
 const AXIOS_ERROR_CODE_LOOKUP = {
     404: FetchErrorCode.NotFound,
     403: FetchErrorCode.Blocked,

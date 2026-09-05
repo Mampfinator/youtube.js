@@ -178,4 +178,4 @@ var MessageType;
     MessageType["SuperChat"] = "SuperChat";
     MessageType["SuperSticker"] = "SuperSticker";
     MessageType["Membership"] = "Membership";
-})(MessageType = exports.MessageType || (exports.MessageType = {}));
+})(MessageType || (exports.MessageType = MessageType = {}));

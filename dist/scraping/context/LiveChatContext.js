@@ -44,7 +44,7 @@ let LiveChatContext = class LiveChatContext extends ScrapingContext_1.ScrapingCo
         });
     }
 };
-LiveChatContext = __decorate([
+exports.LiveChatContext = LiveChatContext;
+exports.LiveChatContext = LiveChatContext = __decorate([
     (0, Context_1.Context)(/youtube\.com\/live_chat/)
 ], LiveChatContext);
-exports.LiveChatContext = LiveChatContext;

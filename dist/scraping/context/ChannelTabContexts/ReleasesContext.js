@@ -16,7 +16,7 @@ let ReleasesContext = class ReleasesContext extends (0, ts_mixer_1.Mixin)(Channe
         throw new Error("Method not implemented.");
     }
 };
-ReleasesContext = __decorate([
+exports.ReleasesContext = ReleasesContext;
+exports.ReleasesContext = ReleasesContext = __decorate([
     (0, Context_1.Context)((0, ChannelTabContext_1.getChannelTabRegex)(ChannelTabContext_1.ChannelTab.Releases), Context_1.DEFAULT_WEIGHT + 1)
 ], ReleasesContext);
-exports.ReleasesContext = ReleasesContext;

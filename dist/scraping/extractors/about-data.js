@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractAboutData = void 0;
+exports.extractAboutData = extractAboutData;
 const querystring_1 = require("querystring");
 function extractAboutData(metadata) {
     const { aboutChannelViewModel: { description, channelId, canonicalChannelUrl, links: rawLinks, }, } = metadata;
@@ -15,7 +15,6 @@ function extractAboutData(metadata) {
         links,
     };
 }
-exports.extractAboutData = extractAboutData;
 function extractRedirectTarget(redirectUrl) {
     const [_, url] = redirectUrl.split("&q=");
     if (!url) {

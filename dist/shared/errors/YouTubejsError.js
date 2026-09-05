@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.YoutubejsTypeError = exports.YoutubejsError = exports.makeYouTubejsError = void 0;
+exports.YoutubejsTypeError = exports.YoutubejsError = void 0;
+exports.makeYouTubejsError = makeYouTubejsError;
 const ErrorCodes_1 = require("./ErrorCodes");
 const Messages_1 = require("./Messages");
 // inspired by Discordjs' internal errors.
@@ -14,7 +15,6 @@ function makeYouTubejsError(Base) {
         }
     };
 }
-exports.makeYouTubejsError = makeYouTubejsError;
 function getMessage(code, args) {
     if (!(code in ErrorCodes_1.YtjsErrorCode))
         throw new Error(`Error code must be a valid YoutubejsErrorCode. Received ${code}.`);

@@ -5,4 +5,4 @@ var FeaturedChannelType;
 (function (FeaturedChannelType) {
     FeaturedChannelType["Full"] = "Full";
     FeaturedChannelType["Partial"] = "Partial";
-})(FeaturedChannelType = exports.FeaturedChannelType || (exports.FeaturedChannelType = {}));
+})(FeaturedChannelType || (exports.FeaturedChannelType = FeaturedChannelType = {}));

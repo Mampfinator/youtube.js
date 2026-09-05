@@ -1,6 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractPartialFeaturedChannel = exports.extractFullFeaturedChannel = exports.extractDefaultGridSection = exports.extractShelfSection = exports.DEFAULT_CHANNEL_SECTION = void 0;
+exports.DEFAULT_CHANNEL_SECTION = void 0;
+exports.extractShelfSection = extractShelfSection;
+exports.extractDefaultGridSection = extractDefaultGridSection;
+exports.extractFullFeaturedChannel = extractFullFeaturedChannel;
+exports.extractPartialFeaturedChannel = extractPartialFeaturedChannel;
 const scraping_util_1 = require("../scraping.util");
 const featured_channels_1 = require("../types/external/featured-channels");
 exports.DEFAULT_CHANNEL_SECTION = "DEFAULT_CHANNEL_SECTION";
@@ -26,7 +30,6 @@ function extractShelfSection(renderer) {
                 .map(extractPartialFeaturedChannel),
     };
 }
-exports.extractShelfSection = extractShelfSection;
 /**
  *
  * @param renderers
@@ -41,7 +44,6 @@ function extractDefaultGridSection(renderers) {
             .map(extractPartialFeaturedChannel),
     };
 }
-exports.extractDefaultGridSection = extractDefaultGridSection;
 /**
  * Extracts a single featured channel from items in a section renderer.
  */
@@ -55,7 +57,6 @@ function extractFullFeaturedChannel(renderer) {
         descriptionSnippet: descriptionSnippet?.runs.map(({ text, url }) => ({ text, url })),
     };
 }
-exports.extractFullFeaturedChannel = extractFullFeaturedChannel;
 function extractPartialFeaturedChannel(renderer) {
     const { channelId: id, thumbnail: { thumbnails }, title: { simpleText: name }, } = renderer;
     return {
@@ -65,4 +66,3 @@ function extractPartialFeaturedChannel(renderer) {
         avatar: (0, scraping_util_1.sanitizeUrl)(thumbnails[thumbnails.length - 1].url),
     };
 }
-exports.extractPartialFeaturedChannel = extractPartialFeaturedChannel;

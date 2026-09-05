@@ -3,10 +3,10 @@ import { ScrapedVideo } from "../../types";
 import { ElementContext } from "../ElementContext";
 import { ChannelTabContext } from "./ChannelTabContext";
 declare const VideosContext_base: import("ts-mixer/dist/types/types").Class<any[], ChannelTabContext<{
-    ytInitialData: import("../../types").YtInitialData;
+    ytInitialData: import("../..").YtInitialData;
 }> & ElementContext<ScrapedVideo, string>, (abstract new (options: import("..").ContextOptions) => ChannelTabContext<{
-    ytInitialData: import("../../types").YtInitialData;
-}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<ScrapedVideo, string>), false>;
+    ytInitialData: import("../..").YtInitialData;
+}>) & (abstract new (options: import("..").ContextOptions) => ElementContext<ScrapedVideo, string>)>;
 /**
  * Channel context for `/videos`.
  */

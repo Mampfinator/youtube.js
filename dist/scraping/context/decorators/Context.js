@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getContextInfo = exports.Context = exports.getContexts = exports.DEFAULT_WEIGHT = exports.CONTEXT_META_WEIGHT_KEY = exports.CONTEXT_META_KEY = void 0;
+exports.DEFAULT_WEIGHT = exports.CONTEXT_META_WEIGHT_KEY = exports.CONTEXT_META_KEY = void 0;
+exports.getContexts = getContexts;
+exports.Context = Context;
+exports.getContextInfo = getContextInfo;
 exports.CONTEXT_META_KEY = Symbol("Match");
 exports.CONTEXT_META_WEIGHT_KEY = Symbol("Weight");
 const registered = new Set();
@@ -13,7 +16,6 @@ function getContexts() {
     }
     return ret;
 }
-exports.getContexts = getContexts;
 function Context(matcherOrRegex, weight) {
     const matcher = matcherOrRegex instanceof RegExp
         ? (url) => matcherOrRegex.test(url)
@@ -24,11 +26,9 @@ function Context(matcherOrRegex, weight) {
         registered.add(target);
     };
 }
-exports.Context = Context;
 function getContextInfo(target) {
     return [
         Reflect.getMetadata(exports.CONTEXT_META_KEY, target),
         Reflect.getMetadata(exports.CONTEXT_META_WEIGHT_KEY, target),
     ];
 }
-exports.getContextInfo = getContextInfo;

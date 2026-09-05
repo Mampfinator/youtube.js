@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toDateOpt = exports.toDate = exports.deepClearRecord = exports.clearRecord = exports.mapProperties = void 0;
+exports.toDateOpt = exports.toDate = void 0;
+exports.mapProperties = mapProperties;
+exports.clearRecord = clearRecord;
+exports.deepClearRecord = deepClearRecord;
 /**
  * Copies `source` and replaces any values for properties present in `mapper` with the return value of that mapping function.
  *
@@ -22,18 +25,15 @@ function mapProperties(source, mapper) {
         key in mapper ? mapper[key](value) : value,
     ]));
 }
-exports.mapProperties = mapProperties;
 function clearRecord(source) {
     return Object.fromEntries(Object.entries(source).filter(([_, value]) => typeof value !== "undefined"));
 }
-exports.clearRecord = clearRecord;
 function deepClearRecord(source) {
     return Object.fromEntries(Object.entries(source).map(([key, value]) => [
         key,
         typeof value === "object" ? clearRecord(value) : value,
     ]));
 }
-exports.deepClearRecord = deepClearRecord;
 const toDate = (raw) => new Date(raw);
 exports.toDate = toDate;
 const toDateOpt = (raw) => typeof raw === "undefined" ? undefined : new Date(raw);

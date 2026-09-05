@@ -1,16 +1,12 @@
 import { Type } from "../types";
+import { YtjsErrorCode } from "./ErrorCodes";
 import { Messages } from "./Messages";
 export declare function makeYouTubejsError(Base: Type<Error>): {
-    new <TCode extends "UnknownError" | "UnknownChannelTab" | "ExpectedResult" | "NoContextFound">(code: TCode, ...args: Parameters<{
-        readonly UnknownError: (description: string) => string;
-        readonly UnknownChannelTab: (channel: string, tab: string) => string;
-        readonly ExpectedResult: (value: any) => string;
-        readonly NoContextFound: (url: string) => string;
-    }[TCode]>): {
+    new <TCode extends YtjsErrorCode>(code: TCode, ...args: Parameters<(typeof Messages)[TCode]>): {
         readonly code: TCode;
         name: string;
         message: string;
-        stack?: string | undefined;
+        stack?: string;
         cause?: unknown;
     };
 };
@@ -18,31 +14,21 @@ export declare function makeYouTubejsError(Base: Type<Error>): {
  * Internal error.
  */
 export declare const YoutubejsError: {
-    new <TCode extends "UnknownError" | "UnknownChannelTab" | "ExpectedResult" | "NoContextFound">(code: TCode, ...args: Parameters<{
-        readonly UnknownError: (description: string) => string;
-        readonly UnknownChannelTab: (channel: string, tab: string) => string;
-        readonly ExpectedResult: (value: any) => string;
-        readonly NoContextFound: (url: string) => string;
-    }[TCode]>): {
+    new <TCode extends YtjsErrorCode>(code: TCode, ...args: Parameters<(typeof Messages)[TCode]>): {
         readonly code: TCode;
         name: string;
         message: string;
-        stack?: string | undefined;
+        stack?: string;
         cause?: unknown;
     };
 };
 export type YoutubejsError = typeof YoutubejsError;
 export declare const YoutubejsTypeError: {
-    new <TCode extends "UnknownError" | "UnknownChannelTab" | "ExpectedResult" | "NoContextFound">(code: TCode, ...args: Parameters<{
-        readonly UnknownError: (description: string) => string;
-        readonly UnknownChannelTab: (channel: string, tab: string) => string;
-        readonly ExpectedResult: (value: any) => string;
-        readonly NoContextFound: (url: string) => string;
-    }[TCode]>): {
+    new <TCode extends YtjsErrorCode>(code: TCode, ...args: Parameters<(typeof Messages)[TCode]>): {
         readonly code: TCode;
         name: string;
         message: string;
-        stack?: string | undefined;
+        stack?: string;
         cause?: unknown;
     };
 };

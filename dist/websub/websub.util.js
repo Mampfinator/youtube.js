@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyPostMessage = void 0;
+exports.verifyPostMessage = verifyPostMessage;
 const crypto_1 = require("crypto");
 function verifyPostMessage(body, secret, hubSignature, link) {
     if (!link || !hubSignature || typeof hubSignature !== "string")
@@ -20,4 +20,3 @@ function verifyPostMessage(body, secret, hubSignature, link) {
         return { valid: false, status: 403 };
     }
 }
-exports.verifyPostMessage = verifyPostMessage;
