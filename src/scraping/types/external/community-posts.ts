@@ -8,6 +8,11 @@ export enum AttachmentType {
     None = "None",
 }
 
+export interface PostAuthor {
+    name: string,
+    avatar: string,
+}
+
 export interface PollChoice {
     text: string;
     imageUrl?: string;
@@ -18,6 +23,7 @@ export interface QuizChoice extends PollChoice {
 }
 
 interface BaseCommunityPost {
+    author: PostAuthor,
     id: string;
     content?: { text: string; url?: string }[];
     attachmentType: AttachmentType;

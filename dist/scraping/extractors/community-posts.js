@@ -6,7 +6,11 @@ const community_posts_1 = require("../types/external/community-posts");
 // TODO: type properly; figure out where quicktype put shared posts (if it even put them anywhere)
 function extractCommunityPost(rawPost) {
     // normal posts store text in `contentText`, quote posts store them in `content`.
-    const { postId: id, contentText, backstageAttachment: attachment, originalPost, content: sharedPostContent, } = rawPost;
+    const { postId: id, contentText, backstageAttachment: attachment, originalPost, content: sharedPostContent, authorText, authorThumbnail, } = rawPost;
+    const author = {
+        name: authorText.runs[0].text,
+        avatar: (0, scraping_util_1.getThumbnail)(authorThumbnail.thumbnails),
+    };
     let attachmentType;
     switch (true) {
         case originalPost?.backstagePostRenderer !== undefined:
@@ -75,6 +79,7 @@ function extractCommunityPost(rawPost) {
                 : undefined));
     })();
     const post = {
+        author,
         id,
         content,
         attachmentType,

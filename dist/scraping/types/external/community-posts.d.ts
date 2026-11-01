@@ -7,6 +7,10 @@ export declare enum AttachmentType {
     SharedPost = "SharedPost",
     None = "None"
 }
+export interface PostAuthor {
+    name: string;
+    avatar: string;
+}
 export interface PollChoice {
     text: string;
     imageUrl?: string;
@@ -15,6 +19,7 @@ export interface QuizChoice extends PollChoice {
     isCorrect: boolean;
 }
 interface BaseCommunityPost {
+    author: PostAuthor;
     id: string;
     content?: {
         text: string;

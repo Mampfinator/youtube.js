@@ -3,6 +3,7 @@ import {
     AttachmentType,
     CommunityPost,
     PollChoice,
+    PostAuthor,
     QuizChoice,
 } from "../types/external/community-posts";
 
@@ -17,7 +18,13 @@ export function extractCommunityPost(
         backstageAttachment: attachment,
         originalPost,
         content: sharedPostContent,
+        authorText, authorThumbnail,
     } = rawPost;
+
+    const author: PostAuthor = {
+        name: authorText.runs[0].text,
+        avatar: getThumbnail(authorThumbnail.thumbnails),
+    }
 
     let attachmentType: AttachmentType | "INVALID";
     switch (true) {
@@ -107,6 +114,7 @@ export function extractCommunityPost(
     })();
 
     const post: CommunityPost & Record<string, any> = {
+        author,
         id,
         content,
         attachmentType,
