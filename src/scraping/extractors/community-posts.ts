@@ -18,13 +18,14 @@ export function extractCommunityPost(
         backstageAttachment: attachment,
         originalPost,
         content: sharedPostContent,
-        authorText, authorThumbnail,
+        authorText, authorThumbnail, authorEndpoint
     } = rawPost;
 
     const author: PostAuthor = {
         name: authorText.runs[0].text,
         avatar: getThumbnail(authorThumbnail.thumbnails),
-    }
+        id: authorEndpoint.browseEndpoint.browseId,
+    };
 
     let attachmentType: AttachmentType | "INVALID";
     switch (true) {

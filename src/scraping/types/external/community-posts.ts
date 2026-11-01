@@ -11,6 +11,7 @@ export enum AttachmentType {
 export interface PostAuthor {
     name: string,
     avatar: string,
+    id: string,
 }
 
 export interface PollChoice {
